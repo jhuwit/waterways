@@ -1,0 +1,41 @@
+
+#' Process the Time data from SensorLog and Compare to an Expected Timezone
+#'
+#' @inheritParams ww_process_sensorlog
+#'
+#' @return A `data.frame`
+#' @export
+ww_process_time = function(data, expected_timezone = "America/New_York") {
+
+  time = timestamp = NULL
+  rm(list = c("time", "timestamp"))
+
+  data$timezone_estimated = lutz::tz_lookup_coords(
+    lat = data$lat,
+    lon = data$lon
+  )
+  if (!is.null(expected_timezone)) {
+    uest = sort(table(data$timezone_estimated), decreasing = TRUE)
+    uest = names(uest[1])
+    stopifnot(uest == expected_timezone)
+  }
+
+  data = data %>%
+    dplyr::mutate(
+      char_time = as.character(time)
+    )
+
+  data = data %>%
+    dplyr::mutate(
+      time = strip_hour_shift(time)
+    )
+
+  data = data %>%
+    dplyr::mutate(
+      # use GMT to agree with ActiGraph
+      time = as_datetime_safe(time, tz = "GMT"),
+      timestamp = as_datetime_safe(timestamp)
+    )
+  stopifnot(anyDuplicated(data$time) == 0)
+  data
+}
