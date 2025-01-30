@@ -11,6 +11,9 @@
 ww_read_sensorlog = function(
     files
 ) {
+  lat = lon = NULL
+  rm(list = c("lat", "lon"))
+
   names(files) = files
 
   cn = ww_csv_colnames_mapping()
@@ -34,6 +37,13 @@ ww_read_sensorlog = function(
       }
       r = r[, cn]
       colnames(r) = names(cn)
+
+      r = r %>%
+        dplyr::mutate(
+          lat = ifelse(abs(lat) < 0.00001, NA_real_, lat),
+          lon = ifelse(abs(lon) < 0.00001, NA_real_, lon)
+        )
+
       r
     }, .id = "file")
 
