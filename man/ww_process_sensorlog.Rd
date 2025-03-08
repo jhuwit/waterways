@@ -11,10 +11,12 @@ ww_process_sensorlog(
   lat = NULL,
   lon = NULL,
   dist_fun = geosphere::distVincentyEllipsoid,
-  expected_timezone = "America/New_York"
+  expected_timezone = NULL,
+  check_data = TRUE,
+  remove_cols = c("file", "index")
 )
 
-ww_check_data(data)
+ww_check_data(data, remove_cols = c("file", "index"))
 
 ww_calculate_distance(
   data,
@@ -35,8 +37,14 @@ Set to \code{NULL} if distnace not to be run.}
 \item{dist_fun}{Distance function to pass to \link[geosphere:distm]{geosphere::distm}}
 
 \item{expected_timezone}{Expected Timezone based on the latitude/longitude
-of the data based on the lat/lon values from SensorLog.  Set to
+of the data based on the lat/lon values from SensorLog (
+e.g. \code{"America/New_York"}).  Set to
 \code{NULL} if not to be checked.}
+
+\item{check_data}{should \link{ww_check_data} be run?}
+
+\item{remove_cols}{columns to remove from duplicate checking in
+\link{ww_check_data}.  Default is \code{c("file", "index")}}
 }
 \value{
 A \code{data.frame} of transformed data

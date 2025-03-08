@@ -10,7 +10,8 @@ ww_process_time(data, expected_timezone = "America/New_York")
 \item{data}{A \code{data.frame} from \link{ww_read_sensorlog}}
 
 \item{expected_timezone}{Expected Timezone based on the latitude/longitude
-of the data based on the lat/lon values from SensorLog.  Set to
+of the data based on the lat/lon values from SensorLog (
+e.g. \code{"America/New_York"}).  Set to
 \code{NULL} if not to be checked.}
 }
 \value{

@@ -7,7 +7,6 @@
 #' the file
 #' @param verbose print diagnostic messages.  Either logical or integer, where
 #' higher values are higher levels of verbosity.
-#'
 #' @return A `data.frame` of data
 #' @export
 ww_read_sensorlog = function(
@@ -49,7 +48,6 @@ ww_read_sensorlog = function(
 
       r
     }, .id = "file", .progress = verbose > 0)
-
 
   data
 }

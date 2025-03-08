@@ -7,8 +7,12 @@
 #' Set to `NULL` if distnace not to be run.
 #' @param dist_fun Distance function to pass to [geosphere::distm]
 #' @param expected_timezone Expected Timezone based on the latitude/longitude
-#' of the data based on the lat/lon values from SensorLog.  Set to
+#' of the data based on the lat/lon values from SensorLog (
+#' e.g. `"America/New_York"`).  Set to
 #' `NULL` if not to be checked.
+#' @param check_data should [ww_check_data] be run?
+#' @param remove_cols columns to remove from duplicate checking in
+#' [ww_check_data].  Default is `c("file", "index")`
 #'
 #' @return A `data.frame` of transformed data
 #' @export
@@ -19,9 +23,13 @@ ww_process_sensorlog = function(
     lat = NULL,
     lon = NULL,
     dist_fun = geosphere::distVincentyEllipsoid,
-    expected_timezone = "America/New_York"
+    expected_timezone = NULL,
+    check_data = TRUE,
+    remove_cols = c("file", "index")
 ) {
-  data = ww_check_data(data)
+  if (check_data) {
+    data = ww_check_data(data, remove_cols = remove_cols)
+  }
   if (!is.null(lat) & !is.null(lon)) {
     data = ww_calculate_distance(data,
                                  lat = lat,
@@ -34,11 +42,12 @@ ww_process_sensorlog = function(
 
 #' @rdname ww_process_sensorlog
 #' @export
-ww_check_data = function(data) {
+ww_check_data = function(data,
+                         remove_cols = c("file", "index")) {
   file = index = NULL
   rm(list = c("file", "index"))
   # make sure there are no duplicated times
-  dupes = janitor::get_dupes(data, -file, -index)
+  dupes = janitor::get_dupes(data, -dplyr::any_of(remove_cols))
   stopifnot(anyDuplicated(data$time) == 0)
   data
 }
