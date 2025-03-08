@@ -36,6 +36,7 @@ ww_read_sensorlog = function(
         msg = paste("Missing columns from ", x, ": ",
                     paste(missing_cols, collapse = ", ")
         )
+        message(msg)
         warning(msg)
         for (icol in intersect(missing_cols, make_na_cols)) {
           r[[icol]] = NA_real_

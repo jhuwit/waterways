@@ -1,101 +1,78 @@
-# zip_file = "data/SensorLog/OCEANS_011_BL/SensorLogFiles_OCEANS_011_BL_221208_11-55-16.zip"
-
-
-#' Read SensorLog Data
+#' Process SensorLog Daa
 #'
-#' @param files A character vector of SensorLog files, usually from unzipping
-#' the file
-#' @param verbose print diagnostic messages.  Either logical or integer, where
-#' higher values are higher levels of verbosity.
-#' @return A `data.frame` of data
+#' @param data A `data.frame` from [ww_read_sensorlog]
+#' @param lat Latitude of central point (e.g. home) to calculate distance.
+#' Set to `NULL` if distnace not to be run.
+#' @param lon Longitude of central point (e.g. home) to calculate distance
+#' Set to `NULL` if distnace not to be run.
+#' @param dist_fun Distance function to pass to [geosphere::distm]
+#' @param expected_timezone Expected Timezone based on the latitude/longitude
+#' of the data based on the lat/lon values from SensorLog (
+#' e.g. `"America/New_York"`).  Set to
+#' `NULL` if not to be checked.
+#' @param check_data should [ww_check_data] be run?
+#' @param remove_cols columns to remove from duplicate checking in
+#' [ww_check_data].  Default is `c("file", "index")`
+#'
+#' @return A `data.frame` of transformed data
+#' @note This calls [ww_check_data], [ww_calculate_distance], and
+#' [ww_process_time]
+#' @param ... additional arguments to pass to [ww_process_time]
 #' @export
-ww_read_sensorlog = function(
-    files,
-    verbose = FALSE
+#'
+ww_process_sensorlog = function(
+    data,
+    lat = NULL,
+    lon = NULL,
+    dist_fun = geosphere::distVincentyEllipsoid,
+    expected_timezone = NULL,
+    check_data = TRUE,
+    remove_cols = c("file", "index"),
+    ...
 ) {
-  lat = lon = NULL
-  rm(list = c("lat", "lon"))
+  if (check_data) {
+    data = ww_check_data(data, remove_cols = remove_cols)
+  }
+  if (!is.null(lat) & !is.null(lon)) {
+    data = ww_calculate_distance(data,
+                                 lat = lat,
+                                 lon = lon,
+                                 dist_fun = dist_fun)
+  }
+  data = ww_process_time(data, expected_timezone = expected_timezone,
+                         ...)
+  data
+}
 
-  names(files) = files
-
-  cn = ww_sensorlog_csv_colnames_mapping()
-  spec = ww_csv_spec()
-
-  files = sapply(files, rewrite_csv, verbose = verbose > 1)
-  data =
-    purrr::map_df(files, function(x) {
-      r = read_csv_safe(x, progress = FALSE, col_types = spec)
-      # r = readr::read_csv(x, col_types = spec)
-      if (nrow(r) == 0) {
-        return(NULL)
-      }
-      make_na_cols = c("locationSpeedAccuracy(m/s)")
-      missing_cols = setdiff(cn, colnames(r))
-      if (length(missing_cols) > 0) {
-        missing_cols = unique(missing_cols)
-        msg = paste("Missing columns from ", x, ": ",
-                    paste(missing_cols, collapse = ", ")
-        )
-        message(msg)
-        warning(msg)
-        for (icol in intersect(missing_cols, make_na_cols)) {
-          r[[icol]] = NA_real_
-        }
-      }
-      r = r[, cn]
-      colnames(r) = names(cn)
-
-      r = r %>%
-        dplyr::mutate(
-          lat = ifelse(abs(lat) < 0.00001, NA_real_, lat),
-          lon = ifelse(abs(lon) < 0.00001, NA_real_, lon)
-        )
-
-      r
-    }, .id = "file", .progress = verbose > 0)
-
+#' @rdname ww_process_sensorlog
+#' @export
+ww_check_data = function(data,
+                         remove_cols = c("file", "index")) {
+  file = index = NULL
+  rm(list = c("file", "index"))
+  # make sure there are no duplicated times
+  dupes = janitor::get_dupes(data, -dplyr::any_of(remove_cols))
+  stopifnot(anyDuplicated(data$time) == 0)
   data
 }
 
 
 
-
-
-
+#' @rdname ww_process_sensorlog
 #' @export
-#' @rdname ww_read_sensorlog
-ww_csv_spec = function() {
-  spec = readr::cols(
-    `loggingTime(txt)` = readr::col_character(),
-    `loggingSample(N)` = readr::col_double(),
-    `locationTimestamp_since1970(s)` = readr::col_double(),
-    `locationLatitude(WGS84)` = readr::col_double(),
-    `locationLongitude(WGS84)` = readr::col_double(),
-    `locationAltitude(m)` = readr::col_double(),
-    `locationSpeed(m/s)` = readr::col_double(),
-    `locationSpeedAccuracy(m/s)` = readr::col_double(),
-    `accelerometerAccelerationX(G)` = readr::col_double(),
-    `accelerometerAccelerationY(G)` = readr::col_double(),
-    `accelerometerAccelerationZ(G)` = readr::col_double(),
-    .default = readr::col_character()
+ww_calculate_distance = function(
+    data,
+    lat,
+    lon,
+    dist_fun = geosphere::distVincentyEllipsoid) {
+  stopifnot(!is.null(lat), !is.null(lon))
+  distance = geosphere::distm(
+    as.matrix(data[, c("lon", "lat")]),
+    c(lon, lat),
+    fun = dist_fun
   )
-  spec
-}
 
-#' @export
-#' @rdname ww_read_sensorlog
-ww_sensorlog_csv_colnames_mapping = function() {
-  cn =  c(
-    time = "loggingTime(txt)",
-    index = "loggingSample(N)",
-    timestamp = "locationTimestamp_since1970(s)",
-    lat = "locationLatitude(WGS84)",
-    lon = "locationLongitude(WGS84)",
-    altitude = "locationAltitude(m)",
-    speed = "locationSpeed(m/s)",
-    speed_accuracy = "locationSpeedAccuracy(m/s)",
-    accel_X = "accelerometerAccelerationX(G)",
-    accel_Y = "accelerometerAccelerationY(G)",
-    accel_Z = "accelerometerAccelerationZ(G)")
-  cn
+  stopifnot(is.matrix(distance) && ncol(distance) == 1)
+  data$distance = distance[, 1]
+  data
 }
