@@ -13,7 +13,8 @@ ww_process_sensorlog(
   dist_fun = geosphere::distVincentyEllipsoid,
   expected_timezone = NULL,
   check_data = TRUE,
-  remove_cols = c("file", "index")
+  remove_cols = c("file", "index"),
+  ...
 )
 
 ww_check_data(data, remove_cols = c("file", "index"))
@@ -45,10 +46,16 @@ e.g. \code{"America/New_York"}).  Set to
 
 \item{remove_cols}{columns to remove from duplicate checking in
 \link{ww_check_data}.  Default is \code{c("file", "index")}}
+
+\item{...}{additional arguments to pass to \link{ww_process_time}}
 }
 \value{
 A \code{data.frame} of transformed data
 }
 \description{
 Process SensorLog Daa
+}
+\note{
+This calls \link{ww_check_data}, \link{ww_calculate_distance}, and
+\link{ww_process_time}
 }

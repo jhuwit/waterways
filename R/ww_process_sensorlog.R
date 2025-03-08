@@ -15,9 +15,11 @@
 #' [ww_check_data].  Default is `c("file", "index")`
 #'
 #' @return A `data.frame` of transformed data
+#' @note This calls [ww_check_data], [ww_calculate_distance], and
+#' [ww_process_time]
+#' @param ... additional arguments to pass to [ww_process_time]
 #' @export
 #'
-#' @examples
 ww_process_sensorlog = function(
     data,
     lat = NULL,
@@ -25,7 +27,8 @@ ww_process_sensorlog = function(
     dist_fun = geosphere::distVincentyEllipsoid,
     expected_timezone = NULL,
     check_data = TRUE,
-    remove_cols = c("file", "index")
+    remove_cols = c("file", "index"),
+    ...
 ) {
   if (check_data) {
     data = ww_check_data(data, remove_cols = remove_cols)
@@ -36,7 +39,8 @@ ww_process_sensorlog = function(
                                  lon = lon,
                                  dist_fun = dist_fun)
   }
-  data = ww_process_time(data, expected_timezone = expected_timezone)
+  data = ww_process_time(data, expected_timezone = expected_timezone,
+                         ...)
   data
 }
 

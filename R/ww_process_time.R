@@ -2,17 +2,23 @@
 #' Process the Time data from SensorLog and Compare to an Expected Timezone
 #'
 #' @inheritParams ww_process_sensorlog
+#' @param ... additional arguments to pass to [lutz::tz_lookup_coords()]
+
+
 #'
 #' @return A `data.frame`
 #' @export
-ww_process_time = function(data, expected_timezone = "America/New_York") {
+ww_process_time = function(data,
+                           expected_timezone = "America/New_York",
+                           ...) {
 
   time = timestamp = NULL
   rm(list = c("time", "timestamp"))
 
   data$timezone_estimated = lutz::tz_lookup_coords(
     lat = data$lat,
-    lon = data$lon
+    lon = data$lon,
+    ...
   )
   if (!is.null(expected_timezone)) {
     uest = sort(table(data$timezone_estimated), decreasing = TRUE)
