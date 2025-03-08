@@ -13,8 +13,8 @@ ww_read_sensorlog = function(
     files,
     verbose = FALSE
 ) {
-  lat = lon = NULL
-  rm(list = c("lat", "lon"))
+  lon_zero = lat_zero = lat = lon = NULL
+  rm(list = c("lat", "lon", "lat_zero", "lon_zero"))
 
   names(files) = files
 
@@ -34,7 +34,7 @@ ww_read_sensorlog = function(
       missing_cols = setdiff(cn, colnames(r))
       if (length(missing_cols) > 0) {
         missing_cols = unique(missing_cols)
-        msg = paste("Missing columns from ", nx, ": ",
+        msg = paste0("Missing expected columns from ", nx, ": ",
                     paste(missing_cols, collapse = ", ")
         )
         message(msg)
@@ -46,10 +46,22 @@ ww_read_sensorlog = function(
       r = r[, cn]
       colnames(r) = names(cn)
 
+      # r = r %>%
+      #   dplyr::mutate(
+      #     lat = ifelse(abs(lat) < 0.00001, NA_real_, lat),
+      #     lon = ifelse(abs(lon) < 0.00001, NA_real_, lon)
+      #   )
+
+      # should add lat_zero in there
       r = r %>%
         dplyr::mutate(
-          lat = ifelse(abs(lat) < 0.00001, NA_real_, lat),
-          lon = ifelse(abs(lon) < 0.00001, NA_real_, lon)
+          lat_zero = abs(lat) < 0.00001,
+          lon_zero = abs(lon) < 0.00001
+        )
+      r = r %>%
+        dplyr::mutate(
+          lat = ifelse(lat_zero, NA_real_, lat),
+          lon = ifelse(lon_zero, NA_real_, lon)
         )
 
       r
