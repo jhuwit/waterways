@@ -1,0 +1,56 @@
+---
+title: "Analyze SensorLog Data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Analyze SensorLog Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(waterways)
+```
+
+```{r process_sensorlog, eval = FALSE}
+data = ww_read_sensorlog(files)
+
+
+data = data %>%
+  mutate(
+    id = basename(dirname(file)),
+    id = sub("(OCEANS_\\d{3}).*", "\\1", id)
+  )
+oceans_id = unique(data$id)
+data$id = NULL
+stopifnot(length(oceans_id) == 1)
+if (oceans_id == "OCEANS_006") {
+  # determine number of duplicated times
+  n_duplicated_time = sum(duplicated(data$time))
+  stopifnot(n_duplicated_time == 1)
+  dupes = janitor::get_dupes(data, time)
+  # make sure it's the same file
+  stopifnot(all(dupes$file == dupes$file[1]))
+  
+  data = data %>%
+    group_by(time) %>%
+    summarise(
+      file = file[1],
+      index = min(index),
+      across(-any_of(c("file", "index")), mean)
+    )
+}
+
+data = ww_process_sensorlog(
+  data,
+  lat = lat,
+  lon = lon,
+  dist_fun = geosphere::distVincentyEllipsoid,
+  expected_timezone = "America/New_York",
+  check_data = TRUE,
+  remove_cols = c("file", "index", "id"),
+  tz = "GMT")
+```

@@ -32,7 +32,11 @@ ww_read_sensorlog = function(
       make_na_cols = c("locationSpeedAccuracy(m/s)")
       missing_cols = setdiff(cn, colnames(r))
       if (length(missing_cols) > 0) {
-        print(paste(missing_cols), collapse = ", ")
+        missing_cols = unique(missing_cols)
+        msg = paste("Missing columns from ", x, ": ",
+                    paste(missing_cols, collapse = ", ")
+        )
+        warning(msg)
         for (icol in intersect(missing_cols, make_na_cols)) {
           r[[icol]] = NA_real_
         }

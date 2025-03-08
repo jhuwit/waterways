@@ -7,9 +7,12 @@
 
 #'
 #' @return A `data.frame`
+#' @param tz timezone to project the data into.  Keeping as `GMT` to agree
+#' with ActiGraph, passed to [lubridate::as_datetime].
 #' @export
 ww_process_time = function(data,
                            expected_timezone = "America/New_York",
+                           tz = "GMT",
                            ...) {
 
   time = timestamp = NULL
@@ -39,7 +42,7 @@ ww_process_time = function(data,
   data = data %>%
     dplyr::mutate(
       # use GMT to agree with ActiGraph
-      time = as_datetime_safe(time, tz = "GMT"),
+      time = as_datetime_safe(time, tz = tz),
       timestamp = as_datetime_safe(timestamp)
     )
   stopifnot(anyDuplicated(data$time) == 0)
