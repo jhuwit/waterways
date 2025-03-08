@@ -23,7 +23,8 @@ ww_read_sensorlog = function(
 
   files = sapply(files, rewrite_csv, verbose = verbose > 1)
   data =
-    purrr::map_df(files, function(x) {
+    purrr::map_df(names(files), function(nx) {
+      x = files[[nx]]
       r = read_csv_safe(x, progress = FALSE, col_types = spec)
       # r = readr::read_csv(x, col_types = spec)
       if (nrow(r) == 0) {
@@ -33,7 +34,7 @@ ww_read_sensorlog = function(
       missing_cols = setdiff(cn, colnames(r))
       if (length(missing_cols) > 0) {
         missing_cols = unique(missing_cols)
-        msg = paste("Missing columns from ", x, ": ",
+        msg = paste("Missing columns from ", nx, ": ",
                     paste(missing_cols, collapse = ", ")
         )
         message(msg)
