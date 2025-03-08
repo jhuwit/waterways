@@ -19,7 +19,7 @@ ww_read_sensorlog = function(
 
   names(files) = files
 
-  cn = ww_csv_colnames_mapping()
+  cn = ww_sensorlog_csv_colnames_mapping()
   spec = ww_csv_spec()
 
   files = sapply(files, rewrite_csv, verbose = verbose > 1)
@@ -81,7 +81,7 @@ ww_csv_spec = function() {
 
 #' @export
 #' @rdname ww_read_sensorlog
-ww_csv_colnames_mapping = function() {
+ww_sensorlog_csv_colnames_mapping = function() {
   cn =  c(
     time = "loggingTime(txt)",
     index = "loggingSample(N)",
