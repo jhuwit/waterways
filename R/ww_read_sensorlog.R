@@ -5,11 +5,14 @@
 #'
 #' @param files A character vector of SensorLog files, usually from unzipping
 #' the file
+#' @param verbose print diagnostic messages.  Either logical or integer, where
+#' higher values are higher levels of verbosity.
 #'
 #' @return A `data.frame` of data
 #' @export
 ww_read_sensorlog = function(
-    files
+    files,
+    verbose = FALSE
 ) {
   lat = lon = NULL
   rm(list = c("lat", "lon"))
@@ -19,7 +22,7 @@ ww_read_sensorlog = function(
   cn = ww_csv_colnames_mapping()
   spec = ww_csv_spec()
 
-  files = sapply(files, rewrite_csv, verbose = FALSE)
+  files = sapply(files, rewrite_csv, verbose = verbose > 1)
   data =
     purrr::map_df(files, function(x) {
       r = read_csv_safe(x, progress = FALSE, col_types = spec)
@@ -45,7 +48,7 @@ ww_read_sensorlog = function(
         )
 
       r
-    }, .id = "file")
+    }, .id = "file", .progress = verbose > 0)
 
 
   data

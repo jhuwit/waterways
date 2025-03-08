@@ -6,7 +6,7 @@
 \alias{ww_csv_colnames_mapping}
 \title{Read SensorLog Data}
 \usage{
-ww_read_sensorlog(files)
+ww_read_sensorlog(files, verbose = FALSE)
 
 ww_csv_spec()
 
@@ -15,6 +15,9 @@ ww_csv_colnames_mapping()
 \arguments{
 \item{files}{A character vector of SensorLog files, usually from unzipping
 the file}
+
+\item{verbose}{print diagnostic messages.  Either logical or integer, where
+higher values are higher levels of verbosity.}
 }
 \value{
 A \code{data.frame} of data
