@@ -1,5 +1,9 @@
 # zip_file = "data/SensorLog/OCEANS_011_BL/SensorLogFiles_OCEANS_011_BL_221208_11-55-16.zip"
 
+is_zip_file = function(file) {
+  ext = tolower(tools::file_ext(file))
+  ext == "zip"
+}
 
 #' Read SensorLog Data
 #'
@@ -7,21 +11,38 @@
 #' the file
 #' @param verbose print diagnostic messages.  Either logical or integer, where
 #' higher values are higher levels of verbosity.
+#' @param robust if `TRUE` then [rewrite_sensorlog_csv] is run on the data
+#' to try to fix any shifts with the data.
 #' @return A `data.frame` of data
 #' @export
 ww_read_sensorlog = function(
     files,
-    verbose = FALSE
+    verbose = FALSE,
+    robust = FALSE
 ) {
-  lon_zero = lat_zero = lat = lon = NULL
-  rm(list = c("lat", "lon", "lat_zero", "lon_zero"))
+  if (any(is_zip_file(files))) {
+    if (!all(is_zip_file(files))) {
+      stop(paste0("ww_read_sensorlog works with only zip files or a vector of ",
+                  "csv files"))
+    }
+    orig_file = files
+    files = lapply(files, function(r) {
+      tfile = tempfile()
+      utils::unzip(r, exdir = tfile)
+    })
+    files = unlist(files)
+  }
+  file = lon_zero = lat_zero = lat = lon = NULL
+  rm(list = c("lat", "lon", "lat_zero", "lon_zero", "file"))
 
   names(files) = files
 
   cn = ww_sensorlog_csv_colnames_mapping()
   spec = ww_csv_spec()
 
-  files = sapply(files, rewrite_csv, verbose = verbose > 1)
+  if (robust) {
+    files = sapply(files, rewrite_sensorlog_csv, verbose = verbose > 1)
+  }
   data =
     purrr::map_df(names(files), function(nx) {
       x = files[[nx]]
@@ -35,7 +56,7 @@ ww_read_sensorlog = function(
       if (length(missing_cols) > 0) {
         missing_cols = unique(missing_cols)
         msg = paste0("Missing expected columns from ", nx, ": ",
-                    paste(missing_cols, collapse = ", ")
+                     paste(missing_cols, collapse = ", ")
         )
         message(msg)
         warning(msg)
@@ -63,10 +84,16 @@ ww_read_sensorlog = function(
           lat = ifelse(lat_zero, NA_real_, lat),
           lon = ifelse(lon_zero, NA_real_, lon)
         )
+      r = r %>%
+        dplyr::mutate(
+          file = nx
+        )
 
       r
-    }, .id = "file", .progress = verbose > 0)
+    }, .progress = verbose > 0)
 
+  data = data %>%
+    dplyr::select(file, dplyr::everything())
   data
 }
 

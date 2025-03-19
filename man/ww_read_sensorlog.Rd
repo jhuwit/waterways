@@ -6,7 +6,7 @@
 \alias{ww_sensorlog_csv_colnames_mapping}
 \title{Read SensorLog Data}
 \usage{
-ww_read_sensorlog(files, verbose = FALSE)
+ww_read_sensorlog(files, verbose = FALSE, robust = FALSE)
 
 ww_csv_spec()
 
@@ -18,6 +18,9 @@ the file}
 
 \item{verbose}{print diagnostic messages.  Either logical or integer, where
 higher values are higher levels of verbosity.}
+
+\item{robust}{if \code{TRUE} then \link{rewrite_sensorlog_csv} is run on the data
+to try to fix any shifts with the data.}
 }
 \value{
 A \code{data.frame} of data

@@ -6,7 +6,7 @@
 #'
 #' @return A file path to the new CSV
 #' @export
-rewrite_csv = function(
+rewrite_sensorlog_csv = function(
     file,
     outfile = tempfile(fileext = ".csv"),
     verbose = FALSE
@@ -26,6 +26,7 @@ rewrite_csv = function(
   if (length(ind) > 0) {
     stopifnot(ind2 == (ind+1))
   }
+
   # fix for oceans
   bat_ind = which(cn ==   "batteryTimeStamp_since1970(s)")
   bat_ind_r = which(cn ==  "batteryState(R)")
@@ -33,7 +34,8 @@ rewrite_csv = function(
   if (length(bat_ind) > 0) {
     stopifnot(bat_ind_z == (bat_ind+2))
     stopifnot(bat_ind_r == (bat_ind+1))
-    stopifnot(bat_ind_z == length(cn))
+    stopifnot(bat_ind_z == length(cn) ||
+                bat_ind_z == (length(cn) - 1) )
   }
 
   # split the data in ,
