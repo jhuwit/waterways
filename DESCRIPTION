@@ -29,5 +29,7 @@ Suggests:
     rmarkdown,
     SummarizedActigraphy,
     tidygeocoder
+Remotes:
+  muschellij2/SummarizedActigraphy
 VignetteBuilder: knitr
 URL: https://jhuwit.github.io/waterways/
