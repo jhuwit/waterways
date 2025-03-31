@@ -5,6 +5,43 @@ is_zip_file = function(file) {
   ext == "zip"
 }
 
+ww_extract_files = function(files) {
+  index = NULL
+  rm(list = c("index"))
+  if (any(is_zip_file(files))) {
+    if (!all(is_zip_file(files))) {
+      stop(paste0("ww_read_sensorlog works with only zip files or a vector of ",
+                  "csv files"))
+    }
+    orig_file = files
+    files = lapply(files, function(r) {
+      tfile = tempfile()
+      paths = utils::unzip(r, list = TRUE)
+      paths$basename = basename(paths$Name)
+      out = utils::unzip(r, exdir = tfile)
+      out_df = dplyr::tibble(basename = basename(out),
+                             filename = out,
+                             index = 1:length(out))
+      paths = paths %>%
+        dplyr::right_join(out_df, by = "basename")
+      paths = paths %>% dplyr::arrange(index)
+      names(out) = paths$Name
+      out
+    })
+    files = unlist(files)
+  } else {
+    names(files) = files
+  }
+
+  n = names(files)
+  replace = n %in% "" | is.na(n)
+  n[replace] = files[replace]
+  names(files) = n
+
+  files
+}
+
+
 #' Read SensorLog Data
 #'
 #' @param files A character vector of SensorLog files, usually from unzipping
@@ -15,6 +52,13 @@ is_zip_file = function(file) {
 #' to try to fix any shifts with the data.
 #' @return A `data.frame` of data
 #' @export
+#' @examples
+#' file = system.file(
+#'   "extdata", "SensorLogFiles_my_iOS_device_250311_14-55-58.zip",
+#'   package = "waterways")
+#' df = ww_read_sensorlog(file)
+#' head(df)
+#' result = ww_process_sensorlog(df, check_data = FALSE)
 ww_read_sensorlog = function(
     files,
     verbose = FALSE,

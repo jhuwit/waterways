@@ -1,56 +1,143 @@
 ---
-title: "Analyze SensorLog Data"
+title: "Analysis of SensorLog Data"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Analyze SensorLog Data}
+  %\VignetteIndexEntry{Analysis of SensorLog Data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+library(dplyr)
 library(waterways)
+library(SummarizedActigraphy)
+library(read.gt3x)
 ```
 
-```{r process_sensorlog, eval = FALSE}
-data = ww_read_sensorlog(files)
-
-
-data = data %>%
-  mutate(
-    id = basename(dirname(file)),
-    id = sub("(OCEANS_\\d{3}).*", "\\1", id)
-  )
-oceans_id = unique(data$id)
-data$id = NULL
-stopifnot(length(oceans_id) == 1)
-if (oceans_id == "OCEANS_006") {
-  # determine number of duplicated times
-  n_duplicated_time = sum(duplicated(data$time))
-  stopifnot(n_duplicated_time == 1)
-  dupes = janitor::get_dupes(data, time)
-  # make sure it's the same file
-  stopifnot(all(dupes$file == dupes$file[1]))
   
-  data = data %>%
-    group_by(time) %>%
-    summarise(
-      file = file[1],
-      index = min(index),
-      across(-any_of(c("file", "index")), mean)
-    )
-}
-
-data = ww_process_sensorlog(
-  data,
-  lat = lat,
-  lon = lon,
-  dist_fun = geosphere::distVincentyEllipsoid,
-  expected_timezone = "America/New_York",
-  check_data = TRUE,
-  remove_cols = c("file", "index", "id"),
-  tz = "GMT")
+# Introduction
+In this vignette, we will go through the steps on how to analyze SensorLog data.  We will go through the steps of reading in the data, checking for potential duplicates of timestamps, calculating distance metrics from a fixed point (commonly participant home), and creating daily summaries.  
+  
+We will also integrate ActiGraph data to show activity at different distances.
+  
+# Methods
+## Data
+The data used is example data embedded in the waterways package. It is a single participant for approximately two hours worth of GPS and activity data. The SensorLog data is stored in a zip file and contains a single CSV file. The data is stored in the `extdata` folder of the package.  We can get the path of the file on each user's machines using `system.file` and the package name:
+  
+```{r sensorlog_file}
+library(waterways)
+file = system.file(
+"extdata", "SensorLogFiles_my_iOS_device_250311_14-55-58.zip",
+package = "waterways")
+file
 ```
+
+### Reading in the data
+The data is read in using the `ww_read_sensorlog` function:
+
+```{r read_sensorlog}
+library(dplyr)
+df = ww_read_sensorlog(file, robust = FALSE)
+df = df %>% select(-file) # we don't need to see which file this came from
+head(df)
+```
+
+The option `robust` will run `rewrite_sensorlog_csv` is run on the data.  The `rewrite_sensorlog_csv` attempts to fix any shifts with the data, which have been seen due to a bug in the iOS app.  The option default is `FALSE` because this can take a much longer time to read in the data due to reading and writing the data back out to a temporary file. This function will also flag any values of latitude and longitude that are 0 (absolute value $< 0.00001$).  This flag is created because the iOS app will sometimes record 0 for latitude and longitude when the GPS signal is lost. 
+
+We see that the data has the following columns, which are renamed from the original data.  
+```{r}
+colnames(df)
+```
+The mapping from the new column names from the original column names can be seen using `ww_sensorlog_csv_colnames_mapping`:
+```{r}
+ww_sensorlog_csv_colnames_mapping()
+```
+
+
+### Processing the data
+The data is then processed using the `ww_process_sensorlog` function. This function (currently) will:
+
+1. Check the data for duplicated data using `ww_check_data`.
+2. Calculate distance from a central point if provided using `ww_calculate_distance`
+3. Process the timing data using `ww_process_time`, including checking for duplicate times.  This function will also determine if the data is in the correct timezone by estimating the timezone expected (in the `expected_timezone` field, set to `America/New_York`) based the GPS coordinates, using the `lutz::tz_lookup_coords` function.  If this check is not desired, set `expected_timezone = NULL`:
+
+```{r process_sensorlog_fail, error=TRUE}
+ww_process_sensorlog(df)
+```
+
+As the error indicates, there are some duplicate times in this file. We can look at those specific duplicate times and see that even to 3 digits for milliseconds, there are multiple measurements:
+
+```{r}
+df %>% 
+  add_count(time) %>% 
+  filter(n > 1) %>% 
+  select(time, lat, lon, starts_with("accel"))
+```
+
+Thus, we do not want to ensure no duplicated times, so we will set `check_data` to be `FALSE`:
+
+```{r process_sensorlog}
+df = ww_process_sensorlog(df, check_data = FALSE)
+df
+```
+
+The data times will be projected into the `GMT` timezone to agree with the output from ActiGraph and `read.gt3x::read.gt3x`. **NOTE:** this shifts times from the original timezone.  For example, if the data was at "2025-03-25 14:14:00" with a timezone of `-04:00` then the data will be in the `GMT` timezone, but the printed time will be "2025-03-25 18:14:00 GMT".  You can set the timezone to the correct timezone using `lubridate::with_tz` or `lubridate::force_tz` (they have different behavior).
+
+You can also pass in the `tz = "EST"` argument to `ww_process_sensorlog`, which is passed to `ww_process_time`.  An additional column of `char_time` is added so that the original character values fo the time are retained so that users can check any timezone conversions, as they can lead to issues with merging data, determining windows (e.g. wake), or other time-based analyses.
+
+```{r}
+df %>% 
+  select(time, char_time) %>% 
+  head()
+```
+
+
+
+### Calculating distance
+We did not pass in the latitude and longitude of a fixed point to calculate distance for the processing function, but we could have. We can also calculate the distance separately using the function `ww_calculate_distance`.  First, we need to get the latitude and longitude of the fixed point.  We can use the `tidygeocoder` package to get the latitude and longitude of a fixed point.  We will use the address `615 N Wolfe St, Baltimore MD` for the Johns Hopkins Bloomberg School of Public Health where this data was collected, using the [Census Geocoder](https://geocoding.geo.census.gov/geocoder/) for free:
+
+```{r geo_show, eval = FALSE}
+geo = tidygeocoder::geo("615 N Wolfe St, Baltimore MD", method = "census")
+print(geo)
+lat = geo$lat
+lon = geo$long
+```
+
+```{r geo_run, echo = FALSE}
+geo = structure(list(
+  address = "615 N Wolfe St, Baltimore MD", lat = 39.297622492942, 
+  long = -76.590753361728), class = c("tbl_df", "tbl", "data.frame"
+  ), row.names = c(NA, -1L))
+print(geo)
+lat = geo$lat
+lon = geo$long
+```
+
+We can then calculate the distance from this fixed point using the `ww_calculate_distance` function:
+
+```{r calc_distance}
+df = ww_calculate_distance(df,
+                           lat = lat,
+                           lon = lon)
+```
+
+This function uses the `geosphere::distm` function to calculate the distance in meters from the fixed point.  We can see the new columns that were added to the data.  
+
+
+
+```{r}
+df %>% 
+  select(time, char_time, lat_zero, lon_zero, distance)
+```
+
+## Summarizing the Data
+Now that we have the distance for each point in time, we can summarize the data.  In many cases, we do not need the data at a sub-second or second-level.  We can summarize the data at a daily level using the `ww_summarize_sensorlog` function.  This function will take the mean over a period of seconds, usually 60:
+
+```{r summarize_sensorlog}
+df_min = ww_summarize_sensorlog(df, seconds = 60L)
+```
+

@@ -17,6 +17,8 @@
 #' @return A `data.frame` of transformed data
 #' @note This calls [ww_check_data], [ww_calculate_distance], and
 #' [ww_process_time]
+#' @param verbose print diagnostic messages.  Either logical or integer, where
+#' higher values are higher levels of verbosity.
 #' @param ... additional arguments to pass to [ww_process_time]
 #' @export
 #'
@@ -28,6 +30,7 @@ ww_process_sensorlog = function(
     expected_timezone = NULL,
     check_data = TRUE,
     remove_cols = c("file", "index"),
+    verbose = FALSE,
     ...
 ) {
   if (check_data) {
@@ -39,7 +42,10 @@ ww_process_sensorlog = function(
                                  lon = lon,
                                  dist_fun = dist_fun)
   }
-  data = ww_process_time(data, expected_timezone = expected_timezone,
+  data = ww_process_time(data,
+                         expected_timezone = expected_timezone,
+                         check_data = check_data,
+                         verbose = verbose > 0,
                          ...)
   data
 }

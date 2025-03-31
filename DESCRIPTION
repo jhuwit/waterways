@@ -20,8 +20,10 @@ Imports:
     lutz,
     magrittr,
     purrr,
-    readr
+    readr,
+    tidyr
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    tidygeocoder
 VignetteBuilder: knitr

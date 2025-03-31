@@ -14,6 +14,7 @@ ww_process_sensorlog(
   expected_timezone = NULL,
   check_data = TRUE,
   remove_cols = c("file", "index"),
+  verbose = FALSE,
   ...
 )
 
@@ -46,6 +47,9 @@ e.g. \code{"America/New_York"}).  Set to
 
 \item{remove_cols}{columns to remove from duplicate checking in
 \link{ww_check_data}.  Default is \code{c("file", "index")}}
+
+\item{verbose}{print diagnostic messages.  Either logical or integer, where
+higher values are higher levels of verbosity.}
 
 \item{...}{additional arguments to pass to \link{ww_process_time}}
 }

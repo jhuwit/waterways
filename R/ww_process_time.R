@@ -9,10 +9,13 @@
 #' @return A `data.frame`
 #' @param tz timezone to project the data into.  Keeping as `GMT` to agree
 #' with ActiGraph, passed to [lubridate::as_datetime].
+#' @param check_data if `TRUE` any duplicates for time are checked for.
 #' @export
 ww_process_time = function(data,
                            expected_timezone = "America/New_York",
                            tz = "GMT",
+                           check_data = TRUE,
+                           verbose = FALSE,
                            ...) {
 
   time = timestamp = NULL
@@ -21,6 +24,7 @@ ww_process_time = function(data,
   data$timezone_estimated = lutz::tz_lookup_coords(
     lat = data$lat,
     lon = data$lon,
+    warn = verbose,
     ...
   )
   if (!is.null(expected_timezone)) {
@@ -45,6 +49,9 @@ ww_process_time = function(data,
       time = as_datetime_safe(time, tz = tz),
       timestamp = as_datetime_safe(timestamp)
     )
-  stopifnot(anyDuplicated(data$time) == 0)
+  if (check_data) {
+    stopifnot(anyDuplicated(data$time) == 0)
+    stopifnot(anyDuplicated(data$timestamp) == 0)
+  }
   data
 }

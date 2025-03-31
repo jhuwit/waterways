@@ -28,3 +28,11 @@ A \code{data.frame} of data
 \description{
 Read SensorLog Data
 }
+\examples{
+file = system.file(
+  "extdata", "SensorLogFiles_my_iOS_device_250311_14-55-58.zip",
+  package = "waterways")
+df = ww_read_sensorlog(file)
+head(df)
+result = ww_process_sensorlog(df, check_data = FALSE)
+}
