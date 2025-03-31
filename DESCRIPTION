@@ -24,7 +24,10 @@ Imports:
     rlang,
     tidyr
 Suggests: 
+    agcounts,
     knitr,
     rmarkdown,
+    SummarizedActigraphy,
     tidygeocoder
 VignetteBuilder: knitr
+URL: https://jhuwit.github.io/waterways/

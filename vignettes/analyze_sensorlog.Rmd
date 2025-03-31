@@ -16,6 +16,7 @@ library(dplyr)
 library(waterways)
 library(SummarizedActigraphy)
 library(read.gt3x)
+library(lubridate)
 ```
 
   
@@ -137,7 +138,76 @@ df %>%
 ## Summarizing the Data
 Now that we have the distance for each point in time, we can summarize the data.  In many cases, we do not need the data at a sub-second or second-level.  We can summarize the data at a daily level using the `ww_summarize_sensorlog` function.  This function will take the mean over a period of seconds, usually 60:
 
-```{r summarize_sensorlog}
-df_min = ww_summarize_sensorlog(df, seconds = 60L)
+```{r summarize_sensorlog_minute}
+df_min = ww_minute_sensorlog(df)
+head(df_min)
 ```
+
+
+```{r summarize_sensorlog}
+df_sum = ww_summarize_sensorlog(df)
+df_sum
+```
+
+
+
+### Reading in the GT3X data
+To also summarize the activity profile for different levels of proximity to a fixed point we will read in the GT 3X data.  This data was captured using an ActiGraph (Pensacola FL) GT9X device.  We can read in the data using the `read.gt3x` package.  The data is stored in the `extdata` folder of the package, similar to the SensorLog data.  The `imputeZeroes` option will put the acceleration as 0 for any rows that are missing, likely due to idle sleep mode.  The `asDataFrame` option will return the data as a data frame with the time (in GMT):
+
+```{r ag_read}
+file_gt3x = system.file("extdata", "TAS1H30182789_2025-03-11.gt3x", package = "waterways")
+ag = read.gt3x::read.gt3x(file_gt3x, imputeZeroes = TRUE, asDataFrame = TRUE)
+head(ag)
+```
+
+Note that the time is in GMT.  We can check the timezone of the data using the `lubridate::tz` function:
+```{r ag_tz}
+lubridate::tz(ag$time)
+```
+This is misleading, as is noted in `read.gt3x`:
+>  DateTimes are therefore represented as POSIXct format with the 'GMT' timezone attribute, which is false; the datetime actually represents local time.
+
+We can confirm this via the header:
+```{r}
+header = attributes(ag)$header
+header
+header$TimeZone
+```
+
+Thus, we will set the timezone to be `GMT` using the `lubridate::force_tz` function:
+
+
+```{r}
+ag$time = force_tz(with_tz(ag$time, "Etc/GMT-4"), "GMT")
+ag
+```
+
+
+
+```{r}
+ag = ag %>% 
+  mutate(idle = X == 0 & Y == 0 & Z == 0)
+ag %>% 
+  filter(idle)
+```
+
+
+In ActiLife, the ActiGraph software, values of zero for all axes are set to the last observation carried forward (LOCF).  The `SummarizedActigraphy::fix_zeros` will fill in these zero values:
+
+```{r}
+ag = SummarizedActigraphy::fix_zeros(ag)
+ag %>% 
+  filter(idle)
+```
+
+We can calculate a number of summary measures from the acceleration.  We will calculate ActiGraph Activity Counts using the `agcounts` package.  We will use the `epoch = 60` to calculate the counts in 60-second epochs.  We will also set the timezone to be `GMT` to match the SensorLog data:
+
+```{r calculate_counts}
+counts = agcounts::calculate_counts(ag, epoch = 60, tz = "GMT")
+counts %>% head()
+counts = counts %>% select(time, counts = Vector.Magnitude)
+```
+
+### Overlap with SensorLog data
+The SensorLog data used was a subset of the data from the ActiGraph data and multiple recordings were done. 
 

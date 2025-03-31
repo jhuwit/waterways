@@ -10,10 +10,11 @@ ww_summarize_sensorlog = function(data) {
   if (!assertthat::has_name(data, "time")) {
     stop("data must have a time column")
   }
+
+  data = ww_minute_sensorlog(data, seconds = 60L)
   if (!assertthat::has_name(data, "date")) {
     data = ww_separate_times(data)
   }
-  data = ww_minute_sensorlog(data, seconds = 60L)
   data = data %>%
     dplyr::group_by(date) %>%
     ww_summarize_distance_sensorlog() %>%
@@ -77,6 +78,8 @@ ww_minute_sensorlog = function(data, seconds = 60L) {
         dplyr::any_of(c("lat", "lon", "speed", "accel_X",
                         "accel_Y", "accel_Z", "distance")),
         mean),
+      is_within_home = all(is_within_home, na.rm = TRUE),
+      distance_traveled = sum(distance_traveled),
       vm = mean(vm),
       enmo = mean(enmo),
       lat_zero = all(lat_zero),
@@ -106,7 +109,7 @@ ww_summarize_distance_sensorlog = function(data) {
   n_distance_traveled = distance = sum_distance_traveled = NULL
   distance_traveled = mean_distance_traveled = max_distance = NULL
   rm(list = c("n_distance_traveled", "distance",
-              "sum_distance_traveled", "min_distance",
+              "sum_distance_traveled",
               "mean_distance_traveled", "max_distance",
               "distance_traveled")
   )
@@ -136,5 +139,5 @@ ww_summarize_distance_sensorlog = function(data) {
 
       max_distance = dplyr::if_else(is.infinite(max_distance), NA_real_, max_distance)
     )
-  data
+  daily
 }

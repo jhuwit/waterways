@@ -1,3 +1,4 @@
+Tomorrow morning
 1. Make function for walkability index
 2. Read in GT3X file for vignette
 3. Add in summarization in the sensorlog vignette
