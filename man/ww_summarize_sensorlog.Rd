@@ -3,17 +3,25 @@
 \name{ww_summarize_sensorlog}
 \alias{ww_summarize_sensorlog}
 \alias{ww_summarise_sensorlog}
+\alias{ww_minute_sensorlog}
+\alias{ww_summarize_distance_sensorlog}
 \title{Summarize SensorLog Data}
 \usage{
-ww_summarize_sensorlog(data, seconds = 60L)
+ww_summarize_sensorlog(data)
 
-ww_summarise_sensorlog(data, seconds = 60L)
+ww_summarise_sensorlog(data)
+
+ww_minute_sensorlog(data, seconds = 60L)
+
+ww_summarize_distance_sensorlog(data)
 }
 \arguments{
 \item{data}{\code{data.frame} of the data, output from \code{ww_process_sensorlog}}
 
-\item{seconds}{integer of the number of seconds to summarize the data,
-usually 1 minute}
+\item{seconds}{integer of the number of seconds to summarize the data
+for the "minute" level. Usually 1 minute/60 seconds.  For
+\code{ww_summarize_distance_sensorlog}, summarization is done depending on how the
+data is grouped.}
 }
 \value{
 The \code{data.frame} with the summarized data, by taking the

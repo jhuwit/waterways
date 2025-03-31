@@ -31,8 +31,8 @@ The data used is example data embedded in the waterways package. It is a single 
 ```{r sensorlog_file}
 library(waterways)
 file = system.file(
-"extdata", "SensorLogFiles_my_iOS_device_250311_14-55-58.zip",
-package = "waterways")
+  "extdata", "SensorLogFiles_my_iOS_device_250311_14-55-58.zip",
+  package = "waterways")
 file
 ```
 

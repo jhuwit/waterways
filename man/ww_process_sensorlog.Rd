@@ -24,6 +24,7 @@ ww_calculate_distance(
   data,
   lat,
   lon,
+  distance_cutoff = 180,
   dist_fun = geosphere::distVincentyEllipsoid
 )
 }
@@ -52,6 +53,9 @@ e.g. \code{"America/New_York"}).  Set to
 higher values are higher levels of verbosity.}
 
 \item{...}{additional arguments to pass to \link{ww_process_time}}
+
+\item{distance_cutoff}{Distance in meters to consider within home,
+in meters}
 }
 \value{
 A \code{data.frame} of transformed data

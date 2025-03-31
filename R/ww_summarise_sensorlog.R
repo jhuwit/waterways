@@ -1,16 +1,42 @@
 #' Summarize SensorLog Data
 #'
 #' @param data `data.frame` of the data, output from `ww_process_sensorlog`
-#' @param seconds integer of the number of seconds to summarize the data,
-#' usually 1 minute
 #'
 #' @returns The `data.frame` with the summarized data, by taking the
 #' mean of
+#' @import rlang
 #' @export
-#'
-#' @examples
-ww_summarize_sensorlog = function(data, seconds = 60L) {
+ww_summarize_sensorlog = function(data) {
+  if (!assertthat::has_name(data, "time")) {
+    stop("data must have a time column")
+  }
+  if (!assertthat::has_name(data, "date")) {
+    data = ww_separate_times(data)
+  }
+  data = ww_minute_sensorlog(data, seconds = 60L)
+  data = data %>%
+    dplyr::group_by(date) %>%
+    ww_summarize_distance_sensorlog() %>%
+    dplyr::ungroup()
 
+  data
+}
+
+#' @rdname ww_summarize_sensorlog
+#' @export
+ww_summarise_sensorlog = ww_summarize_sensorlog
+
+
+
+#' @rdname ww_summarize_sensorlog
+#' @param seconds integer of the number of seconds to summarize the data
+#' for the "minute" level. Usually 1 minute/60 seconds.  For
+#' `ww_summarize_distance_sensorlog`, summarization is done depending on how the
+#' data is grouped.
+#' @export
+ww_minute_sensorlog = function(data, seconds = 60L) {
+  enmo = vm = accel_X = accel_Y = accel_Z = lat = lon = NULL
+  rm(list = c("lat", "lon", "accel_X", "accel_Y", "accel_Z", "vm", "enmo"))
   assertthat::assert_that(
     is.numeric(seconds)
   )
@@ -27,6 +53,14 @@ ww_summarize_sensorlog = function(data, seconds = 60L) {
       dplyr::mutate(
         lon_zero = abs(lon) < 0.00001 | is.na(lon),
       )
+  }
+  for (icol in c("accel_X", "accel_Y", "accel_Z")) {
+    if (!assertthat::has_name(data, icol)) {
+      data = data %>%
+        dplyr::mutate(
+          !!icol := NA_real_
+        )
+    }
   }
 
   # summarising the data at a level
@@ -68,4 +102,39 @@ ww_summarize_sensorlog = function(data, seconds = 60L) {
 
 #' @rdname ww_summarize_sensorlog
 #' @export
-ww_summarise_sensorlog = ww_summarize_sensorlog
+ww_summarize_distance_sensorlog = function(data) {
+  n_distance_traveled = distance = sum_distance_traveled = NULL
+  distance_traveled = mean_distance_traveled = max_distance = NULL
+  rm(list = c("n_distance_traveled", "distance",
+              "sum_distance_traveled", "min_distance",
+              "mean_distance_traveled", "max_distance",
+              "distance_traveled")
+  )
+  daily = data %>%
+    dplyr::summarise(
+      n_minutes_with_distance = sum(!is.na(distance)),
+      sum_distance = sum(distance, na.rm = TRUE),
+      max_distance = max(distance, na.rm = TRUE),
+
+      sum_distance_traveled = sum(distance_traveled, na.rm = TRUE),
+      mean_distance_traveled = mean(distance_traveled, na.rm = TRUE),
+      n_distance_traveled = sum(!is.na(distance_traveled)),
+
+      time_within_home = sum(is_within_home, na.rm = TRUE),
+      time_outside_home = sum(!is_within_home, na.rm = TRUE),
+      time_missing_home = sum(is.na(is_within_home), na.rm = TRUE)
+    ) %>%
+    dplyr::ungroup()
+  daily = daily %>%
+    dplyr::mutate(
+      sum_distance_traveled = dplyr::if_else(
+        n_distance_traveled == 0,
+        NA_real_, sum_distance_traveled),
+      mean_distance_traveled = dplyr::if_else(
+        n_distance_traveled == 0,
+        NA_real_, mean_distance_traveled),
+
+      max_distance = dplyr::if_else(is.infinite(max_distance), NA_real_, max_distance)
+    )
+  data
+}

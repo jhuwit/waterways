@@ -1,0 +1,6 @@
+1. Make function for walkability index
+2. Read in GT3X file for vignette
+3. Add in summarization in the sensorlog vignette
+  - need ot figure out group_by if that's best strategy
+4. Try an OCEANS on the pipeline given by the vignette
+5. Make full pipeline wiht address input and sensorlog

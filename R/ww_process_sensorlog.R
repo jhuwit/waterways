@@ -65,11 +65,14 @@ ww_check_data = function(data,
 
 
 #' @rdname ww_process_sensorlog
+#' @param distance_cutoff Distance in meters to consider within home,
+#' in meters
 #' @export
 ww_calculate_distance = function(
     data,
     lat,
     lon,
+    distance_cutoff = 180,
     dist_fun = geosphere::distVincentyEllipsoid) {
   stopifnot(!is.null(lat), !is.null(lon))
   distance = geosphere::distm(
@@ -80,5 +83,20 @@ ww_calculate_distance = function(
 
   stopifnot(is.matrix(distance) && ncol(distance) == 1)
   data$distance = distance[, 1]
+
+  assertthat::assert_that(
+    is.numeric(distance_cutoff)
+  )
+  # just being overly cautious in case lat/lon passed in
+  # gets confused in mutate
+  lat = long = NULL
+  rm(list = c("lat", "lon"))
+  data = data %>%
+    # define within home as 180 meters or whatever cutoff
+    dplyr::mutate(
+      is_within_home = distance <= distance_cutoff,
+      # calculate distance traveled
+      distance_traveled = c(NA_real_, dist_fun(cbind(lon, lat))),
+    )
   data
 }
