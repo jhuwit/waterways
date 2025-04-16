@@ -24,8 +24,7 @@ for the "minute" level. Usually 1 minute/60 seconds.  For
 data is grouped.}
 }
 \value{
-The \code{data.frame} with the summarized data, by taking the
-mean of
+The \code{data.frame} with the summarized data for each date
 }
 \description{
 Summarize SensorLog Data

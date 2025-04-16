@@ -2,8 +2,7 @@
 #'
 #' @param data `data.frame` of the data, output from `ww_process_sensorlog`
 #'
-#' @returns The `data.frame` with the summarized data, by taking the
-#' mean of
+#' @returns The `data.frame` with the summarized data for each date
 #' @import rlang
 #' @export
 ww_summarize_sensorlog = function(data) {
@@ -38,9 +37,10 @@ ww_summarise_sensorlog = ww_summarize_sensorlog
 ww_minute_sensorlog = function(data, seconds = 60L) {
   speed = time = enmo = vm = accel_X = accel_Y = accel_Z = lat = lon = NULL
   lat_zero = lon_zero = is_within_home = distance_traveled = NULL
+  n_is_within_home = NULL
   rm(list = c("lat", "lon", "accel_X", "accel_Y", "accel_Z", "vm", "enmo",
               "speed", "time", "is_within_home", "distance_traveled",
-              "lat_zero", "lon_zero"))
+              "lat_zero", "lon_zero", "n_is_within_home"))
   assertthat::assert_that(
     is.numeric(seconds)
   )
@@ -58,7 +58,7 @@ ww_minute_sensorlog = function(data, seconds = 60L) {
         lon_zero = abs(lon) < 0.00001 | is.na(lon),
       )
   }
-  for (icol in c("accel_X", "accel_Y", "accel_Z")) {
+  for (icol in c("accel_X", "accel_Y", "accel_Z", "is_within_home")) {
     if (!assertthat::has_name(data, icol)) {
       data = data %>%
         dplyr::mutate(
@@ -82,6 +82,7 @@ ww_minute_sensorlog = function(data, seconds = 60L) {
         dplyr::any_of(c("lat", "lon", "speed", "accel_X",
                         "accel_Y", "accel_Z", "distance")),
         mean),
+      n_is_within_home = sum(!is.na(is_within_home)),
       is_within_home = all(is_within_home, na.rm = TRUE),
       distance_traveled = sum(distance_traveled),
       vm = mean(vm),
@@ -89,6 +90,12 @@ ww_minute_sensorlog = function(data, seconds = 60L) {
       lat_zero = all(lat_zero),
       lon_zero = all(lon_zero)
     )
+  data = data %>%
+    dplyr::mutate(
+      is_within_home = ifelse(n_is_within_home == 0,
+                              NA, is_within_home)
+    ) %>%
+    dplyr::select(-n_is_within_home)
   data = data %>%
     dplyr::mutate(in_sensorlog = TRUE)
 
@@ -118,6 +125,12 @@ ww_summarize_distance_sensorlog = function(data) {
               "mean_distance_traveled", "max_distance",
               "distance_traveled", "is_within_home")
   )
+  if (!assertthat::has_name(data, "distance")) {
+    data = data %>%
+      dplyr::mutate(
+        distance = NA_real_
+      )
+  }
   daily = data %>%
     dplyr::summarise(
       n_minutes_with_distance = sum(!is.na(distance)),

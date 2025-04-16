@@ -15,7 +15,8 @@ ww_process_sensorlog(
   check_data = TRUE,
   remove_cols = c("file", "index"),
   verbose = FALSE,
-  ...
+  ...,
+  distance_cutoff = 180
 )
 
 ww_check_data(data, remove_cols = c("file", "index"))

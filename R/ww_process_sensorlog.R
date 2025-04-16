@@ -31,7 +31,8 @@ ww_process_sensorlog = function(
     check_data = TRUE,
     remove_cols = c("file", "index"),
     verbose = FALSE,
-    ...
+    ...,
+    distance_cutoff = 180
 ) {
   if (check_data) {
     data = ww_check_data(data, remove_cols = remove_cols)
@@ -40,8 +41,19 @@ ww_process_sensorlog = function(
     data = ww_calculate_distance(data,
                                  lat = lat,
                                  lon = lon,
-                                 dist_fun = dist_fun)
+                                 dist_fun = dist_fun,
+                                 distance_cutoff = distance_cutoff)
+  } else {
+    data = data %>%
+      dplyr::mutate(distance = NA_real_,
+                    is_within_home = NA)
   }
+  data = data %>%
+    # define within home as 180 meters or whatever cutoff
+    dplyr::mutate(
+      # calculate distance traveled
+      distance_traveled = c(NA_real_, dist_fun(cbind(lon, lat))),
+    )
   data = ww_process_time(data,
                          expected_timezone = expected_timezone,
                          check_data = check_data,
@@ -94,9 +106,7 @@ ww_calculate_distance = function(
   data = data %>%
     # define within home as 180 meters or whatever cutoff
     dplyr::mutate(
-      is_within_home = distance <= distance_cutoff,
-      # calculate distance traveled
-      distance_traveled = c(NA_real_, dist_fun(cbind(lon, lat))),
+      is_within_home = distance <= distance_cutoff
     )
   data
 }

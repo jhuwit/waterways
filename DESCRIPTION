@@ -32,8 +32,10 @@ Suggests:
     knitr,
     rmarkdown,
     SummarizedActigraphy,
+    testthat (>= 3.0.0),
     tidygeocoder
 Remotes:
   muschellij2/SummarizedActigraphy
 VignetteBuilder: knitr
 URL: https://jhuwit.github.io/waterways/
+Config/testthat/edition: 3

@@ -57,6 +57,8 @@ ww_extract_files = function(files) {
 #' df = ww_read_sensorlog(file)
 #' head(df)
 #' result = ww_process_sensorlog(df, check_data = FALSE, tz = "GMT")
+#' out = ww_minute_sensorlog(result)
+#' out = ww_summarize_sensorlog(result)
 ww_read_sensorlog = function(
     files,
     verbose = FALSE,
