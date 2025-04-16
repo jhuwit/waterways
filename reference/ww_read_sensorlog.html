@@ -89,6 +89,13 @@ to try to fix any shifts with the data.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 4 more variables: accel_Y &lt;dbl&gt;, accel_Z &lt;dbl&gt;, lat_zero &lt;lgl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   lon_zero &lt;lgl&gt;</span></span>
 <span class="r-in"><span><span class="va">result</span> <span class="op">=</span> <span class="fu"><a href="ww_process_sensorlog.html">ww_process_sensorlog</a></span><span class="op">(</span><span class="va">df</span>, check_data <span class="op">=</span> <span class="cn">FALSE</span>, tz <span class="op">=</span> <span class="st">"GMT"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">out</span> <span class="op">=</span> <span class="fu"><a href="ww_summarize_sensorlog.html">ww_minute_sensorlog</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">out</span> <span class="op">=</span> <span class="fu"><a href="ww_summarize_sensorlog.html">ww_summarize_sensorlog</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There was 1 warning in `dplyr::summarise()`.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> In argument: `max_distance = max(distance, na.rm = TRUE)`.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> In group 1: `date = 2025-03-11`.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Caused by warning in `max()`:</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> no non-missing arguments to max; returning -Inf</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
