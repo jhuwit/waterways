@@ -36,8 +36,11 @@ ww_summarise_sensorlog = ww_summarize_sensorlog
 #' data is grouped.
 #' @export
 ww_minute_sensorlog = function(data, seconds = 60L) {
-  enmo = vm = accel_X = accel_Y = accel_Z = lat = lon = NULL
-  rm(list = c("lat", "lon", "accel_X", "accel_Y", "accel_Z", "vm", "enmo"))
+  speed = time = enmo = vm = accel_X = accel_Y = accel_Z = lat = lon = NULL
+  lat_zero = lon_zero = is_within_home = distance_traveled = NULL
+  rm(list = c("lat", "lon", "accel_X", "accel_Y", "accel_Z", "vm", "enmo",
+              "speed", "time", "is_within_home", "distance_traveled",
+              "lat_zero", "lon_zero"))
   assertthat::assert_that(
     is.numeric(seconds)
   )
@@ -71,6 +74,7 @@ ww_minute_sensorlog = function(data, seconds = 60L) {
       vm = sqrt(accel_X^2 + accel_Y^2 + accel_Z^2),
       enmo = pmax(0, vm - 1)
     ) %>%
+    # group by time (so must be individual files)
     dplyr::group_by(time) %>%
     dplyr::summarise(
       max_speed = max(speed, na.rm = TRUE),
@@ -107,11 +111,12 @@ ww_minute_sensorlog = function(data, seconds = 60L) {
 #' @export
 ww_summarize_distance_sensorlog = function(data) {
   n_distance_traveled = distance = sum_distance_traveled = NULL
+  is_within_home = NULL
   distance_traveled = mean_distance_traveled = max_distance = NULL
   rm(list = c("n_distance_traveled", "distance",
               "sum_distance_traveled",
               "mean_distance_traveled", "max_distance",
-              "distance_traveled")
+              "distance_traveled", "is_within_home")
   )
   daily = data %>%
     dplyr::summarise(

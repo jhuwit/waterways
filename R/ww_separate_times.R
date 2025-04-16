@@ -11,8 +11,8 @@
 #' )
 #' ww_separate_times(df)
 ww_separate_times = function(data) {
-  minute = hour = day = date = NULL
-  rm(list = c("minute", "day", "hour", "date"))
+  time = minute = hour = day = date = NULL
+  rm(list = c("minute", "day", "hour", "date", "time"))
   data = data %>%
     dplyr::mutate(
       date = lubridate::floor_date(time, "1 day"),

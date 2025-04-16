@@ -37,6 +37,11 @@ file = system.file(
 file
 ```
 
+This can also be done using the wrapper from `waterways`:
+```{r ww_sensorlog_file}
+ww_example_sensorlog_file()
+```
+
 ### Reading in the data
 The data is read in using the `ww_read_sensorlog` function:
 

@@ -3,8 +3,6 @@
 #'
 #' @inheritParams ww_process_sensorlog
 #' @param ... additional arguments to pass to [lutz::tz_lookup_coords()]
-
-
 #'
 #' @return A `data.frame`
 #' @param tz timezone to project the data into.  Keeping as `GMT` to agree

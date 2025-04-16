@@ -6,6 +6,11 @@
 #'
 #' @return A file path to the new CSV
 #' @export
+#' @examples
+#' sl_file = ww_example_sensorlog_file()
+#' tfile = tempfile()
+#' files = utils::unzip(sl_file, exdir = tfile)
+#' result = rewrite_sensorlog_csv(files)
 rewrite_sensorlog_csv = function(
     file,
     outfile = tempfile(fileext = ".csv"),

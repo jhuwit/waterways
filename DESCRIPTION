@@ -1,6 +1,6 @@
 Package: waterways
 Title: Read and Analyze Data from OCEANS and WAVES Studies
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: c(
     person(given = "John", 
            family = "Muschelli",
@@ -16,11 +16,13 @@ Imports:
     assertthat,
     dplyr,
     geosphere,
+    hms,
     janitor,
     lubridate,
     lutz,
     magrittr,
     purrr,
+    read.gt3x,
     readr,
     rlang,
     tidyr,

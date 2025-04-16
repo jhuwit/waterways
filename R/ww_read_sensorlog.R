@@ -53,12 +53,10 @@ ww_extract_files = function(files) {
 #' @return A `data.frame` of data
 #' @export
 #' @examples
-#' file = system.file(
-#'   "extdata", "SensorLogFiles_my_iOS_device_250311_14-55-58.zip",
-#'   package = "waterways")
+#' file = ww_example_sensorlog_file()
 #' df = ww_read_sensorlog(file)
 #' head(df)
-#' result = ww_process_sensorlog(df, check_data = FALSE)
+#' result = ww_process_sensorlog(df, check_data = FALSE, tz = "GMT")
 ww_read_sensorlog = function(
     files,
     verbose = FALSE,
