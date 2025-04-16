@@ -8,8 +8,10 @@
 <url><loc>https://jhuwit.github.io/waterways/reference/index.html</loc></url>
 <url><loc>https://jhuwit.github.io/waterways/reference/pipe.html</loc></url>
 <url><loc>https://jhuwit.github.io/waterways/reference/rewrite_sensorlog_csv.html</loc></url>
+<url><loc>https://jhuwit.github.io/waterways/reference/ww_example_data.html</loc></url>
 <url><loc>https://jhuwit.github.io/waterways/reference/ww_process_sensorlog.html</loc></url>
 <url><loc>https://jhuwit.github.io/waterways/reference/ww_process_time.html</loc></url>
+<url><loc>https://jhuwit.github.io/waterways/reference/ww_read_gt3x.html</loc></url>
 <url><loc>https://jhuwit.github.io/waterways/reference/ww_read_sensorlog.html</loc></url>
 <url><loc>https://jhuwit.github.io/waterways/reference/ww_separate_times.html</loc></url>
 <url><loc>https://jhuwit.github.io/waterways/reference/ww_summarize_sensorlog.html</loc></url>
