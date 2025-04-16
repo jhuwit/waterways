@@ -13,5 +13,10 @@ test_that("read_sensorlog works", {
   testthat::expect_equal(
     mean(df$lat), 39.2974535237175
   )
+  df2 = ww_read_sensorlog(file, robust = TRUE, verbose = 2)
+  testthat::expect_true(is.data.frame(df2))
+  df$file = NULL
+  df2$file = NULL
+  testthat::expect_equal(df, df2)
 })
 

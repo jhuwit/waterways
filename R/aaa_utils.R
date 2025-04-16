@@ -1,10 +1,3 @@
-unzip_file = function(zip_file) {
-  tdir = tempfile()
-  dir.create(tdir)
-  files = utils::unzip(zipfile = zip_file, exdir = tdir)
-  files
-}
-
 strip_hour_shift = function(x) {
   x = sub("[+]", " +", x)
   x = sub("-(\\d\\d:00)$", " -\\1", x)
