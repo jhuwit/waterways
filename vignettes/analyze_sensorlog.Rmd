@@ -177,11 +177,28 @@ header$TimeZone
 Thus, we will set the timezone to be `GMT` using the `lubridate::force_tz` function:
 
 
+
 ```{r}
 ag$time = force_tz(with_tz(ag$time, "Etc/GMT-4"), "GMT")
 ag
 ```
 
+
+We can create a general solution for this
+```{r}
+tzoffset_to_tz = function(x) {
+  stopifnot(all(grepl(":00", x)))
+  x = sub(":00:00$", "", x)
+  x = sub(":00$", "", x)
+  stopifnot(nchar(x) <= 3)
+  x = as.numeric(x)
+  x = ifelse(x > 0, paste0("+", x), as.character(x))
+  x = paste0("Etc/GMT", x)
+  stopifnot(x %in% OlsonNames())
+  x
+}
+tzoffset_to_tz(header$TimeZone)
+```
 
 
 ```{r}

@@ -23,7 +23,8 @@ Imports:
     purrr,
     readr,
     rlang,
-    tidyr
+    tidyr,
+    vctrs
 Suggests: 
     agcounts,
     knitr,
