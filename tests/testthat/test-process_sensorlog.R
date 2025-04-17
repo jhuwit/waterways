@@ -9,6 +9,9 @@ lon = geo$long
 
 testthat::test_that("ww_process_sensorlog works", {
 
+  testthat::expect_error({
+    ww_process_sensorlog(df, check_data = TRUE, tz = "GMT")
+  }, regexp = "anyDuplicated")
   result = ww_process_sensorlog(df, check_data = FALSE, tz = "GMT")
   test_has_name(
     result,
@@ -25,13 +28,27 @@ testthat::test_that("ww_process_sensorlog works", {
   testthat::expect_true(
     nrow(out) == 1
   )
+
+  result$distance = NULL
+  result$lat_zero = result$lon_zero = NULL
+  result$is_within_home = NULL
+  testthat::expect_no_error({
+    out = ww_summarize_sensorlog(result)
+  })
 })
+
+
 
 
 testthat::test_that("ww_process_sensorlog works with a lat/lon", {
 
+  result1 = ww_process_sensorlog(df, check_data = FALSE, tz = "GMT",
+                                 expected_timezone = "America/New_York",
+                                 lat = lat, lon = lon)
+
   result = ww_process_sensorlog(df, check_data = FALSE, tz = "GMT",
                                 lat = lat, lon = lon)
+  testthat::expect_equal(result1, result)
   test_has_name(
     result,
     c("time", "timestamp", "distance", "distance_traveled", "is_within_home")
