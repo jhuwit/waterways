@@ -10,7 +10,7 @@
 coverage](https://codecov.io/gh/jhuwit/waterways/graph/badge.svg)](https://app.codecov.io/gh/jhuwit/waterways)
 <!-- badges: end -->
 
-The goal of waterways is to provide code to read and Analyze SensorLog
+The goal of waterways is to provide code to read and analyze SensorLog
 data along with ActiGraph data for the OCEANS/WAVES studies.
 
 ## Installation
