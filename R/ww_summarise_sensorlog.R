@@ -137,6 +137,7 @@ ww_summarize_distance_sensorlog = function(data) {
       sum_distance = sum(distance, na.rm = TRUE),
       max_distance = max(distance, na.rm = TRUE),
 
+      n_minutes_with_distance_traveled = sum(!is.na(distance_traveled)),
       sum_distance_traveled = sum(distance_traveled, na.rm = TRUE),
       mean_distance_traveled = mean(distance_traveled, na.rm = TRUE),
       n_distance_traveled = sum(!is.na(distance_traveled)),

@@ -2,13 +2,13 @@
 % Please edit documentation in R/ww_read_sensorlog.R
 \name{ww_read_sensorlog}
 \alias{ww_read_sensorlog}
-\alias{ww_csv_spec}
+\alias{ww_sensorlog_csv_spec}
 \alias{ww_sensorlog_csv_colnames_mapping}
 \title{Read SensorLog Data}
 \usage{
 ww_read_sensorlog(files, verbose = FALSE, robust = FALSE)
 
-ww_csv_spec()
+ww_sensorlog_csv_spec()
 
 ww_sensorlog_csv_colnames_mapping()
 }

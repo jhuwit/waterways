@@ -7,4 +7,5 @@
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
-^R/ww_read_sensorlog\.R$
+^R/ww_read_sensorlogger\.R$
+rea
