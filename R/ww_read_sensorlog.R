@@ -5,7 +5,21 @@ is_zip_file = function(file) {
   ext == "zip"
 }
 
-
+unzip_files = function(files) {
+  if (any(is_zip_file(files))) {
+    if (!all(is_zip_file(files))) {
+      stop(paste0("ww_read_sensorlog works with only zip files or a vector of ",
+                  "csv files"))
+    }
+    orig_file = files
+    files = lapply(files, function(r) {
+      tfile = tempfile()
+      utils::unzip(r, exdir = tfile)
+    })
+    files = unlist(files)
+  }
+  files
+}
 
 #' Read SensorLog Data
 #'
@@ -29,25 +43,14 @@ ww_read_sensorlog = function(
     verbose = FALSE,
     robust = FALSE
 ) {
-  if (any(is_zip_file(files))) {
-    if (!all(is_zip_file(files))) {
-      stop(paste0("ww_read_sensorlog works with only zip files or a vector of ",
-                  "csv files"))
-    }
-    orig_file = files
-    files = lapply(files, function(r) {
-      tfile = tempfile()
-      utils::unzip(r, exdir = tfile)
-    })
-    files = unlist(files)
-  }
+  files = unzip_files(files)
   file = lon_zero = lat_zero = lat = lon = NULL
   rm(list = c("lat", "lon", "lat_zero", "lon_zero", "file"))
 
   names(files) = files
 
   cn = ww_sensorlog_csv_colnames_mapping()
-  spec = ww_csv_spec()
+  spec = ww_sensorlog_csv_spec()
 
   if (robust) {
     files = sapply(files, rewrite_sensorlog_csv, verbose = verbose > 1)
@@ -114,7 +117,7 @@ ww_read_sensorlog = function(
 
 #' @export
 #' @rdname ww_read_sensorlog
-ww_csv_spec = function() {
+ww_sensorlog_csv_spec = function() {
   spec = readr::cols(
     `loggingTime(txt)` = readr::col_character(),
     `loggingSample(N)` = readr::col_double(),
