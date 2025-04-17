@@ -18,5 +18,16 @@ test_that("read_sensorlog works", {
   df$file = NULL
   df2$file = NULL
   testthat::expect_equal(df, df2)
+
+  tfile = tempfile()
+  csv_files = unzip(file, exdir = tfile)
+  testthat::expect_error({
+    ww_read_sensorlog(c(file, csv_files))
+  })
+  nr0 = readLines(csv_files, n = 1)
+  csv_tempfile = tempfile(fileext = ".csv")
+  writeLines(nr0, csv_tempfile)
+  testthat::expect_true(nrow(ww_read_sensorlog(csv_tempfile)) == 0)
+
 })
 

@@ -76,4 +76,10 @@ testthat::test_that("ww_process_sensorlog works with a lat/lon", {
   testthat::expect_equal(
     out$max_distance, 73.306135478788576165
   )
+
+  result$time = NULL
+  testthat::expect_error({
+    ww_summarize_sensorlog(result)
+  })
+
 })

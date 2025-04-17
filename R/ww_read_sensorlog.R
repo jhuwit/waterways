@@ -100,9 +100,10 @@ ww_read_sensorlog = function(
 
       r
     }, .progress = verbose > 0)
-
-  data = data %>%
-    dplyr::select(file, dplyr::everything())
+  if (nrow(data) > 0) {
+    data = data %>%
+      dplyr::select(file, dplyr::everything())
+  }
   data
 }
 
