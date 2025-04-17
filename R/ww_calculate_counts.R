@@ -72,3 +72,20 @@ ww_calculate_nonwear = function(data, method = c("choi", "troiano"),
     dplyr::select(time, dplyr::contains("wear")) %>%
     dplyr::as_tibble()
 }
+
+#' @export
+#' @rdname ww_calculate_counts
+ww_process_gt3x = function(data) {
+  if (assertthat::is.readable(data)) {
+    data = ww_read_gt3x(data)
+  }
+
+  counts = ww_calculate_counts(data)
+
+  # Process the data
+  wear = ww_calculate_nonwear(counts)
+  result = dplyr::full_join(counts, wear, by = "time") %>%
+    dplyr::mutate(wear = ifelse(is.na(wear), FALSE, wear))
+
+  return(result)
+}

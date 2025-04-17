@@ -2,9 +2,15 @@
 % Please edit documentation in R/ww_calculate_counts.R
 \name{ww_calculate_counts}
 \alias{ww_calculate_counts}
+\alias{ww_calculate_nonwear}
+\alias{ww_process_gt3x}
 \title{Process SensorLog Daa}
 \usage{
 ww_calculate_counts(data, epoch = 60L, lfe_select = FALSE, verbose = TRUE)
+
+ww_calculate_nonwear(data, method = c("choi", "troiano"), ...)
+
+ww_process_gt3x(data)
 }
 \arguments{
 \item{data}{A \code{data.frame} from \link{ww_read_gt3x}}
@@ -12,7 +18,10 @@ ww_calculate_counts(data, epoch = 60L, lfe_select = FALSE, verbose = TRUE)
 \item{verbose}{print diagnostic messages.  Either logical or integer, where
 higher values are higher levels of verbosity.}
 
-\item{...}{additional arguments to pass to \link{ww_process_time}}
+\item{method}{Method for detecting non-wear, either "choi" or "troiano",
+corresponding to \link[actigraph.sleepr:apply_choi]{actigraph.sleepr::apply_choi} or \link[actigraph.sleepr:apply_troiano]{actigraph.sleepr::apply_troiano}}
+
+\item{...}{additional arguments to pass to \code{actigraph.sleepr} function}
 }
 \value{
 A \code{data.frame} of transformed data
