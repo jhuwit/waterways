@@ -33,7 +33,8 @@ ww_fill_zeros = function(x) {
 #' native timezone.  So this data is projected into the correct time zone and then
 #' forced into the timezone given by `tz`.  Set to `NULL` to not apply this
 #' forcing.
-#'
+#' @param fill_zeroes Rows with all zeros will be filled in with the last
+#' observation carried forward as is done with ActiLife.  Recommended
 #' @returns A `data.frame`
 #' @export
 #'
@@ -46,6 +47,7 @@ ww_read_gt3x = function(
     imputeZeroes = TRUE,
     verbose = TRUE,
     ...,
+    fill_zeroes = TRUE,
     apply_tz = TRUE,
     check_attributes = TRUE,
     tz = "GMT"
@@ -58,7 +60,9 @@ ww_read_gt3x = function(
     verbose = verbose,
     ...)
 
-  data = ww_fill_zeros(data)
+  if (fill_zeroes) {
+    data = ww_fill_zeros(data)
+  }
 
   # this puts data in correct timezone (still ends up in UTC)
   hdr = attr(data, "header")

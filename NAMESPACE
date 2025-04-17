@@ -2,6 +2,7 @@
 
 export("%>%")
 export(rewrite_sensorlog_csv)
+export(ww_calculate_counts)
 export(ww_calculate_distance)
 export(ww_check_data)
 export(ww_example_gt3x_file)

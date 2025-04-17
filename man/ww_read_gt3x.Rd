@@ -10,6 +10,7 @@ ww_read_gt3x(
   imputeZeroes = TRUE,
   verbose = TRUE,
   ...,
+  fill_zeroes = TRUE,
   apply_tz = TRUE,
   check_attributes = TRUE,
   tz = "GMT"
@@ -28,6 +29,9 @@ the time series will be incomplete in case there is missingness.}
 \item{verbose}{print diagnostic messages}
 
 \item{...}{additional arguments to pass to \code{\link[read.gt3x:read.gt3x]{read.gt3x::read.gt3x()}}}
+
+\item{fill_zeroes}{Rows with all zeros will be filled in with the last
+observation carried forward as is done with ActiLife.  Recommended}
 
 \item{apply_tz}{Apply the timezone from the header \code{TimeZone} attribute}
 
