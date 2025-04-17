@@ -5,8 +5,11 @@
 #' @note This calls [ww_check_data], [ww_calculate_distance], and
 #' [ww_process_time]
 #' @param verbose print diagnostic messages.  Either logical or integer, where
+#' @param epoch epoch length in seconds.  Default is 60 seconds.
+#' See [agcounts::calculate_counts]
+#' @param lfe_select Apply the Actigraph Low Frequency Extension filter.
+#' See [agcounts::calculate_counts]
 #' higher values are higher levels of verbosity.
-#' @param ... additional arguments to pass to [ww_process_time]
 #' @export
 #' @examples
 #' path = ww_example_gt3x_file()
@@ -42,15 +45,24 @@ ww_calculate_counts = function(
 #' @export
 #' @rdname ww_calculate_counts
 ww_calculate_nonwear = function(data, method = c("choi", "troiano"),
+                                use_magnitude = TRUE,
                                 ...) {
+  time = timestamp = NULL
+  rm(list = c("time", "timestamp"))
   data = data %>%
     dplyr::rename(timestamp = time)
   mode(data$timestamp) = "double"
   method = match.arg(method)
   func = switch(method,
-                choi = function(x, ...) actigraph.sleepr::apply_choi(x, ...),
-                troiano = function(x, ...) actigraph.sleepr::apply_troiano(x, ...)
-                )
+                choi = function(x, ...) actigraph.sleepr::apply_choi(
+                  x,
+                  use_magnitude = use_magnitude,
+                  ...),
+                troiano = function(x, ...) actigraph.sleepr::apply_troiano(
+                  x,
+                  use_magnitude = use_magnitude,
+                  ...)
+  )
   choi_nonwear = func(data)
   if (nrow(choi_nonwear) > 0) {
     choi_df = purrr::map2_df(

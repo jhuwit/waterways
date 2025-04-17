@@ -8,15 +8,26 @@
 \usage{
 ww_calculate_counts(data, epoch = 60L, lfe_select = FALSE, verbose = TRUE)
 
-ww_calculate_nonwear(data, method = c("choi", "troiano"), ...)
+ww_calculate_nonwear(
+  data,
+  method = c("choi", "troiano"),
+  use_magnitude = TRUE,
+  ...
+)
 
 ww_process_gt3x(data)
 }
 \arguments{
 \item{data}{A \code{data.frame} from \link{ww_read_gt3x}}
 
-\item{verbose}{print diagnostic messages.  Either logical or integer, where
+\item{epoch}{epoch length in seconds.  Default is 60 seconds.
+See \link[agcounts:calculate_counts]{agcounts::calculate_counts}}
+
+\item{lfe_select}{Apply the Actigraph Low Frequency Extension filter.
+See \link[agcounts:calculate_counts]{agcounts::calculate_counts}
 higher values are higher levels of verbosity.}
+
+\item{verbose}{print diagnostic messages.  Either logical or integer, where}
 
 \item{method}{Method for detecting non-wear, either "choi" or "troiano",
 corresponding to \link[actigraph.sleepr:apply_choi]{actigraph.sleepr::apply_choi} or \link[actigraph.sleepr:apply_troiano]{actigraph.sleepr::apply_troiano}}
