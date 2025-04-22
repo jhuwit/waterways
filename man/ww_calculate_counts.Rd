@@ -15,7 +15,12 @@ ww_calculate_nonwear(
   ...
 )
 
-ww_process_gt3x(data)
+ww_process_gt3x(
+  data,
+  lfe_select = FALSE,
+  method = c("choi", "troiano"),
+  verbose = TRUE
+)
 }
 \arguments{
 \item{data}{A \code{data.frame} from \link{ww_read_gt3x}}
@@ -31,6 +36,10 @@ higher values are higher levels of verbosity.}
 
 \item{method}{Method for detecting non-wear, either "choi" or "troiano",
 corresponding to \link[actigraph.sleepr:apply_choi]{actigraph.sleepr::apply_choi} or \link[actigraph.sleepr:apply_troiano]{actigraph.sleepr::apply_troiano}}
+
+\item{use_magnitude}{If \code{TRUE}, the magnitude of the vector
+(axis1, axis2, axis3) is used to measure activity;
+otherwise the axis1 value is used.}
 
 \item{...}{additional arguments to pass to \code{actigraph.sleepr} function}
 }

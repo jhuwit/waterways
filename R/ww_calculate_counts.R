@@ -42,9 +42,13 @@ ww_calculate_counts = function(
 #' @param method Method for detecting non-wear, either "choi" or "troiano",
 #' corresponding to [actigraph.sleepr::apply_choi] or [actigraph.sleepr::apply_troiano]
 #' @param ... additional arguments to pass to `actigraph.sleepr` function
+#' @param use_magnitude  If `TRUE`, the magnitude of the vector
+#' (axis1, axis2, axis3) is used to measure activity;
+#' otherwise the axis1 value is used.
 #' @export
 #' @rdname ww_calculate_counts
-ww_calculate_nonwear = function(data, method = c("choi", "troiano"),
+ww_calculate_nonwear = function(data,
+                                method = c("choi", "troiano"),
                                 use_magnitude = TRUE,
                                 ...) {
   time = timestamp = NULL
@@ -87,15 +91,21 @@ ww_calculate_nonwear = function(data, method = c("choi", "troiano"),
 
 #' @export
 #' @rdname ww_calculate_counts
-ww_process_gt3x = function(data) {
-  if (assertthat::is.readable(data)) {
+ww_process_gt3x = function(data,
+                           lfe_select = FALSE,
+                           method = c("choi", "troiano"),
+                           verbose = TRUE) {
+  if (assertthat::is.string(data) &&
+      file.exists(data)) {
     data = ww_read_gt3x(data)
   }
 
-  counts = ww_calculate_counts(data)
+  counts = ww_calculate_counts(data,
+                               lfe_select = lfe_select,
+                               verbose = verbose)
 
   # Process the data
-  wear = ww_calculate_nonwear(counts)
+  wear = ww_calculate_nonwear(counts, method = method)
   result = dplyr::full_join(counts, wear, by = "time") %>%
     dplyr::mutate(wear = ifelse(is.na(wear), FALSE, wear))
 
