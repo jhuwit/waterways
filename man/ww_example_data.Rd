@@ -3,11 +3,17 @@
 \name{ww_example_sensorlog_file}
 \alias{ww_example_sensorlog_file}
 \alias{ww_example_gt3x_file}
+\alias{ww_example_sensorlogger_file}
+\alias{ww_example_sensorlogger_location_file}
 \title{Paths to Example data}
 \usage{
 ww_example_sensorlog_file()
 
 ww_example_gt3x_file()
+
+ww_example_sensorlogger_file()
+
+ww_example_sensorlogger_location_file()
 }
 \value{
 A character file name
@@ -19,4 +25,5 @@ the package
 \examples{
 ww_example_sensorlog_file()
 ww_example_gt3x_file()
+ww_example_sensorlogger_file()
 }

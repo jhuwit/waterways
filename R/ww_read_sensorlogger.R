@@ -1,43 +1,31 @@
-
-
+#' Read SensorLogger Data
+#'
+#' @param files A character vector of SensorLogger files, usually from unzipping
+#' the file
+#' @param verbose print diagnostic messages.  Either logical or integer, where
+#' higher values are higher levels of verbosity.
+#' @param ... additional arguments to pass to [readr::read_csv()].
+#' If `verbose = FALSE`, then `progress = FALSE` and `show_col_types = FALSE`,
+#' unless otherwise overridden
+#' @return A `data.frame` of data
 #' @export
-#' @rdname ww_read_sensorlogger
-ww_sensorlogger_location_colnames_mapping = function() {
-  cn =  c(
-    time = "time",
-    seconds_elapsed = "seconds_elapsed",
-    altitude = "altitude",
-    speedAccuracy = "speed_accuracy",
-    bearingAccuracy = "bearing_accuracy",
-    latitude = "lat",
-    altitudeAboveMeanSeaLevel = "altitude_above_mean_sea_level",
-    bearing = "bearing",
-    horizontalAccuracy = "horizontal_accuracy",
-    verticalAccuracy = "vertical_accuracy",
-    longitude = "lon",
-    speed = "speed"
-  )
-  cn
-}
+ww_read_sensorlogger = function(
+    files,
+    verbose = FALSE,
+    ...
+) {
+  file = lon_zero = lat_zero = lat = lon = NULL
+  rm(list = c("lat", "lon", "lat_zero", "lon_zero", "file"))
 
-#' @export
-#' @rdname ww_read_sensorlogger
-ww_sensorlogger_location_spec = function() {
-  spec = readr::cols(
-    time = readr::col_double(),
-    seconds_elapsed = readr::col_double(),
-    altitude = readr::col_double(),
-    speedAccuracy = readr::col_double(),
-    bearingAccuracy = readr::col_double(),
-    latitude = readr::col_double(),
-    altitudeAboveMeanSeaLevel = readr::col_double(),
-    bearing = readr::col_double(),
-    horizontalAccuracy = readr::col_double(),
-    verticalAccuracy = readr::col_double(),
-    longitude = readr::col_double(),
-    speed = readr::col_double()
-  )
-  spec
+  files = unzip_files(files)
+  stub = ww_sensorlogger_stub(files)
+  names(files) = stub
+
+  data_list = purrr::map(files, function(r) {
+    data = ww_sensorlogger_reader(r, verbose = verbose, ...,  type = NULL)
+  })
+
+  data_list
 }
 
 
@@ -45,70 +33,105 @@ ww_convert_sensorlogger_time = function(x) {
   as_datetime_safe(x/1000/1000/1000)
 }
 
-create_lat_lon_zero = function(df) {
-  lon_zero = lat_zero = lat = lon = NULL
-  rm(list = c("lat", "lon", "lat_zero", "lon_zero"))
 
-  # should add lat_zero in there
-  df = df %>%
-    dplyr::mutate(
-      lat_zero = abs(lat) < 0.00001,
-      lon_zero = abs(lon) < 0.00001
-    )
-  df = df %>%
-    dplyr::mutate(
-      lat = ifelse(lat_zero, NA_real_, lat),
-      lon = ifelse(lon_zero, NA_real_, lon)
-    )
-  df
+
+ww_sensorlogger_stub = function(x) {
+  stub = sub("[.]csv($|[.]gz$)", "", basename(x), ignore.case = TRUE)
+  stub = tolower(stub)
+  stub = sub("^sensorlogger_", "", stub)
+  stub = sub("uncalibrated", "_uncalibrated", stub)
+  stub
 }
 
-ww_read_sensorlogger_location = function(file) {
-  df = read_csv_safe(file)
+
+
+
+#' @export
+#' @rdname ww_read_sensorlogger
+ww_read_sensorlogger_general = function(file, ..., verbose = FALSE) {
+  df = read_csv_safe(file, ...)
   if (nrow(df) == 0) {
     return(NULL)
   }
-  cn = ww_sensorlogger_location_colnames_mapping()
-  spec = ww_sensorlogger_location_spec()
+  df = df %>%
+    janitor::clean_names()
+  if (assertthat::has_name(df, "time")) {
+    df$time = ww_convert_sensorlogger_time(df$time)
+  }
 
-  df = df[, cn]
-  colnames(df) = names(cn)
-  df$time = ww_convert_sensorlogger_time(df$time)
-  df = create_lat_lon_zero(df)
   df$file = file
-  stub = sub("[.]csv$", "", basename(file), ignore.case = TRUE)
-  stub = tolower(stub)
+  stub = ww_sensorlogger_stub(file)
   df$cat_type_sensor = stub
+
+  if (nrow(df) > 0) {
+    df = df %>%
+      dplyr::select(file, dplyr::everything())
+  }
   df
 }
 
-
-
-#' Read SensorLogger Data
-#'
-#' @param files A character vector of SensorLogger files, usually from unzipping
-#' the file
-#' @param verbose print diagnostic messages.  Either logical or integer, where
-#' higher values are higher levels of verbosity.
-#' @return A `data.frame` of data
 #' @export
-ww_read_sensorlogger = function(
-    files,
-    verbose = FALSE
-) {
-  file = lon_zero = lat_zero = lat = lon = NULL
-  rm(list = c("lat", "lon", "lat_zero", "lon_zero", "file"))
+#' @rdname ww_read_sensorlogger
+ww_read_sensorlogger_accelerometer = ww_read_sensorlogger_general
+#' @export
+#' @rdname ww_read_sensorlogger
+ww_read_sensorlogger_accelerometer_uncalibrated = ww_read_sensorlogger_general
+#' @export
+#' @rdname ww_read_sensorlogger
+ww_read_sensorlogger_annotation = ww_read_sensorlogger_general
 
-  files = unzip_files(files)
-  stub = sub("[.]csv$", "", basename(files), ignore.case = TRUE)
-  stub = tolower(stub)
-  names(files) = stub
+#' @export
+#' @rdname ww_read_sensorlogger
+ww_read_sensorlogger_battery = ww_read_sensorlogger_general
 
-  data = ww_read_sensorlogger_location(files[["location"]])
+#' @export
+#' @rdname ww_read_sensorlogger
+ww_read_sensorlogger_gravity = ww_read_sensorlogger_general
+#' @export
+#' @rdname ww_read_sensorlogger
+ww_read_sensorlogger_gyroscope_uncalibrated = ww_read_sensorlogger_general
+#' @export
+#' @rdname ww_read_sensorlogger
+ww_read_sensorlogger_metadata = ww_read_sensorlogger_general
 
-  if (nrow(data) > 0) {
-    data = data %>%
-      dplyr::select(file, dplyr::everything())
+#' @export
+#' @rdname ww_read_sensorlogger
+ww_read_sensorlogger_orientation = ww_read_sensorlogger_general
+
+#' @export
+#' @rdname ww_read_sensorlogger
+ww_read_sensorlogger_pedometer = ww_read_sensorlogger_general
+
+ww_sensorlogger_reader = function(file, ..., type = NULL, verbose = FALSE) {
+  if (is.null(type)) {
+    type = ww_sensorlogger_stub(file)
   }
-  data
+  func = switch(
+    type,
+    accelerometer = ww_read_sensorlogger_general,
+    accelerometer_uncalibrated = ww_read_sensorlogger_general,
+    annotation = ww_read_sensorlogger_general,
+    battery = ww_read_sensorlogger_general,
+    gravity = ww_read_sensorlogger_general,
+    gyroscope = ww_read_sensorlogger_general,
+    gyroscope_uncalibrated = ww_read_sensorlogger_general,
+    location = ww_read_sensorlogger_location,
+    metadata = ww_read_sensorlogger_general,
+    orientation = ww_read_sensorlogger_general,
+    pedometer = ww_read_sensorlogger_general,
+    ww_read_sensorlogger_general
+    )
+  args = list(...)
+  if (!verbose & !"progress" %in% names(args)) {
+    args$progress = FALSE
+  }
+  if (!verbose & !"show_col_types" %in% names(args)) {
+    args$show_col_types = FALSE
+  }
+  args$file = file
+  do.call(func, args = args)
 }
+
+
+
+
