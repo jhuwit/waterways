@@ -1,6 +1,6 @@
 Package: waterways
 Title: Read and Analyze Data from OCEANS and WAVES Studies
-Version: 0.3.1
+Version: 0.4.0
 Authors@R: c(
     person(given = "John", 
            family = "Muschelli",
@@ -36,7 +36,8 @@ Suggests:
     testthat (>= 3.0.0),
     tidygeocoder
 Remotes:
-  muschellij2/SummarizedActigraphy
+  muschellij2/SummarizedActigraphy,
+  dipetkov/actigraph.sleepr
 VignetteBuilder: knitr
 URL: https://jhuwit.github.io/waterways/
 Config/testthat/edition: 3
