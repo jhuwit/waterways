@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">waterways</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,6 +47,7 @@
 <span>  imputeZeroes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span>,</span>
+<span>  fill_zeroes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  apply_tz <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  check_attributes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  tz <span class="op">=</span> <span class="st">"GMT"</span></span>
@@ -78,6 +79,11 @@ the time series will be incomplete in case there is missingness.</p></dd>
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>additional arguments to pass to <code><a href="https://rdrr.io/pkg/read.gt3x/man/read.gt3x.html" class="external-link">read.gt3x::read.gt3x()</a></code></p></dd>
+
+
+<dt id="arg-fill-zeroes">fill_zeroes<a class="anchor" aria-label="anchor" href="#arg-fill-zeroes"></a></dt>
+<dd><p>Rows with all zeros will be filled in with the last
+observation carried forward as is done with ActiLife.  Recommended</p></dd>
 
 
 <dt id="arg-apply-tz">apply_tz<a class="anchor" aria-label="anchor" href="#arg-apply-tz"></a></dt>
