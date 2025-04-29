@@ -6,14 +6,14 @@
 \alias{ww_sensorlog_csv_colnames_mapping}
 \title{Read SensorLog Data}
 \usage{
-ww_read_sensorlog(files, verbose = FALSE, robust = FALSE)
+ww_read_sensorlog(file, verbose = FALSE, robust = FALSE)
 
 ww_sensorlog_csv_spec()
 
 ww_sensorlog_csv_colnames_mapping()
 }
 \arguments{
-\item{files}{A character vector of SensorLog files, usually from unzipping
+\item{file}{A character vector of SensorLog files, usually from unzipping
 the file}
 
 \item{verbose}{print diagnostic messages.  Either logical or integer, where

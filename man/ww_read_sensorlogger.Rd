@@ -24,7 +24,7 @@ ww_sensorlogger_location_spec()
 
 ww_read_sensorlogger_location(file, ...)
 
-ww_read_sensorlogger(files, verbose = FALSE, ...)
+ww_read_sensorlogger(file, verbose = FALSE, ...)
 
 ww_read_sensorlogger_general(file, ..., verbose = FALSE)
 
@@ -47,12 +47,12 @@ ww_read_sensorlogger_orientation(file, ..., verbose = FALSE)
 ww_read_sensorlogger_pedometer(file, ..., verbose = FALSE)
 }
 \arguments{
+\item{file}{A character vector of SensorLogger files, usually from unzipping
+the file, or a zip file of SensorLogger files}
+
 \item{...}{additional arguments to pass to \code{\link[readr:read_delim]{readr::read_csv()}}.
 If \code{verbose = FALSE}, then \code{progress = FALSE} and \code{show_col_types = FALSE},
 unless otherwise overridden}
-
-\item{files}{A character vector of SensorLogger files, usually from unzipping
-the file}
 
 \item{verbose}{print diagnostic messages.  Either logical or integer, where
 higher values are higher levels of verbosity.}

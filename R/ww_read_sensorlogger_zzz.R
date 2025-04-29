@@ -1,7 +1,7 @@
 #' Read SensorLogger Data
 #'
-#' @param files A character vector of SensorLogger files, usually from unzipping
-#' the file
+#' @param file A character vector of SensorLogger files, usually from unzipping
+#' the file, or a zip file of SensorLogger files
 #' @param verbose print diagnostic messages.  Either logical or integer, where
 #' higher values are higher levels of verbosity.
 #' @param ... additional arguments to pass to [readr::read_csv()].
@@ -10,18 +10,18 @@
 #' @return A `data.frame` of data
 #' @export
 ww_read_sensorlogger = function(
-    files,
+    file,
     verbose = FALSE,
     ...
 ) {
   file = lon_zero = lat_zero = lat = lon = NULL
   rm(list = c("lat", "lon", "lat_zero", "lon_zero", "file"))
 
-  files = unzip_files(files)
-  stub = ww_sensorlogger_stub(files)
-  names(files) = stub
+  file = unzip_files(file)
+  stub = ww_sensorlogger_stub(file)
+  names(file) = stub
 
-  data_list = purrr::map(files, function(r) {
+  data_list = purrr::map(file, function(r) {
     data = ww_sensorlogger_reader(r, verbose = verbose, ...,  type = NULL)
   })
 

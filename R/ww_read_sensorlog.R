@@ -5,25 +5,25 @@ is_zip_file = function(file) {
   ext == "zip"
 }
 
-unzip_files = function(files) {
-  if (any(is_zip_file(files))) {
-    if (!all(is_zip_file(files))) {
-      stop(paste0("ww_read_sensorlog works with only zip files or a vector of ",
+unzip_files = function(file) {
+  if (any(is_zip_file(file))) {
+    if (!all(is_zip_file(file))) {
+      stop(paste0("ww_read_sensorlog works with only zip file or a vector of ",
                   "csv files"))
     }
-    orig_file = files
-    files = lapply(files, function(r) {
+    orig_file = file
+    file = lapply(file, function(r) {
       tfile = tempfile()
       utils::unzip(r, exdir = tfile)
     })
-    files = unlist(files)
+    file = unlist(file)
   }
-  files
+  file
 }
 
 #' Read SensorLog Data
 #'
-#' @param files A character vector of SensorLog files, usually from unzipping
+#' @param file A character vector of SensorLog files, usually from unzipping
 #' the file
 #' @param verbose print diagnostic messages.  Either logical or integer, where
 #' higher values are higher levels of verbosity.
@@ -39,25 +39,25 @@ unzip_files = function(files) {
 #' out = ww_minute_sensorlog(result)
 #' out = ww_summarize_sensorlog(result)
 ww_read_sensorlog = function(
-    files,
+    file,
     verbose = FALSE,
     robust = FALSE
 ) {
-  files = unzip_files(files)
-  file = lon_zero = lat_zero = lat = lon = NULL
-  rm(list = c("lat", "lon", "lat_zero", "lon_zero", "file"))
+  file = unzip_files(file)
+  lon_zero = lat_zero = lat = lon = NULL
+  rm(list = c("lat", "lon", "lat_zero", "lon_zero"))
 
-  names(files) = files
+  names(file) = file
 
   cn = ww_sensorlog_csv_colnames_mapping()
   spec = ww_sensorlog_csv_spec()
 
   if (robust) {
-    files = sapply(files, rewrite_sensorlog_csv, verbose = verbose > 1)
+    file = sapply(file, rewrite_sensorlog_csv, verbose = verbose > 1)
   }
   data =
-    purrr::map_df(names(files), function(nx) {
-      x = files[[nx]]
+    purrr::map_df(names(file), function(nx) {
+      x = file[[nx]]
       r = read_csv_safe(x, progress = FALSE, col_types = spec)
       # r = readr::read_csv(x, col_types = spec)
       if (nrow(r) == 0) {
