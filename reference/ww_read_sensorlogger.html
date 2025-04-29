@@ -47,7 +47,7 @@
 <span></span>
 <span><span class="fu">ww_read_sensorlogger_location</span><span class="op">(</span><span class="va">file</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">ww_read_sensorlogger</span><span class="op">(</span><span class="va">files</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">ww_read_sensorlogger</span><span class="op">(</span><span class="va">file</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">ww_read_sensorlogger_general</span><span class="op">(</span><span class="va">file</span>, <span class="va">...</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
@@ -74,15 +74,15 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dl><dt id="arg-file">file<a class="anchor" aria-label="anchor" href="#arg-file"></a></dt>
+<dd><p>A character vector of SensorLogger files, usually from unzipping
+the file, or a zip file of SensorLogger files</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>additional arguments to pass to <code><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">readr::read_csv()</a></code>.
 If <code>verbose = FALSE</code>, then <code>progress = FALSE</code> and <code>show_col_types = FALSE</code>,
 unless otherwise overridden</p></dd>
-
-
-<dt id="arg-files">files<a class="anchor" aria-label="anchor" href="#arg-files"></a></dt>
-<dd><p>A character vector of SensorLogger files, usually from unzipping
-the file</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
