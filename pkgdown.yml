@@ -1,9 +1,9 @@
 pandoc: 3.1.11
-pkgdown: 2.1.1
+pkgdown: 2.1.2
 pkgdown_sha: ~
 articles:
   analyze_sensorlog: analyze_sensorlog.html
-last_built: 2025-04-29T00:19Z
+last_built: 2025-05-08T00:30Z
 urls:
   reference: https://jhuwit.github.io/waterways/reference
   article: https://jhuwit.github.io/waterways/articles
