@@ -26,7 +26,7 @@ ww_read_gt3x(
 Default is \code{FALSE}, in which case
 the time series will be incomplete in case there is missingness.}
 
-\item{verbose}{print diagnostic messages}
+\item{verbose}{print diagnostic messages, higher values = more verbosity.}
 
 \item{...}{additional arguments to pass to \code{\link[read.gt3x:read.gt3x]{read.gt3x::read.gt3x()}}}
 

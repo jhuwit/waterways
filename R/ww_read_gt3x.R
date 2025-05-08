@@ -24,7 +24,7 @@ ww_fill_zeros = function(x) {
 #' Default is `FALSE`, in which case
 #' the time series will be incomplete in case there is missingness.
 #' @param ... additional arguments to pass to [read.gt3x::read.gt3x()]
-#' @param verbose print diagnostic messages
+#' @param verbose print diagnostic messages, higher values = more verbosity.
 #' @param apply_tz Apply the timezone from the header `TimeZone` attribute
 #' @param check_attributes Check that the attributes are included This is a sanity check,
 #' including checking that `sample_rate` is in the attributes.
@@ -57,19 +57,29 @@ ww_read_gt3x = function(
     path = path,
     asDataFrame = asDataFrame,
     imputeZeroes = imputeZeroes,
-    verbose = verbose,
+    verbose = verbose > 1,
     ...)
 
   if (fill_zeroes) {
+    if (verbose) {
+      cli::cli_alert_info("Filling zeros in data")
+    }
     data = ww_fill_zeros(data)
+    if (verbose) {
+      cli::cli_alert_success("Filled zeros in data")
+    }
   }
 
   # this puts data in correct timezone (still ends up in UTC)
   hdr = attr(data, "header")
   if (NROW(hdr$TimeZone) == 0 || is.null(hdr$TimeZone)) {
-    warning("No header found in gt3x file.")
+    cli::cli_warn("No header found in gt3x file.")
   } else {
     tz_from_offset = tzoffset_to_tz(hdr$TimeZone)
+    if (verbose) {
+      cli::cli_alert_info("Timezone from header: {hdr$TimeZone}")
+      cli::cli_alert_info("Timezone from offset: {tz_from_offset}")
+    }
   }
 
   any_na_time = anyNA(data$time)

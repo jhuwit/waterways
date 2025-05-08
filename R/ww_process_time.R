@@ -1,8 +1,10 @@
+## #' @param apply_tz Apply the timezone from the timezone shift into UTC?
 
 #' Process the Time data from SensorLog and Compare to an Expected Timezone
 #'
 #' @inheritParams ww_process_sensorlog
 #' @param ... additional arguments to pass to [lutz::tz_lookup_coords()]
+
 #'
 #' @return A `data.frame`
 #' @param tz timezone to project the data into.  Keeping as `GMT` to agree
@@ -38,7 +40,7 @@ ww_process_time = function(data,
 
   data = data %>%
     dplyr::mutate(
-      time = strip_hour_shift(time)
+      time = strip_hour_shift(time, max_index = 2L)
     )
 
   data = data %>%

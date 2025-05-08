@@ -1,11 +1,11 @@
-strip_hour_shift = function(x) {
+strip_hour_shift = function(x, max_index = 2L) {
   x = sub("[+]", " +", x)
   x = sub("-(\\d\\d:00)$", " -\\1", x)
   xx = strsplit(x, split = " ")
   l = sapply(xx, length)
-  stopifnot(all(l >= 2))
+  stopifnot(all(l >= max_index))
   xx = sapply(xx, function(r) {
-    paste(r[1:2], collapse = " ")
+    paste(r[1:max_index], collapse = " ")
   })
   xx
 }
