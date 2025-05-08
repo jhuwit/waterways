@@ -14,8 +14,8 @@ ww_read_sensorlogger = function(
     verbose = FALSE,
     ...
 ) {
-  file = lon_zero = lat_zero = lat = lon = NULL
-  rm(list = c("lat", "lon", "lat_zero", "lon_zero", "file"))
+  lon_zero = lat_zero = lat = lon = NULL
+  rm(list = c("lat", "lon", "lat_zero", "lon_zero"))
 
   file = unzip_files(file)
   stub = ww_sensorlogger_stub(file)
