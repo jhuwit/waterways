@@ -33,9 +33,48 @@ devtools::install_github("jhuwit/waterways")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+### Read in GT3X data:
+
+```{r}
+library(waterways)
+library(dplyr)
+```
 
 ```{r example}
-library(waterways)
-## basic example code
+
+file_gt3x = ww_example_gt3x_file()
+file_gt3x
+ag = ww_read_gt3x(file_gt3x, verbose = FALSE, apply_tz = FALSE)
+head(ag)
+lubridate::tz(ag$time)
+```
+
+
+### Reading in the data
+The data is read in using the `ww_read_sensorlog` function:
+
+```{r read_sensorlog}
+file = ww_example_sensorlog_file()
+df = ww_read_sensorlog(file, robust = FALSE)
+df = df %>% select(-file) # we don't need to see which file this came from
+head(df)
+```
+
+```{r}
+df %>% 
+  add_count(time) %>% 
+  filter(n > 1) %>% 
+  select(time, lat, lon, starts_with("accel"))
+```
+
+
+```{r process_sensorlog_for_real}
+df = ww_process_sensorlog(df, check_data = FALSE, apply_tz = FALSE)
+df
+```
+
+
+```{r process_sensorlog_min}
+df_min = ww_minute_sensorlog(df)
+df_min
 ```
