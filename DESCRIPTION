@@ -32,6 +32,7 @@ Imports:
 Suggests: 
     agcounts,
     arcgislayers,
+    censusxy,
     knitr,
     rmarkdown,
     SummarizedActigraphy,

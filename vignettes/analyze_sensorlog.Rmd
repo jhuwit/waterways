@@ -138,25 +138,27 @@ lon = geo$long
 
 We can also get Census-level information using:
 ```{r, cache = TRUE}
-df_census = data.frame(street = "615 N Wolfe St", 
-                       city = "Baltimore", state = "MD",
-                       zip = "21205") %>% 
-  censusxy::cxy_geocode(
-    street = "street",
-    city = "city", 
-    state = "state",
-    zip = "zip",
-    output = "full",
-    return = "geographies",
-    benchmark = "Public_AR_Current",
-    vintage = "Census2010_Current")
-df_census
+if (rlang::is_installed("censusxy")) {
+  df_census = data.frame(street = "615 N Wolfe St", 
+                         city = "Baltimore", state = "MD",
+                         zip = "21205") %>% 
+    censusxy::cxy_geocode(
+      street = "street",
+      city = "city", 
+      state = "state",
+      zip = "zip",
+      output = "full",
+      return = "geographies",
+      benchmark = "Public_AR_Current",
+      vintage = "Census2010_Current")
+  df_census
+}
 ```
 
 From this, we can construct a 12-digits FIPS code or `GEOID10` which is the census tract required for geocoding the EPA walkability index:
 
 ```{r get_epa}
-if (rlang::is_installed("arcgislayers")) {
+if (rlang::is_installed("arcgislayers") && rlang::is_installed("censusxy")) {
   df_census = df_census %>% 
     mutate(GEOID10 = ww_fips12(cxy_state_id, cxy_county_id, cxy_tract_id, cxy_block_id))
   epa_walkability = ww_epa_walkability(geoid = df_census$GEOID10)
@@ -167,7 +169,7 @@ if (rlang::is_installed("arcgislayers")) {
 We can simply focus on the EPA walkability index, which is the `NatWalkInd` column.  We can also get the EPA walkability index category breaks from the `cat_walk_index`:
 
 ```{r get_epa_cat}
-if (rlang::is_installed("arcgislayers")) {
+if (rlang::is_installed("arcgislayers") && rlang::is_installed("censusxy")) {
   print(epa_walkability %>% 
           as.data.frame() %>% 
             select(NatWalkInd, cat_walk_index))
