@@ -1,6 +1,6 @@
 Package: waterways
 Title: Read and Analyze Data from OCEANS and WAVES Studies
-Version: 0.5.0
+Version: 0.7.0
 Authors@R: c(
     person(given = "John", 
            family = "Muschelli",
@@ -31,6 +31,7 @@ Imports:
     vctrs
 Suggests: 
     agcounts,
+    arcgislayers,
     knitr,
     rmarkdown,
     SummarizedActigraphy,
@@ -38,7 +39,8 @@ Suggests:
     tidygeocoder
 Remotes:
   muschellij2/SummarizedActigraphy,
-  dipetkov/actigraph.sleepr
+  dipetkov/actigraph.sleepr,
+  R-ArcGIS/arcgislayers
 VignetteBuilder: knitr
 URL: https://jhuwit.github.io/waterways/
 Config/testthat/edition: 3

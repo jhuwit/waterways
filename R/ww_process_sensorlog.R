@@ -19,7 +19,8 @@
 #' [ww_process_time]
 #' @param verbose print diagnostic messages.  Either logical or integer, where
 #' higher values are higher levels of verbosity.
-#' @param ... additional arguments to pass to [ww_process_time]
+#' @param ... additional arguments to pass to [ww_process_time],
+#' including `apply_tz` and `tz`
 #' @export
 #'
 ww_process_sensorlog = function(

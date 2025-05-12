@@ -1,8 +1,8 @@
 ---
-title: "Analysis of SensorLog Data"
+title: "Analysis of SensorLog and GT3X Data"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Analysis of SensorLog Data}
+  %\VignetteIndexEntry{Analysis of SensorLog and GT3X Data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: refs.bib
@@ -18,6 +18,9 @@ library(waterways)
 library(SummarizedActigraphy)
 library(read.gt3x)
 library(lubridate)
+library(tidyr)
+library(sf)
+library(ggplot2)
 ```
 
   
@@ -88,9 +91,18 @@ df %>%
 Thus, we do not want to ensure no duplicated times, so we will set `check_data` to be `FALSE`:
 
 ```{r process_sensorlog}
-df = ww_process_sensorlog(df, check_data = FALSE)
+df_proc = ww_process_sensorlog(df, check_data = FALSE, apply_tz = TRUE)
+df_proc
+```
+
+Note, the argument `apply_tz` will apply the time zone of the data.  This is helpful as it will set the correct time zone of the data in absolute terms.  Unfortunately, this makes it so researchers have to make sure they time shift things like hours.  For example, if you want to find what data is between 10AM and 6PM in EST time zone, you need to shift those to GMT/UTC.  Also, this will cause issues as it shifts data into different dates. The data is likely/sleep rest, but this can skew numbers.  For analysis, we will not apply the timezone:
+
+```{r process_sensorlog_for_real}
+df = ww_process_sensorlog(df, check_data = FALSE, apply_tz = FALSE)
 df
 ```
+
+
 
 The data times will be projected into the `GMT` timezone to agree with the output from ActiGraph and `read.gt3x::read.gt3x`. **NOTE:** this shifts times from the original timezone.  For example, if the data was at "2025-03-25 14:14:00" with a timezone of `-04:00` then the data will be in the `GMT` timezone, but the printed time will be "2025-03-25 18:14:00 GMT".  You can set the timezone to the correct timezone using `lubridate::with_tz` or `lubridate::force_tz` (they have different behavior).
 
@@ -98,7 +110,7 @@ You can also pass in the `tz = "EST"` argument to `ww_process_sensorlog`, which 
 
 ```{r}
 df %>% 
-  select(time, char_time) %>% 
+  select(time, char_time, timestamp) %>% 
   head()
 ```
 
@@ -123,6 +135,38 @@ print(geo)
 lat = geo$lat
 lon = geo$long
 ```
+
+We can also get Census-level information using:
+```{r, cache = TRUE}
+df_census = data.frame(street = "615 N Wolfe St", 
+                       city = "Baltimore", state = "MD",
+                       zip = "21205") %>% 
+  censusxy::cxy_geocode(
+    street = "street",
+    city = "city", 
+    state = "state",
+    zip = "zip",
+    output = "full",
+    return = "geographies",
+    benchmark = "Public_AR_Current",
+    vintage = "Census2010_Current")
+df_census
+```
+
+From this, we can construct a 12-digits FIPS code or `GEOID10` which is the census tract required for geocoding the EPA walkability index:
+
+```{r}
+if (rlang::is_installed("arcgislayers")) {
+  df_census = df_census %>% 
+    mutate(GEOID10 = ww_fips12(cxy_state_id, cxy_county_id, cxy_tract_id, cxy_block_id))
+  epa_walkability = ww_epa_walkability(geoid = df_census$GEOID10)
+  print(epa_walkability)
+  print(epa_walkability %>% 
+            select(NatWalkInd, cat_walk_index))
+}
+```
+
+
 
 We can then calculate the distance from this fixed point using the `ww_calculate_distance` function:
 
@@ -149,44 +193,61 @@ df_min = ww_minute_sensorlog(df)
 head(df_min)
 ```
 
+We can also summarize the data at a daily level using the `ww_summarize_sensorlog` function:
 
 ```{r summarize_sensorlog}
 df_sum = ww_summarize_sensorlog(df)
 df_sum
 ```
 
+One of the main issues with the daily level if you typically want to cross-referene GPS with activity, so we will keep the data at a minute level for now.
 
 
 ## Reading in the GT3X data
-To also summarize the activity profile for different levels of proximity to a fixed point we will read in the GT3X data. This data was captured using an ActiGraph (Pensacola FL) GT9X device. The data is stored in the `extdata` folder of the package, similar to the SensorLog data. We get the path via `ww_example_gt3x_file`.  
+To summarize the activity profile for different levels of proximity to a fixed point we will read in the GT3X data. This data was captured using an ActiGraph (Pensacola FL) GT9X device. The data is stored in the `extdata` folder of the package, similar to the SensorLog data. We get the path via `ww_example_gt3x_file`:
 
-We can read in the data using the `read.gt3x` package, but waterways wraps this using `ww_read_gt3x`:
-
-```{r ag_read}
+```{r ag_file}
 file_gt3x = ww_example_gt3x_file()
 file_gt3x
-ag = ww_read_gt3x(file_gt3x, verbose = FALSE)
+```
+
+
+We can read in the data using the `read.gt3x` package, but waterways wraps this using `ww_read_gt3x`.
+
+
+```{r ag_read}
+ag_tz_applied = ww_read_gt3x(file_gt3x, verbose = FALSE, apply_tz = TRUE)
+head(ag_tz_applied)
+```
+
+We can check the timezone of the data using the `lubridate::tz` function:
+```{r ag_tz}
+lubridate::tz(ag_tz_applied$time)
+```
+
+The `apply_tz` argument in `ww_read_gt3x` (by default) will find the timezone in the header of the file, and apply it to the data.  This is done using the `lubridate::with_tz` function.  The timezone is stored in the header of the file, which can be seen using the header attribute:
+
+We can confirm this via the header:
+```{r}
+header = attributes(ag_tz_applied)$header
+header
+header$TimeZone
+```
+
+The timezone is stored in the `TimeZone` field. So the data is in GMT, but it is "correct" since this is the local time **projected** into GMT.  For example, if you measured data in a timezone of `-04:00` and `read.gt3x` gave you a value of `2025-03-25 14:14:00`, then the *true* time in GMT would be `2025-03-25 18:14:00`.  Using `read.gt3x`, the time incorrectly would be `2025-03-25 14:14:00 GMT`, but with `ww_read_gt3x` it would be `2025-03-25 18:14:00 GMT`.  This means that if you want convert timezones, you will need to use `lubridate::with_tz` or `lubridate::force_tz`.
+
+We will not apply the timezone information similarly as the SensorLog for the same reasons we discussed above.  We can read in the data without applying the timezone, giving "incorrect" data but that can be merged with SensorLog and does not shift times to different dates:
+
+```{r ag_read2}
+ag = ww_read_gt3x(file_gt3x, verbose = FALSE, apply_tz = FALSE)
 head(ag)
+lubridate::tz(ag$time)
 ```
 
 
 In ActiLife, the ActiGraph software, values of zero for all axes are set to the last observation carried forward (LOCF).  The `fill_zeroes` argument will (by default) apply this.  Also, when the data is read in using `read.gt3x`:
 >  DateTimes are therefore represented as POSIXct format with the 'GMT' timezone attribute, which is false; the datetime actually represents local time.
 
-The `apply_tz` argument in `ww_read_gt3x` (by default) will find the timezone in the header of the file, and apply it to the data.  This is done using the `lubridate::with_tz` function.  The timezone is stored in the header of the file, which can be seen using `attr(ag, "header")`.  The timezone is stored in the `TimeZone` field. So the data is in GMT, but it is "correct" since this is the local time **projected** into GMT.  For example, if you measured data in a timezone of `-04:00` and `read.gt3x` gave you a value of `2025-03-25 14:14:00`, then the *true* time in GMT would be `2025-03-25 18:14:00`.  Using `read.gt3x`, the time incorrectly would be `2025-03-25 14:14:00 GMT`, but with `ww_read_gt3x` it would be `2025-03-25 18:14:00 GMT`.  This means that if you want convert timezones, you will need to use `lubridate::with_tz` or `lubridate::force_tz`.
-
- We can check the timezone of the data using the `lubridate::tz` function:
-```{r ag_tz}
-lubridate::tz(ag$time)
-```
-
-
-We can confirm this via the header:
-```{r}
-header = attributes(ag)$header
-header
-header$TimeZone
-```
 
 We can calculate a number of summary measures from the acceleration.  We will calculate ActiGraph Activity Counts using the `agcounts` package.  We will use the `epoch = 60` to calculate the counts in 60-second epochs. From these counts, we can estimate non-wear using the Choi [@choi2011validation] algorithm, which we use from the `actigraph.sleepr` package.  The `ww_process_gt3x` will perform these operations together:
 
@@ -199,6 +260,121 @@ counts = counts %>% select(time, counts, wear)
 ```
 
 ### Overlap with SensorLog data
-The SensorLog data used was a subset of the data from the ActiGraph data and multiple recordings were done. 
+The SensorLog data used was a subset of the data from the ActiGraph data and multiple recordings were done.  We can see the overlap by using the `time` column is used to find the overlap.  
+
+```{r}
+data = counts %>% 
+  mutate(in_counts = TRUE) %>% 
+  full_join(df_min %>% 
+             mutate(in_sensorlog = TRUE),
+            by = join_by(time)) %>% 
+  tidyr::replace_na(list(in_counts = FALSE, in_sensorlog = FALSE))
+data = data %>% 
+  filter(in_counts & in_sensorlog)
+data
+```
+
+Here we see for this data that there is complete wear:
+
+```{r}
+all(data$wear)
+```
+
+
+Here we can look at the counts within "home"/work from those without (there are none) coupled with the variant that takes into account wear time:
+```{r}
+data %>% 
+  group_by(is_within_home) %>% 
+  summarise(
+    sum_counts = sum(counts),
+    mean_counts = mean(counts),
+    sum_counts_wear = sum(counts[wear]),
+    mean_counts_wear = mean(counts[wear])
+  )
+```
+
+### Getting Times
+ You can easily manipulate the time variables to get the date, hour, and minute level data.  Here is an example function `create_date_hour_minute`.  We recommend using the `hms` data type for the hour and minute columns.  since you many times want to plot the data by hour/minute and facet by day:
+
+```{r}
+create_date_hour_minute = function(data) {
+  data = data %>%
+    mutate(
+      date = lubridate::floor_date(time, "1 day"),
+      date = lubridate::as_date(date),
+      hour = lubridate::floor_date(time, "1 hour"),
+      hour = hms::as_hms(hour),
+      minute = lubridate::floor_date(time, "1 minute"),
+      minute = hms::as_hms(minute)
+    )
+}
+```
+
+
+Alternatively, if you group the data by participant, you can create an observation `day` variable that puts data on the same per-person time frame (time from start) versus calendar time:
+```{r}
+create_day = function(data) {
+  data = data %>%
+    dplyr::mutate(
+      day = as.numeric(difftime(date, min(date), units = "days") + 1)
+    )
+}
+```
+
+
+We can plot the counts over time, colored by within home/work (all is within that):
+```{r}
+data %>% 
+  create_date_hour_minute() %>% 
+  ggplot(aes(x = minute, y = counts)) +
+  geom_point(aes(colour = is_within_home)) + 
+  geom_line() + 
+  facet_wrap( ~ date)
+```
+
+And we can also color by distance from home, so not much difference here:
+```{r}
+data %>% 
+  create_date_hour_minute() %>% 
+  ggplot(aes(x = minute, y = counts)) +
+  geom_point(aes(colour = distance)) + 
+  geom_line() + 
+  facet_wrap( ~ date)
+```
+
+
+### Estimating Wear Time
+
+We can estimate wear time using the `wear` column from the ActiGraph data.  Here we will calculate the sum of the wear at each date:
+
+```{r}
+data %>% 
+  create_date_hour_minute() %>% 
+  group_by(date) %>% 
+  summarise(
+    n = n(),
+    n_wear = sum(wear),
+    n_nonwear = sum(!wear)
+  )
+```
+
+
+Without regard to SensorLog data, we can calculate the wear time by date.  This is useful if you want to see how much data was collected on a given day:
+
+```{r}
+counts %>% 
+  create_date_hour_minute() %>% 
+  group_by(date) %>% 
+  summarise(
+    n = n(),
+    n_wear = sum(wear),
+    n_nonwear = sum(!wear)
+  )
+```
+
+Once this is calculated, you can exclude dates without insufficient wear time (e.g. 95% of the day or 1368 minutes, or 10 hours of wear).  Different tasks require different criteria for wear time.
+
+
+
 
 # References

@@ -53,7 +53,8 @@ e.g. \code{"America/New_York"}).  Set to
 \item{verbose}{print diagnostic messages.  Either logical or integer, where
 higher values are higher levels of verbosity.}
 
-\item{...}{additional arguments to pass to \link{ww_process_time}}
+\item{...}{additional arguments to pass to \link{ww_process_time},
+including \code{apply_tz} and \code{tz}}
 
 \item{distance_cutoff}{Distance in meters to consider within home,
 in meters}
