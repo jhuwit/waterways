@@ -155,13 +155,21 @@ df_census
 
 From this, we can construct a 12-digits FIPS code or `GEOID10` which is the census tract required for geocoding the EPA walkability index:
 
-```{r}
+```{r get_epa}
 if (rlang::is_installed("arcgislayers")) {
   df_census = df_census %>% 
     mutate(GEOID10 = ww_fips12(cxy_state_id, cxy_county_id, cxy_tract_id, cxy_block_id))
   epa_walkability = ww_epa_walkability(geoid = df_census$GEOID10)
   print(epa_walkability)
+}
+```
+
+We can simply focus on the EPA walkability index, which is the `NatWalkInd` column.  We can also get the EPA walkability index category breaks from the `cat_walk_index`:
+
+```{r get_epa_cat}
+if (rlang::is_installed("arcgislayers")) {
   print(epa_walkability %>% 
+          as.data.frame() %>% 
             select(NatWalkInd, cat_walk_index))
 }
 ```
