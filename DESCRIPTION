@@ -41,7 +41,8 @@ Suggests:
 Remotes:
   muschellij2/SummarizedActigraphy,
   dipetkov/actigraph.sleepr,
-  R-ArcGIS/arcgislayers
+  R-ArcGIS/arcgislayers,
+  chris-prener/censusxy
 VignetteBuilder: knitr
-URL: https://jhuwit.github.io/waterways/
+URL: https://jhuwit.github.io/waterways/, https://github.com/jhuwit/waterways
 Config/testthat/edition: 3
