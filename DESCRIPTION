@@ -1,6 +1,6 @@
 Package: waterways
 Title: Read and Analyze Data from OCEANS and WAVES Studies
-Version: 0.7.0
+Version: 0.7.1
 Authors@R: c(
     person(given = "John", 
            family = "Muschelli",
@@ -33,6 +33,7 @@ Suggests:
     agcounts,
     arcgislayers,
     censusxy,
+    ggplot2,
     knitr,
     rmarkdown,
     SummarizedActigraphy,

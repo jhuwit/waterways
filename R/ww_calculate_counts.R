@@ -47,10 +47,10 @@ ww_calculate_counts = function(
 #' otherwise the axis1 value is used.
 #' @export
 #' @rdname ww_calculate_counts
-ww_calculate_nonwear = function(data,
-                                method = c("choi", "troiano"),
-                                use_magnitude = TRUE,
-                                ...) {
+ww_calculate_wear = function(data,
+                             method = c("choi", "troiano"),
+                             use_magnitude = TRUE,
+                             ...) {
   time = timestamp = NULL
   rm(list = c("time", "timestamp"))
   data = data %>%
@@ -88,6 +88,10 @@ ww_calculate_nonwear = function(data,
     dplyr::select(time, dplyr::contains("wear")) %>%
     dplyr::as_tibble()
 }
+
+#' @export
+#' @rdname ww_calculate_counts
+ww_calculate_nonwear = ww_calculate_wear
 
 #' @export
 #' @rdname ww_calculate_counts

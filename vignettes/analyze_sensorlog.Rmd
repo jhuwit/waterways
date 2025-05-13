@@ -1,11 +1,11 @@
 ---
 title: "Analysis of SensorLog and GT3X Data"
 output: rmarkdown::html_vignette
+bibliography: refs.bib
 vignette: >
   %\VignetteIndexEntry{Analysis of SensorLog and GT3X Data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-bibliography: refs.bib
 ---
 
 ```{r setup, include = FALSE}
@@ -19,20 +19,18 @@ library(SummarizedActigraphy)
 library(read.gt3x)
 library(lubridate)
 library(tidyr)
-library(sf)
-library(ggplot2)
 ```
 
-  
+
 # Introduction
 In this vignette, we will go through the steps on how to analyze SensorLog data.  We will go through the steps of reading in the data, checking for potential duplicates of timestamps, calculating distance metrics from a fixed point (commonly participant home), and creating daily summaries.  
-  
+
 We will also integrate ActiGraph data to show activity at different distances.
-  
+
 # Methods
 ## Data
 The data used is example data embedded in the waterways package. It is a single participant for approximately two hours worth of GPS and activity data. The SensorLog data is stored in a zip file and contains a single CSV file. The data is stored in the `extdata` folder of the package.  We can get the path of the file on each user's machines using `system.file` and the package name:
-  
+
 ```{r sensorlog_file}
 library(waterways)
 file = system.file(
@@ -172,7 +170,7 @@ We can simply focus on the EPA walkability index, which is the `NatWalkInd` colu
 if (rlang::is_installed("arcgislayers") && rlang::is_installed("censusxy")) {
   print(epa_walkability %>% 
           as.data.frame() %>% 
-            select(NatWalkInd, cat_walk_index))
+          select(NatWalkInd, cat_walk_index))
 }
 ```
 
@@ -276,7 +274,7 @@ The SensorLog data used was a subset of the data from the ActiGraph data and mul
 data = counts %>% 
   mutate(in_counts = TRUE) %>% 
   full_join(df_min %>% 
-             mutate(in_sensorlog = TRUE),
+              mutate(in_sensorlog = TRUE),
             by = join_by(time)) %>% 
   tidyr::replace_na(list(in_counts = FALSE, in_sensorlog = FALSE))
 data = data %>% 
@@ -304,7 +302,7 @@ data %>%
 ```
 
 ### Getting Times
- You can easily manipulate the time variables to get the date, hour, and minute level data.  Here is an example function `create_date_hour_minute`.  We recommend using the `hms` data type for the hour and minute columns.  since you many times want to plot the data by hour/minute and facet by day:
+You can easily manipulate the time variables to get the date, hour, and minute level data.  Here is an example function `create_date_hour_minute`.  We recommend using the `hms` data type for the hour and minute columns.  since you many times want to plot the data by hour/minute and facet by day:
 
 ```{r}
 create_date_hour_minute = function(data) {
@@ -334,22 +332,28 @@ create_day = function(data) {
 
 We can plot the counts over time, colored by within home/work (all is within that):
 ```{r}
-data %>% 
-  create_date_hour_minute() %>% 
-  ggplot(aes(x = minute, y = counts)) +
-  geom_point(aes(colour = is_within_home)) + 
-  geom_line() + 
-  facet_wrap( ~ date)
+if (rlang::is_installed("ggplot2")) {
+  library(ggplot2)
+  data %>% 
+    create_date_hour_minute() %>% 
+    ggplot(aes(x = minute, y = counts)) +
+    geom_point(aes(colour = is_within_home)) + 
+    geom_line() + 
+    facet_wrap( ~ date)
+}
 ```
 
 And we can also color by distance from home, so not much difference here:
 ```{r}
-data %>% 
-  create_date_hour_minute() %>% 
-  ggplot(aes(x = minute, y = counts)) +
-  geom_point(aes(colour = distance)) + 
-  geom_line() + 
-  facet_wrap( ~ date)
+if (rlang::is_installed("ggplot2")) {
+  library(ggplot2)
+  data %>% 
+    create_date_hour_minute() %>% 
+    ggplot(aes(x = minute, y = counts)) +
+    geom_point(aes(colour = distance)) + 
+    geom_line() + 
+    facet_wrap( ~ date)
+}
 ```
 
 

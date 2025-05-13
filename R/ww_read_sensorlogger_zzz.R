@@ -24,6 +24,9 @@ ww_read_sensorlogger = function(
   data_list = purrr::map(file, function(r) {
     data = ww_sensorlogger_reader(r, verbose = verbose, ...,  type = NULL)
   })
+  if (length(file) == 1 && length(data_list) == 1) {
+    data_list = data_list[[1]]
+  }
 
   data_list
 }

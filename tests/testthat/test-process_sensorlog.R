@@ -12,11 +12,35 @@ testthat::test_that("ww_process_sensorlog works", {
   testthat::expect_error({
     ww_process_sensorlog(df, check_data = TRUE, tz = "GMT")
   }, regexp = "anyDuplicated")
-  result = ww_process_sensorlog(df, check_data = FALSE, tz = "GMT")
+
+  testthat::expect_error({
+    ww_process_time(df, check_data = TRUE, tz = "GMT")
+  }, regexp = "anyDuplicated")
+
+  result = ww_process_sensorlog(df, check_data = FALSE, tz = "GMT",
+                                apply_tz = FALSE)
   test_has_name(
     result,
     c("time", "timestamp", "distance", "distance_traveled", "is_within_home")
   )
+  # 4 hout not shifted
+  testthat::expect_equal(
+    range(result$time),
+    structure(c(1741704251.899, 1741704941.689), class = c("POSIXct",
+                                                           "POSIXt"), tzone = "GMT")
+  )
+  result = ww_process_sensorlog(df, check_data = FALSE, tz = "GMT",
+                                apply_tz = TRUE)
+  test_has_name(
+    result,
+    c("time", "timestamp", "distance", "distance_traveled", "is_within_home")
+  )
+  testthat::expect_equal(
+    range(result$time),
+    structure(c(1741718651.899, 1741719341.689), class = c("POSIXct",
+                                                           "POSIXt"), tzone = "GMT")
+  )
+
   testthat::expect_true(
     all(is.na(result$distance))
   )

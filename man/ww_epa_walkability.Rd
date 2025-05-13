@@ -7,7 +7,9 @@
 ww_epa_walkability(geoid, geometry = TRUE, ...)
 }
 \arguments{
-\item{geoid}{GEOID10 of the area of interest.  This should be a 12 character string.}
+\item{geoid}{GEOID10 of the area of interest.  This should be a 12 character string.
+If \code{NULL}, then all GEOIDs are selected (warning: this can be a lot of data, take a while,
+use with caution).}
 
 \item{geometry}{Should geometry be returned?  Passed to \code{\link[arcgislayers:arc_select]{arcgislayers::arc_select()}}}
 

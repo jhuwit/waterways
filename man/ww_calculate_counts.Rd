@@ -2,11 +2,19 @@
 % Please edit documentation in R/ww_calculate_counts.R
 \name{ww_calculate_counts}
 \alias{ww_calculate_counts}
+\alias{ww_calculate_wear}
 \alias{ww_calculate_nonwear}
 \alias{ww_process_gt3x}
 \title{Process SensorLog Daa}
 \usage{
 ww_calculate_counts(data, epoch = 60L, lfe_select = FALSE, verbose = TRUE)
+
+ww_calculate_wear(
+  data,
+  method = c("choi", "troiano"),
+  use_magnitude = TRUE,
+  ...
+)
 
 ww_calculate_nonwear(
   data,

@@ -56,11 +56,18 @@ ww_process_time = function(data,
     dplyr::mutate(
       # use GMT to agree with ActiGraph
       time = as_datetime_safe(time, tz = tz),
-      timestamp = as_datetime_safe(timestamp)
     )
+  if (assertthat::has_name(data, "timestamp")) {
+    data = data %>%
+      dplyr::mutate(
+        timestamp = as_datetime_safe(timestamp)
+      )
+  }
   if (check_data) {
     stopifnot(anyDuplicated(data$time) == 0)
-    stopifnot(anyDuplicated(data$timestamp) == 0)
+    if (assertthat::has_name(data, "timestamp")) {
+      stopifnot(anyDuplicated(data$timestamp) == 0)
+    }
   }
   data
 }

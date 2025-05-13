@@ -7,7 +7,7 @@
 \usage{
 ww_fips15(state, county, tract, block = NA)
 
-ww_fips12(...)
+ww_fips12(state, county, tract, block = NA)
 }
 \arguments{
 \item{state}{2-digit state FIPS code}

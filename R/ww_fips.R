@@ -34,8 +34,16 @@ ww_fips15 = function(
 
 #' @export
 #' @rdname ww_fips
-ww_fips12 = function(...) {
-  fips15 = ww_fips15(...)
+ww_fips12 = function(
+    state,
+    county,
+    tract,
+    block = NA) {
+  fips15 = ww_fips15(
+    state = state,
+    county = county,
+    tract = tract,
+    block = block)
   fips12 = substr(fips15, 1, 12)
   fips12
 }
