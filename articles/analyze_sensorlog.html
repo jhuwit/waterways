@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Analysis of SensorLog Data • waterways</title>
+<title>Analysis of SensorLog and GT3X Data • waterways</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Analysis of SensorLog Data">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Analysis of SensorLog and GT3X Data">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">waterways</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,7 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/analyze_sensorlog.html">Analysis of SensorLog Data</a></li>
+<li><a class="dropdown-item" href="../articles/analyze_sensorlog.html">Analysis of SensorLog and GT3X Data</a></li>
   </ul>
 </li>
       </ul>
@@ -41,6 +41,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jhuwit/waterways/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -54,10 +55,10 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Analysis of SensorLog Data</h1>
+      <h1>Analysis of SensorLog and GT3X Data</h1>
             
       
-
+      <small class="dont-index">Source: <a href="https://github.com/jhuwit/waterways/blob/main/vignettes/analyze_sensorlog.Rmd" class="external-link"><code>vignettes/analyze_sensorlog.Rmd</code></a></small>
       <div class="d-none name"><code>analyze_sensorlog.Rmd</code></div>
     </div>
 
@@ -201,8 +202,8 @@ digits for milliseconds, there are multiple measurements:</p>
 <p>Thus, we do not want to ensure no duplicated times, so we will set
 <code>check_data</code> to be <code>FALSE</code>:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df</span> <span class="op">=</span> <span class="fu"><a href="../reference/ww_process_sensorlog.html">ww_process_sensorlog</a></span><span class="op">(</span><span class="va">df</span>, check_data <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="va">df</span></span>
+<code class="sourceCode R"><span><span class="va">df_proc</span> <span class="op">=</span> <span class="fu"><a href="../reference/ww_process_sensorlog.html">ww_process_sensorlog</a></span><span class="op">(</span><span class="va">df</span>, check_data <span class="op">=</span> <span class="cn">FALSE</span>, apply_tz <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">df_proc</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 11,578 × 18</span></span></span>
 <span><span class="co">#&gt;    time                index timestamp             lat   lon altitude speed</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
@@ -216,6 +217,35 @@ digits for milliseconds, there are multiple measurements:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 2025-03-11 <span style="color: #949494;">18:44:12</span>     8 2025-03-11 <span style="color: #949494;">18:44:07</span>  39.3 -<span style="color: #BB0000;">76.6</span>     46.3    -<span style="color: #BB0000;">1</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 2025-03-11 <span style="color: #949494;">18:44:12</span>     9 2025-03-11 <span style="color: #949494;">18:44:07</span>  39.3 -<span style="color: #BB0000;">76.6</span>     46.3    -<span style="color: #BB0000;">1</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 2025-03-11 <span style="color: #949494;">18:44:12</span>    10 2025-03-11 <span style="color: #949494;">18:44:07</span>  39.3 -<span style="color: #BB0000;">76.6</span>     46.3    -<span style="color: #BB0000;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 11,568 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 11 more variables: speed_accuracy &lt;dbl&gt;, accel_X &lt;dbl&gt;, accel_Y &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   accel_Z &lt;dbl&gt;, lat_zero &lt;lgl&gt;, lon_zero &lt;lgl&gt;, distance &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   is_within_home &lt;lgl&gt;, distance_traveled &lt;dbl&gt;, timezone_estimated &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   char_time &lt;chr&gt;</span></span></span></code></pre></div>
+<p>Note, the argument <code>apply_tz</code> will apply the time zone of
+the data. This is helpful as it will set the correct time zone of the
+data in absolute terms. Unfortunately, this makes it so researchers have
+to make sure they time shift things like hours. For example, if you want
+to find what data is between 10AM and 6PM in EST time zone, you need to
+shift those to GMT/UTC. Also, this will cause issues as it shifts data
+into different dates. The data is likely/sleep rest, but this can skew
+numbers. For analysis, we will not apply the timezone:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df</span> <span class="op">=</span> <span class="fu"><a href="../reference/ww_process_sensorlog.html">ww_process_sensorlog</a></span><span class="op">(</span><span class="va">df</span>, check_data <span class="op">=</span> <span class="cn">FALSE</span>, apply_tz <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">df</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 11,578 × 18</span></span></span>
+<span><span class="co">#&gt;    time                index timestamp             lat   lon altitude speed</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 2025-03-11 <span style="color: #949494;">14:44:11</span>     1 2025-03-11 <span style="color: #949494;">18:44:07</span>  39.3 -<span style="color: #BB0000;">76.6</span>     46.3    -<span style="color: #BB0000;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 2025-03-11 <span style="color: #949494;">14:44:11</span>     2 2025-03-11 <span style="color: #949494;">18:44:07</span>  39.3 -<span style="color: #BB0000;">76.6</span>     46.3    -<span style="color: #BB0000;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 2025-03-11 <span style="color: #949494;">14:44:11</span>     3 2025-03-11 <span style="color: #949494;">18:44:07</span>  39.3 -<span style="color: #BB0000;">76.6</span>     46.3    -<span style="color: #BB0000;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 2025-03-11 <span style="color: #949494;">14:44:12</span>     4 2025-03-11 <span style="color: #949494;">18:44:07</span>  39.3 -<span style="color: #BB0000;">76.6</span>     46.3    -<span style="color: #BB0000;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 2025-03-11 <span style="color: #949494;">14:44:12</span>     5 2025-03-11 <span style="color: #949494;">18:44:07</span>  39.3 -<span style="color: #BB0000;">76.6</span>     46.3    -<span style="color: #BB0000;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 2025-03-11 <span style="color: #949494;">14:44:12</span>     6 2025-03-11 <span style="color: #949494;">18:44:07</span>  39.3 -<span style="color: #BB0000;">76.6</span>     46.3    -<span style="color: #BB0000;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 2025-03-11 <span style="color: #949494;">14:44:12</span>     7 2025-03-11 <span style="color: #949494;">18:44:07</span>  39.3 -<span style="color: #BB0000;">76.6</span>     46.3    -<span style="color: #BB0000;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 2025-03-11 <span style="color: #949494;">14:44:12</span>     8 2025-03-11 <span style="color: #949494;">18:44:07</span>  39.3 -<span style="color: #BB0000;">76.6</span>     46.3    -<span style="color: #BB0000;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 2025-03-11 <span style="color: #949494;">14:44:12</span>     9 2025-03-11 <span style="color: #949494;">18:44:07</span>  39.3 -<span style="color: #BB0000;">76.6</span>     46.3    -<span style="color: #BB0000;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 2025-03-11 <span style="color: #949494;">14:44:12</span>    10 2025-03-11 <span style="color: #949494;">18:44:07</span>  39.3 -<span style="color: #BB0000;">76.6</span>     46.3    -<span style="color: #BB0000;">1</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 11,568 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 11 more variables: speed_accuracy &lt;dbl&gt;, accel_X &lt;dbl&gt;, accel_Y &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   accel_Z &lt;dbl&gt;, lat_zero &lt;lgl&gt;, lon_zero &lt;lgl&gt;, distance &lt;dbl&gt;,</span></span></span>
@@ -237,19 +267,19 @@ timezone using <code><a href="https://lubridate.tidyverse.org/reference/with_tz.
 the time are retained so that users can check any timezone conversions,
 as they can lead to issues with merging data, determining windows
 (e.g. wake), or other time-based analyses.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">char_time</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">char_time</span>, <span class="va">timestamp</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 2</span></span></span>
-<span><span class="co">#&gt;   time                char_time                    </span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 2025-03-11 <span style="color: #949494;">18:44:11</span> 2025-03-11T14:44:11.899-04:00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 2025-03-11 <span style="color: #949494;">18:44:11</span> 2025-03-11T14:44:11.938-04:00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 2025-03-11 <span style="color: #949494;">18:44:11</span> 2025-03-11T14:44:11.998-04:00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 2025-03-11 <span style="color: #949494;">18:44:12</span> 2025-03-11T14:44:12.058-04:00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 2025-03-11 <span style="color: #949494;">18:44:12</span> 2025-03-11T14:44:12.117-04:00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 2025-03-11 <span style="color: #949494;">18:44:12</span> 2025-03-11T14:44:12.177-04:00</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
+<span><span class="co">#&gt;   time                char_time                     timestamp          </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                         <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>             </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 2025-03-11 <span style="color: #949494;">14:44:11</span> 2025-03-11T14:44:11.899-04:00 2025-03-11 <span style="color: #949494;">18:44:07</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 2025-03-11 <span style="color: #949494;">14:44:11</span> 2025-03-11T14:44:11.938-04:00 2025-03-11 <span style="color: #949494;">18:44:07</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 2025-03-11 <span style="color: #949494;">14:44:11</span> 2025-03-11T14:44:11.998-04:00 2025-03-11 <span style="color: #949494;">18:44:07</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 2025-03-11 <span style="color: #949494;">14:44:12</span> 2025-03-11T14:44:12.058-04:00 2025-03-11 <span style="color: #949494;">18:44:07</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 2025-03-11 <span style="color: #949494;">14:44:12</span> 2025-03-11T14:44:12.117-04:00 2025-03-11 <span style="color: #949494;">18:44:07</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 2025-03-11 <span style="color: #949494;">14:44:12</span> 2025-03-11T14:44:12.177-04:00 2025-03-11 <span style="color: #949494;">18:44:07</span></span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="calculating-distance">Calculating distance<a class="anchor" aria-label="anchor" href="#calculating-distance"></a>
@@ -265,7 +295,7 @@ fixed point. We will use the address
 Bloomberg School of Public Health where this data was collected, using
 the <a href="https://geocoding.geo.census.gov/geocoder/" class="external-link">Census
 Geocoder</a> for free:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">geo</span> <span class="op">=</span> <span class="fu">tidygeocoder</span><span class="fu">::</span><span class="fu"><a href="https://jessecambon.github.io/tidygeocoder/reference/geo.html" class="external-link">geo</a></span><span class="op">(</span><span class="st">"615 N Wolfe St, Baltimore MD"</span>, method <span class="op">=</span> <span class="st">"census"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">geo</span><span class="op">)</span></span>
 <span><span class="va">lat</span> <span class="op">=</span> <span class="va">geo</span><span class="op">$</span><span class="va">lat</span></span>
@@ -274,31 +304,139 @@ Geocoder</a> for free:</p>
 <span><span class="co">#&gt;   address                        lat  long</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 615 N Wolfe St, Baltimore MD  39.3 -<span style="color: #BB0000;">76.6</span></span></span></code></pre>
+<p>We can also get Census-level information using:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/is_installed.html" class="external-link">is_installed</a></span><span class="op">(</span><span class="st">"censusxy"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">df_census</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>street <span class="op">=</span> <span class="st">"615 N Wolfe St"</span>, </span>
+<span>                         city <span class="op">=</span> <span class="st">"Baltimore"</span>, state <span class="op">=</span> <span class="st">"MD"</span>,</span>
+<span>                         zip <span class="op">=</span> <span class="st">"21205"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="fu">censusxy</span><span class="fu">::</span><span class="fu"><a href="https://chris-prener.github.io/censusxy/reference/cxy_geocode.html" class="external-link">cxy_geocode</a></span><span class="op">(</span></span>
+<span>      street <span class="op">=</span> <span class="st">"street"</span>,</span>
+<span>      city <span class="op">=</span> <span class="st">"city"</span>, </span>
+<span>      state <span class="op">=</span> <span class="st">"state"</span>,</span>
+<span>      zip <span class="op">=</span> <span class="st">"zip"</span>,</span>
+<span>      output <span class="op">=</span> <span class="st">"full"</span>,</span>
+<span>      return <span class="op">=</span> <span class="st">"geographies"</span>,</span>
+<span>      benchmark <span class="op">=</span> <span class="st">"Public_AR_Current"</span>,</span>
+<span>      vintage <span class="op">=</span> <span class="st">"Census2010_Current"</span><span class="op">)</span></span>
+<span>  <span class="va">df_census</span></span>
+<span><span class="op">}</span></span>
+<span><span class="co">#&gt;           street      city state   zip                          cxy_address</span></span>
+<span><span class="co">#&gt; 1 615 N Wolfe St Baltimore    MD 21205 615 N Wolfe St, Baltimore, MD, 21205</span></span>
+<span><span class="co">#&gt;   cxy_status cxy_quality                  cxy_matched_address cxy_tiger_line_id</span></span>
+<span><span class="co">#&gt; 1      Match       Exact 615 N WOLFE ST, BALTIMORE, MD, 21205         206423761</span></span>
+<span><span class="co">#&gt;   cxy_tiger_side   cxy_lon  cxy_lat cxy_state_id cxy_county_id cxy_tract_id</span></span>
+<span><span class="co">#&gt; 1              R -76.59075 39.29762           24           510        60400</span></span>
+<span><span class="co">#&gt;   cxy_block_id</span></span>
+<span><span class="co">#&gt; 1         2002</span></span></code></pre></div>
+<p>From this, we can construct a 12-digits FIPS code or
+<code>GEOID10</code> which is the census tract required for geocoding
+the EPA walkability index:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/is_installed.html" class="external-link">is_installed</a></span><span class="op">(</span><span class="st">"arcgislayers"</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/is_installed.html" class="external-link">is_installed</a></span><span class="op">(</span><span class="st">"censusxy"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">df_census</span> <span class="op">=</span> <span class="va">df_census</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>GEOID10 <span class="op">=</span> <span class="fu"><a href="../reference/ww_fips.html">ww_fips12</a></span><span class="op">(</span><span class="va">cxy_state_id</span>, <span class="va">cxy_county_id</span>, <span class="va">cxy_tract_id</span>, <span class="va">cxy_block_id</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">epa_walkability</span> <span class="op">=</span> <span class="fu"><a href="../reference/ww_epa_walkability.html">ww_epa_walkability</a></span><span class="op">(</span>geoid <span class="op">=</span> <span class="va">df_census</span><span class="op">$</span><span class="va">GEOID10</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">epa_walkability</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="co">#&gt; Registered S3 method overwritten by 'jsonify':</span></span>
+<span><span class="co">#&gt;   method     from    </span></span>
+<span><span class="co">#&gt;   print.json jsonlite</span></span>
+<span><span class="co">#&gt; Simple feature collection with 1 feature and 183 fields</span></span>
+<span><span class="co">#&gt; Geometry type: POLYGON</span></span>
+<span><span class="co">#&gt; Dimension:     XY</span></span>
+<span><span class="co">#&gt; Bounding box:  xmin: -8526057 ymin: 4763540 xmax: -8525672 ymax: 4764542</span></span>
+<span><span class="co">#&gt; Projected CRS: WGS 84 / Pseudo-Mercator</span></span>
+<span><span class="co">#&gt;        GEOID10      GEOID20 STATEFP COUNTYFP TRACTCE BLKGRPCE CSA</span></span>
+<span><span class="co">#&gt; 1 245100604002 245100604002      24      510  060400        2 548</span></span>
+<span><span class="co">#&gt;                                         CSA_Name  CBSA</span></span>
+<span><span class="co">#&gt; 1 Washington-Baltimore-Arlington, DC-MD-VA-WV-PA 12580</span></span>
+<span><span class="co">#&gt;                       CBSA_Name CBSA_POP CBSA_EMP CBSA_WRK Ac_Total Ac_Water</span></span>
+<span><span class="co">#&gt; 1 Baltimore-Columbia-Towson, MD  2793250  1316328  1277911 46.28628        0</span></span>
+<span><span class="co">#&gt;    Ac_Land  Ac_Unpr TotPop CountHU  HH P_WrkAge AutoOwn0   Pct_AO0 AutoOwn1</span></span>
+<span><span class="co">#&gt; 1 46.28628 45.67526    850     601 513    0.769      207 0.4035088      160</span></span>
+<span><span class="co">#&gt;     Pct_AO1 AutoOwn2p  Pct_AO2p Workers R_LowWageWk R_MedWageWk R_HiWageWk</span></span>
+<span><span class="co">#&gt; 1 0.3118908       146 0.2846004     356          73         106        177</span></span>
+<span><span class="co">#&gt;   R_PCTLOWWAGE TotEmp E5_Ret E5_Off E5_Ind E5_Svc E5_Ent E8_Ret E8_off E8_Ind</span></span>
+<span><span class="co">#&gt; 1    0.2050562   2159      5     58      0   2055     41      5     58      0</span></span>
+<span><span class="co">#&gt;   E8_Svc E8_Ent E8_Ed E8_Hlth E8_Pub E_LowWageWk E_MedWageWk E_HiWageWk</span></span>
+<span><span class="co">#&gt; 1      5     41  2019      31      0         165         432       1562</span></span>
+<span><span class="co">#&gt;   E_PctLowWage      D1A      D1B      D1C  D1C5_RET D1C5_OFF D1C5_IND D1C5_SVC</span></span>
+<span><span class="co">#&gt; 1   0.07642427 13.15811 18.60964 47.26848 0.1094685 1.269834        0 44.99154</span></span>
+<span><span class="co">#&gt;    D1C5_ENT  D1C8_RET D1C8_OFF D1C8_IND  D1C8_SVC  D1C8_ENT  D1C8_ED D1C8_HLTH</span></span>
+<span><span class="co">#&gt; 1 0.8976413 0.1094685 1.269834        0 0.1094685 0.8976413 44.20336 0.6787044</span></span>
+<span><span class="co">#&gt;   D1C8_PUB      D1D D1_FLAG D2A_JPHH D2B_E5MIX D2B_E5MIXA D2B_E8MIX D2B_E8MIXA</span></span>
+<span><span class="co">#&gt; 1        0 60.42659       0 4.208577 0.1684239  0.1450724 0.1809233  0.1558933</span></span>
+<span><span class="co">#&gt;   D2A_EPHHM D2C_TRPMX1 D2C_TRPMX2 D2C_TRIPEQ D2R_JOBPOP D2R_WRKEMP D2A_WRKEMP</span></span>
+<span><span class="co">#&gt; 1 0.4211129  0.2334652  0.2599127  0.4008462  0.5649718  0.2831014  0.1648912</span></span>
+<span><span class="co">#&gt;   D2C_WREMLX     D3A D3AAO    D3AMM    D3APO      D3B D3BAO   D3BMM3   D3BMM4</span></span>
+<span><span class="co">#&gt; 1  0.4338273 33.5634     0 17.80826 15.75514 193.5917     0 27.65398 124.4429</span></span>
+<span><span class="co">#&gt;     D3BPO3   D3BPO4    D4A    D4B025    D4B050   D4C      D4D        D4E   D5AR</span></span>
+<span><span class="co">#&gt; 1 13.82699 41.48098 156.91 0.1005002 0.9287976 83.67 1156.904 0.09843529 172055</span></span>
+<span><span class="co">#&gt;     D5AE   D5BR   D5BE         D5CR     D5CRI         D5CE     D5CEI</span></span>
+<span><span class="co">#&gt; 1 135656 686993 455084 0.0008137066 0.8170607 0.0007229358 0.8138514</span></span>
+<span><span class="co">#&gt;          D5DR     D5DRI        D5DE     D5DEI D2A_Ranked D2B_Ranked D3B_Ranked</span></span>
+<span><span class="co">#&gt; 1 0.002455375 0.6867774 0.002324796 0.8559681          8          2         19</span></span>
+<span><span class="co">#&gt;   D4A_Ranked NatWalkInd                                   Region Households</span></span>
+<span><span class="co">#&gt; 1         20   14.66667 Baltimore-Columbia-Towson, MD Metro Area        498</span></span>
+<span><span class="co">#&gt;   Workers_1 Residents Drivers Vehicles White Male Lowwage Medwage Highwage</span></span>
+<span><span class="co">#&gt; 1       356       874  680.24      447   307  387      73     106      177</span></span>
+<span><span class="co">#&gt;   W_P_Lowwage W_P_Medwage W_P_Highwage GasPrice   logd1a   logd1c logd3aao</span></span>
+<span><span class="co">#&gt; 1  0.07642427   0.2000926    0.7234831      248 2.650287 3.876779        0</span></span>
+<span><span class="co">#&gt;   logd3apo d4bo25 d5dei_1 logd4d UPTpercap B_C_constant B_C_male  B_C_ld1c</span></span>
+<span><span class="co">#&gt; 1 2.818705      0       1      7        35     2.352128 0.121315 -0.327752</span></span>
+<span><span class="co">#&gt;   B_C_drvmveh  B_C_ld1a B_C_ld3apo  B_C_inc1 B_C_gasp B_N_constant B_N_inc2</span></span>
+<span><span class="co">#&gt; 1    -0.51647 -0.016259  -0.172378 -0.656324 0.006464     3.252959 0.091073</span></span>
+<span><span class="co">#&gt;   B_N_inc3 B_N_white B_N_male B_N_drvmveh  B_N_gasp  B_N_ld1a  B_N_ld1c</span></span>
+<span><span class="co">#&gt; 1 0.082466 -0.038257 0.113668   -0.192584 -0.004854 -0.214509 -0.214509</span></span>
+<span><span class="co">#&gt;   B_N_ld3aao B_N_ld3apo B_N_d4bo25 B_N_d5dei B_N_UPTpc C_R_Households C_R_Pop</span></span>
+<span><span class="co">#&gt; 1   0.079935   -0.18742  -0.513327  0.041535 -0.000446         239116  609032</span></span>
+<span><span class="co">#&gt;   C_R_Workers C_R_Drivers C_R_Vehicles C_R_White  C_R_Male C_R_Lowwage</span></span>
+<span><span class="co">#&gt; 1      249913    432662.6       219982 0.2749117 0.4696765   0.2358181</span></span>
+<span><span class="co">#&gt;   C_R_Medwage C_R_Highwage  C_R_DrmV NonCom_VMT_Per_Worker Com_VMT_Per_Worker</span></span>
+<span><span class="co">#&gt; 1   0.3586968    0.4054851 0.8894451              1.208178           6.123527</span></span>
+<span><span class="co">#&gt;   VMT_per_worker VMT_tot_min VMT_tot_max VMT_tot_avg GHG_per_worker Annual_GHG</span></span>
+<span><span class="co">#&gt; 1       7.331705    3.427387    151.4601    23.25904       6.532549   1698.463</span></span>
+<span><span class="co">#&gt;   Shape_Length Shape_Area OBJECTID SLC_score                       geometry</span></span>
+<span><span class="co">#&gt; 1     2777.492   312797.9   111077  97.36253 POLYGON ((-8526057 4764524,...</span></span>
+<span><span class="co">#&gt;   cat_walk_index</span></span>
+<span><span class="co">#&gt; 1    (10.5,15.2]</span></span></code></pre></div>
+<p>We can simply focus on the EPA walkability index, which is the
+<code>NatWalkInd</code> column. We can also get the EPA walkability
+index category breaks from the <code>cat_walk_index</code>:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/is_installed.html" class="external-link">is_installed</a></span><span class="op">(</span><span class="st">"arcgislayers"</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/is_installed.html" class="external-link">is_installed</a></span><span class="op">(</span><span class="st">"censusxy"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">epa_walkability</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>          <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>            <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">NatWalkInd</span>, <span class="va">cat_walk_index</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="co">#&gt;   NatWalkInd cat_walk_index</span></span>
+<span><span class="co">#&gt; 1   14.66667    (10.5,15.2]</span></span></code></pre></div>
 <p>We can then calculate the distance from this fixed point using the
 <code>ww_calculate_distance</code> function:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op">=</span> <span class="fu"><a href="../reference/ww_process_sensorlog.html">ww_calculate_distance</a></span><span class="op">(</span><span class="va">df</span>,</span>
 <span>                           lat <span class="op">=</span> <span class="va">lat</span>,</span>
 <span>                           lon <span class="op">=</span> <span class="va">lon</span><span class="op">)</span></span></code></pre></div>
 <p>This function uses the <code><a href="https://rdrr.io/pkg/geosphere/man/distm.html" class="external-link">geosphere::distm</a></code> function to
 calculate the distance in meters from the fixed point. We can see the
 new columns that were added to the data.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">char_time</span>, <span class="va">lat_zero</span>, <span class="va">lon_zero</span>, <span class="va">distance</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 11,578 × 5</span></span></span>
 <span><span class="co">#&gt;    time                char_time                     lat_zero lon_zero distance</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                         <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 2025-03-11 <span style="color: #949494;">18:44:11</span> 2025-03-11T14:44:11.899-04:00 FALSE    FALSE        73.4</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 2025-03-11 <span style="color: #949494;">18:44:11</span> 2025-03-11T14:44:11.938-04:00 FALSE    FALSE        73.4</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 2025-03-11 <span style="color: #949494;">18:44:11</span> 2025-03-11T14:44:11.998-04:00 FALSE    FALSE        73.4</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 2025-03-11 <span style="color: #949494;">18:44:12</span> 2025-03-11T14:44:12.058-04:00 FALSE    FALSE        73.4</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 2025-03-11 <span style="color: #949494;">18:44:12</span> 2025-03-11T14:44:12.117-04:00 FALSE    FALSE        73.4</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 2025-03-11 <span style="color: #949494;">18:44:12</span> 2025-03-11T14:44:12.177-04:00 FALSE    FALSE        73.4</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 2025-03-11 <span style="color: #949494;">18:44:12</span> 2025-03-11T14:44:12.236-04:00 FALSE    FALSE        73.4</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 2025-03-11 <span style="color: #949494;">18:44:12</span> 2025-03-11T14:44:12.296-04:00 FALSE    FALSE        73.4</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 2025-03-11 <span style="color: #949494;">18:44:12</span> 2025-03-11T14:44:12.356-04:00 FALSE    FALSE        73.4</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 2025-03-11 <span style="color: #949494;">18:44:12</span> 2025-03-11T14:44:12.415-04:00 FALSE    FALSE        73.4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 2025-03-11 <span style="color: #949494;">14:44:11</span> 2025-03-11T14:44:11.899-04:00 FALSE    FALSE        73.4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 2025-03-11 <span style="color: #949494;">14:44:11</span> 2025-03-11T14:44:11.938-04:00 FALSE    FALSE        73.4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 2025-03-11 <span style="color: #949494;">14:44:11</span> 2025-03-11T14:44:11.998-04:00 FALSE    FALSE        73.4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 2025-03-11 <span style="color: #949494;">14:44:12</span> 2025-03-11T14:44:12.058-04:00 FALSE    FALSE        73.4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 2025-03-11 <span style="color: #949494;">14:44:12</span> 2025-03-11T14:44:12.117-04:00 FALSE    FALSE        73.4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 2025-03-11 <span style="color: #949494;">14:44:12</span> 2025-03-11T14:44:12.177-04:00 FALSE    FALSE        73.4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 2025-03-11 <span style="color: #949494;">14:44:12</span> 2025-03-11T14:44:12.236-04:00 FALSE    FALSE        73.4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 2025-03-11 <span style="color: #949494;">14:44:12</span> 2025-03-11T14:44:12.296-04:00 FALSE    FALSE        73.4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 2025-03-11 <span style="color: #949494;">14:44:12</span> 2025-03-11T14:44:12.356-04:00 FALSE    FALSE        73.4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 2025-03-11 <span style="color: #949494;">14:44:12</span> 2025-03-11T14:44:12.415-04:00 FALSE    FALSE        73.4</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 11,568 more rows</span></span></span></code></pre></div>
 </div>
 </div>
@@ -310,22 +448,24 @@ summarize the data. In many cases, we do not need the data at a
 sub-second or second-level. We can summarize the data at a daily level
 using the <code>ww_summarize_sensorlog</code> function. This function
 will take the mean over a period of seconds, usually 60:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_min</span> <span class="op">=</span> <span class="fu"><a href="../reference/ww_summarize_sensorlog.html">ww_minute_sensorlog</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df_min</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 16</span></span></span>
 <span><span class="co">#&gt;   time                max_speed   lat   lon speed accel_X accel_Y accel_Z</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 2025-03-11 <span style="color: #949494;">18:44:00</span>        -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span> -<span style="color: #BB0000;">0.017</span><span style="color: #BB0000; text-decoration: underline;">8</span>   0.964  0.018<span style="text-decoration: underline;">2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 2025-03-11 <span style="color: #949494;">18:45:00</span>        -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span> -<span style="color: #BB0000;">0.066</span><span style="color: #BB0000; text-decoration: underline;">5</span>   1.01   0.057<span style="text-decoration: underline;">7</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 2025-03-11 <span style="color: #949494;">18:46:00</span>        -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span> -<span style="color: #BB0000;">0.054</span><span style="color: #BB0000; text-decoration: underline;">7</span>   1.00   0.025<span style="text-decoration: underline;">0</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 2025-03-11 <span style="color: #949494;">18:47:00</span>        -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span> -<span style="color: #BB0000;">0.084</span><span style="color: #BB0000; text-decoration: underline;">3</span>   1.01   0.045<span style="text-decoration: underline;">0</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 2025-03-11 <span style="color: #949494;">18:48:00</span>        -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span> -<span style="color: #BB0000;">0.080</span><span style="color: #BB0000; text-decoration: underline;">8</span>   1.01   0.046<span style="text-decoration: underline;">8</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 2025-03-11 <span style="color: #949494;">18:49:00</span>        -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span> -<span style="color: #BB0000;">0.090</span><span style="color: #BB0000; text-decoration: underline;">1</span>   1.01   0.041<span style="text-decoration: underline;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 2025-03-11 <span style="color: #949494;">14:44:00</span>        -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span> -<span style="color: #BB0000;">0.017</span><span style="color: #BB0000; text-decoration: underline;">8</span>   0.964  0.018<span style="text-decoration: underline;">2</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 2025-03-11 <span style="color: #949494;">14:45:00</span>        -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span> -<span style="color: #BB0000;">0.066</span><span style="color: #BB0000; text-decoration: underline;">5</span>   1.01   0.057<span style="text-decoration: underline;">7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 2025-03-11 <span style="color: #949494;">14:46:00</span>        -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span> -<span style="color: #BB0000;">0.054</span><span style="color: #BB0000; text-decoration: underline;">7</span>   1.00   0.025<span style="text-decoration: underline;">0</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 2025-03-11 <span style="color: #949494;">14:47:00</span>        -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span> -<span style="color: #BB0000;">0.084</span><span style="color: #BB0000; text-decoration: underline;">3</span>   1.01   0.045<span style="text-decoration: underline;">0</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 2025-03-11 <span style="color: #949494;">14:48:00</span>        -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span> -<span style="color: #BB0000;">0.080</span><span style="color: #BB0000; text-decoration: underline;">8</span>   1.01   0.046<span style="text-decoration: underline;">8</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 2025-03-11 <span style="color: #949494;">14:49:00</span>        -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span> -<span style="color: #BB0000;">0.090</span><span style="color: #BB0000; text-decoration: underline;">1</span>   1.01   0.041<span style="text-decoration: underline;">1</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 8 more variables: distance &lt;dbl&gt;, is_within_home &lt;lgl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   distance_traveled &lt;dbl&gt;, vm &lt;dbl&gt;, enmo &lt;dbl&gt;, lat_zero &lt;lgl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   lon_zero &lt;lgl&gt;, in_sensorlog &lt;lgl&gt;</span></span></span></code></pre></div>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<p>We can also summarize the data at a daily level using the
+<code>ww_summarize_sensorlog</code> function:</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_sum</span> <span class="op">=</span> <span class="fu"><a href="../reference/ww_summarize_sensorlog.html">ww_summarize_sensorlog</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
 <span><span class="va">df_sum</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 11</span></span></span>
@@ -336,24 +476,27 @@ will take the mean over a period of seconds, usually 60:</p>
 <span><span class="co">#&gt; <span style="color: #949494;">#   sum_distance_traveled &lt;dbl&gt;, mean_distance_traveled &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   n_distance_traveled &lt;int&gt;, time_within_home &lt;int&gt;, time_outside_home &lt;int&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   time_missing_home &lt;int&gt;</span></span></span></code></pre></div>
+<p>One of the main issues with the daily level if you typically want to
+cross-referene GPS with activity, so we will keep the data at a minute
+level for now.</p>
 </div>
 <div class="section level3">
 <h3 id="reading-in-the-gt3x-data">Reading in the GT3X data<a class="anchor" aria-label="anchor" href="#reading-in-the-gt3x-data"></a>
 </h3>
-<p>To also summarize the activity profile for different levels of
-proximity to a fixed point we will read in the GT3X data. This data was
-captured using an ActiGraph (Pensacola FL) GT9X device. The data is
-stored in the <code>extdata</code> folder of the package, similar to the
-SensorLog data. We get the path via
-<code>ww_example_gt3x_file</code>.</p>
-<p>We can read in the data using the <code>read.gt3x</code> package, but
-waterways wraps this using <code>ww_read_gt3x</code>:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<p>To summarize the activity profile for different levels of proximity
+to a fixed point we will read in the GT3X data. This data was captured
+using an ActiGraph (Pensacola FL) GT9X device. The data is stored in the
+<code>extdata</code> folder of the package, similar to the SensorLog
+data. We get the path via <code>ww_example_gt3x_file</code>:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">file_gt3x</span> <span class="op">=</span> <span class="fu"><a href="../reference/ww_example_data.html">ww_example_gt3x_file</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">file_gt3x</span></span>
-<span><span class="co">#&gt; [1] "/home/runner/work/_temp/Library/waterways/extdata/TAS1H30182789_2025-03-11.gt3x.gz"</span></span>
-<span><span class="va">ag</span> <span class="op">=</span> <span class="fu"><a href="../reference/ww_read_gt3x.html">ww_read_gt3x</a></span><span class="op">(</span><span class="va">file_gt3x</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ag</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "/home/runner/work/_temp/Library/waterways/extdata/TAS1H30182789_2025-03-11.gt3x.gz"</span></span></code></pre></div>
+<p>We can read in the data using the <code>read.gt3x</code> package, but
+waterways wraps this using <code>ww_read_gt3x</code>.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ag_tz_applied</span> <span class="op">=</span> <span class="fu"><a href="../reference/ww_read_gt3x.html">ww_read_gt3x</a></span><span class="op">(</span><span class="va">file_gt3x</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, apply_tz <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ag_tz_applied</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                  time      X     Y     Z</span></span>
 <span><span class="co">#&gt; 1 2025-03-11 17:45:00 -0.270 0.910 0.352</span></span>
 <span><span class="co">#&gt; 2 2025-03-11 17:45:00 -0.266 0.895 0.359</span></span>
@@ -361,37 +504,19 @@ waterways wraps this using <code>ww_read_gt3x</code>:</p>
 <span><span class="co">#&gt; 4 2025-03-11 17:45:00 -0.281 0.875 0.391</span></span>
 <span><span class="co">#&gt; 5 2025-03-11 17:45:00 -0.289 0.863 0.406</span></span>
 <span><span class="co">#&gt; 6 2025-03-11 17:45:00 -0.285 0.859 0.418</span></span></code></pre></div>
-<p>In ActiLife, the ActiGraph software, values of zero for all axes are
-set to the last observation carried forward (LOCF). The
-<code>fill_zeroes</code> argument will (by default) apply this. Also,
-when the data is read in using <code>read.gt3x</code>: &gt; DateTimes
-are therefore represented as POSIXct format with the ‘GMT’ timezone
-attribute, which is false; the datetime actually represents local
-time.</p>
+<p>We can check the timezone of the data using the
+<code><a href="https://lubridate.tidyverse.org/reference/tz.html" class="external-link">lubridate::tz</a></code> function:</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/tz.html" class="external-link">tz</a></span><span class="op">(</span><span class="va">ag_tz_applied</span><span class="op">$</span><span class="va">time</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "GMT"</span></span></code></pre></div>
 <p>The <code>apply_tz</code> argument in <code>ww_read_gt3x</code> (by
 default) will find the timezone in the header of the file, and apply it
 to the data. This is done using the <code><a href="https://lubridate.tidyverse.org/reference/with_tz.html" class="external-link">lubridate::with_tz</a></code>
 function. The timezone is stored in the header of the file, which can be
-seen using <code>attr(ag, "header")</code>. The timezone is stored in
-the <code>TimeZone</code> field. So the data is in GMT, but it is
-“correct” since this is the local time <strong>projected</strong> into
-GMT. For example, if you measured data in a timezone of
-<code>-04:00</code> and <code>read.gt3x</code> gave you a value of
-<code>2025-03-25 14:14:00</code>, then the <em>true</em> time in GMT
-would be <code>2025-03-25 18:14:00</code>. Using <code>read.gt3x</code>,
-the time incorrectly would be <code>2025-03-25 14:14:00 GMT</code>, but
-with <code>ww_read_gt3x</code> it would be
-<code>2025-03-25 18:14:00 GMT</code>. This means that if you want
-convert timezones, you will need to use <code><a href="https://lubridate.tidyverse.org/reference/with_tz.html" class="external-link">lubridate::with_tz</a></code>
-or <code><a href="https://lubridate.tidyverse.org/reference/force_tz.html" class="external-link">lubridate::force_tz</a></code>.</p>
-<p>We can check the timezone of the data using the
-<code><a href="https://lubridate.tidyverse.org/reference/tz.html" class="external-link">lubridate::tz</a></code> function:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/tz.html" class="external-link">tz</a></span><span class="op">(</span><span class="va">ag</span><span class="op">$</span><span class="va">time</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "GMT"</span></span></code></pre></div>
+seen using the header attribute:</p>
 <p>We can confirm this via the header:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">header</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/attributes.html" class="external-link">attributes</a></span><span class="op">(</span><span class="va">ag</span><span class="op">)</span><span class="op">$</span><span class="va">header</span></span>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">header</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/attributes.html" class="external-link">attributes</a></span><span class="op">(</span><span class="va">ag_tz_applied</span><span class="op">)</span><span class="op">$</span><span class="va">header</span></span>
 <span><span class="va">header</span></span>
 <span><span class="co">#&gt; GT3X information</span></span>
 <span><span class="co">#&gt;  $ Serial Number     :"TAS1H30182789"</span></span>
@@ -418,6 +543,40 @@ or <code><a href="https://lubridate.tidyverse.org/reference/force_tz.html" class
 <span><span class="co">#&gt;  $ Serial Prefix     :"TAS"</span></span>
 <span><span class="va">header</span><span class="op">$</span><span class="va">TimeZone</span></span>
 <span><span class="co">#&gt; [1] "-04:00:00"</span></span></code></pre></div>
+<p>The timezone is stored in the <code>TimeZone</code> field. So the
+data is in GMT, but it is “correct” since this is the local time
+<strong>projected</strong> into GMT. For example, if you measured data
+in a timezone of <code>-04:00</code> and <code>read.gt3x</code> gave you
+a value of <code>2025-03-25 14:14:00</code>, then the <em>true</em> time
+in GMT would be <code>2025-03-25 18:14:00</code>. Using
+<code>read.gt3x</code>, the time incorrectly would be
+<code>2025-03-25 14:14:00 GMT</code>, but with <code>ww_read_gt3x</code>
+it would be <code>2025-03-25 18:14:00 GMT</code>. This means that if you
+want convert timezones, you will need to use
+<code><a href="https://lubridate.tidyverse.org/reference/with_tz.html" class="external-link">lubridate::with_tz</a></code> or <code><a href="https://lubridate.tidyverse.org/reference/force_tz.html" class="external-link">lubridate::force_tz</a></code>.</p>
+<p>We will not apply the timezone information similarly as the SensorLog
+for the same reasons we discussed above. We can read in the data without
+applying the timezone, giving “incorrect” data but that can be merged
+with SensorLog and does not shift times to different dates:</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ag</span> <span class="op">=</span> <span class="fu"><a href="../reference/ww_read_gt3x.html">ww_read_gt3x</a></span><span class="op">(</span><span class="va">file_gt3x</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, apply_tz <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ag</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                  time      X     Y     Z</span></span>
+<span><span class="co">#&gt; 1 2025-03-11 13:45:00 -0.270 0.910 0.352</span></span>
+<span><span class="co">#&gt; 2 2025-03-11 13:45:00 -0.266 0.895 0.359</span></span>
+<span><span class="co">#&gt; 3 2025-03-11 13:45:00 -0.270 0.887 0.375</span></span>
+<span><span class="co">#&gt; 4 2025-03-11 13:45:00 -0.281 0.875 0.391</span></span>
+<span><span class="co">#&gt; 5 2025-03-11 13:45:00 -0.289 0.863 0.406</span></span>
+<span><span class="co">#&gt; 6 2025-03-11 13:45:00 -0.285 0.859 0.418</span></span>
+<span><span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/tz.html" class="external-link">tz</a></span><span class="op">(</span><span class="va">ag</span><span class="op">$</span><span class="va">time</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "GMT"</span></span></code></pre></div>
+<p>In ActiLife, the ActiGraph software, values of zero for all axes are
+set to the last observation carried forward (LOCF). The
+<code>fill_zeroes</code> argument will (by default) apply this. Also,
+when the data is read in using <code>read.gt3x</code>: &gt; DateTimes
+are therefore represented as POSIXct format with the ‘GMT’ timezone
+attribute, which is false; the datetime actually represents local
+time.</p>
 <p>We can calculate a number of summary measures from the acceleration.
 We will calculate ActiGraph Activity Counts using the
 <code>agcounts</code> package. We will use the <code>epoch = 60</code>
@@ -426,26 +585,164 @@ estimate non-wear using the Choi <span class="citation">(Choi et al.
 2011)</span> algorithm, which we use from the
 <code>actigraph.sleepr</code> package. The <code>ww_process_gt3x</code>
 will perform these operations together:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">counts</span> <span class="op">=</span> <span class="fu"><a href="../reference/ww_calculate_counts.html">ww_process_gt3x</a></span><span class="op">(</span><span class="va">ag</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Joining with `by = join_by(timestamp)`</span></span>
 <span><span class="va">counts</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 6</span></span></span>
 <span><span class="co">#&gt;   time                axis1 axis2 axis3 counts wear </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 2025-03-11 <span style="color: #949494;">13:45:00</span>     0     0     0      0 FALSE</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 2025-03-11 <span style="color: #949494;">13:46:00</span>     0     0     0      0 FALSE</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 2025-03-11 <span style="color: #949494;">13:47:00</span>     0     0     0      0 FALSE</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 2025-03-11 <span style="color: #949494;">13:48:00</span>     0     0     0      0 FALSE</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 2025-03-11 <span style="color: #949494;">13:49:00</span>     0     0     0      0 FALSE</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 2025-03-11 <span style="color: #949494;">13:50:00</span>     0     0     0      0 FALSE</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 2025-03-11 <span style="color: #949494;">13:45:00</span>  <span style="text-decoration: underline;">1</span>067  <span style="text-decoration: underline;">1</span>225  <span style="text-decoration: underline;">1</span>235   <span style="text-decoration: underline;">2</span>041 TRUE </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 2025-03-11 <span style="color: #949494;">13:46:00</span>  <span style="text-decoration: underline;">1</span>004   772  <span style="text-decoration: underline;">1</span>048   <span style="text-decoration: underline;">1</span>644 TRUE </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 2025-03-11 <span style="color: #949494;">13:47:00</span>   129    11   189    229 TRUE </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 2025-03-11 <span style="color: #949494;">13:48:00</span>  <span style="text-decoration: underline;">1</span>541  <span style="text-decoration: underline;">1</span>017  <span style="text-decoration: underline;">2</span>129   <span style="text-decoration: underline;">2</span>818 TRUE </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 2025-03-11 <span style="color: #949494;">13:49:00</span>   676   575   619   <span style="text-decoration: underline;">1</span>082 TRUE </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 2025-03-11 <span style="color: #949494;">13:50:00</span>    72    79    68    127 TRUE</span></span>
 <span><span class="va">counts</span> <span class="op">=</span> <span class="va">counts</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">counts</span>, <span class="va">wear</span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="overlap-with-sensorlog-data">Overlap with SensorLog data<a class="anchor" aria-label="anchor" href="#overlap-with-sensorlog-data"></a>
 </h4>
 <p>The SensorLog data used was a subset of the data from the ActiGraph
-data and multiple recordings were done.</p>
+data and multiple recordings were done. We can see the overlap by using
+the <code>time</code> column is used to find the overlap.</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">=</span> <span class="va">counts</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>in_counts <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">full_join</a></span><span class="op">(</span><span class="va">df_min</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>             <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>in_sensorlog <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>            by <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/join_by.html" class="external-link">join_by</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/replace_na.html" class="external-link">replace_na</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>in_counts <span class="op">=</span> <span class="cn">FALSE</span>, in_sensorlog <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">data</span> <span class="op">=</span> <span class="va">data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">in_counts</span> <span class="op">&amp;</span> <span class="va">in_sensorlog</span><span class="op">)</span></span>
+<span><span class="va">data</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 12 × 19</span></span></span>
+<span><span class="co">#&gt;    time                counts wear  in_counts max_speed   lat   lon speed</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 2025-03-11 <span style="color: #949494;">14:44:00</span>   <span style="text-decoration: underline;">6</span>399 TRUE  TRUE             -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 2025-03-11 <span style="color: #949494;">14:45:00</span>   <span style="text-decoration: underline;">6</span>005 TRUE  TRUE             -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 2025-03-11 <span style="color: #949494;">14:46:00</span>   <span style="text-decoration: underline;">4</span>231 TRUE  TRUE             -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 2025-03-11 <span style="color: #949494;">14:47:00</span>   <span style="text-decoration: underline;">6</span>012 TRUE  TRUE             -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 2025-03-11 <span style="color: #949494;">14:48:00</span>   <span style="text-decoration: underline;">6</span>660 TRUE  TRUE             -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 2025-03-11 <span style="color: #949494;">14:49:00</span>   <span style="text-decoration: underline;">7</span>555 TRUE  TRUE             -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 2025-03-11 <span style="color: #949494;">14:50:00</span>   <span style="text-decoration: underline;">7</span>275 TRUE  TRUE             -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 2025-03-11 <span style="color: #949494;">14:51:00</span>   <span style="text-decoration: underline;">6</span>107 TRUE  TRUE             -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 2025-03-11 <span style="color: #949494;">14:52:00</span>   <span style="text-decoration: underline;">6</span>387 TRUE  TRUE             -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 2025-03-11 <span style="color: #949494;">14:53:00</span>   <span style="text-decoration: underline;">7</span>120 TRUE  TRUE             -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> 2025-03-11 <span style="color: #949494;">14:54:00</span>   <span style="text-decoration: underline;">8</span>740 TRUE  TRUE             -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> 2025-03-11 <span style="color: #949494;">14:55:00</span>   <span style="text-decoration: underline;">7</span>127 TRUE  TRUE             -<span style="color: #BB0000;">1</span>  39.3 -<span style="color: #BB0000;">76.6</span>    -<span style="color: #BB0000;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 11 more variables: accel_X &lt;dbl&gt;, accel_Y &lt;dbl&gt;, accel_Z &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   distance &lt;dbl&gt;, is_within_home &lt;lgl&gt;, distance_traveled &lt;dbl&gt;, vm &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   enmo &lt;dbl&gt;, lat_zero &lt;lgl&gt;, lon_zero &lt;lgl&gt;, in_sensorlog &lt;lgl&gt;</span></span></span></code></pre></div>
+<p>Here we see for this data that there is complete wear:</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">wear</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<p>Here we can look at the counts within “home”/work from those without
+(there are none) coupled with the variant that takes into account wear
+time:</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">is_within_home</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span>    sum_counts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">counts</span><span class="op">)</span>,</span>
+<span>    mean_counts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">counts</span><span class="op">)</span>,</span>
+<span>    sum_counts_wear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">counts</span><span class="op">[</span><span class="va">wear</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>    mean_counts_wear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">counts</span><span class="op">[</span><span class="va">wear</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 5</span></span></span>
+<span><span class="co">#&gt;   is_within_home sum_counts mean_counts sum_counts_wear mean_counts_wear</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> TRUE                <span style="text-decoration: underline;">79</span>618       <span style="text-decoration: underline;">6</span>635.           <span style="text-decoration: underline;">79</span>618            <span style="text-decoration: underline;">6</span>635.</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="getting-times">Getting Times<a class="anchor" aria-label="anchor" href="#getting-times"></a>
+</h4>
+<p>You can easily manipulate the time variables to get the date, hour,
+and minute level data. Here is an example function
+<code>create_date_hour_minute</code>. We recommend using the
+<code>hms</code> data type for the hour and minute columns. since you
+many times want to plot the data by hour/minute and facet by day:</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">create_date_hour_minute</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">data</span> <span class="op">=</span> <span class="va">data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>      date <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/round_date.html" class="external-link">floor_date</a></span><span class="op">(</span><span class="va">time</span>, <span class="st">"1 day"</span><span class="op">)</span>,</span>
+<span>      date <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/as_date.html" class="external-link">as_date</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span>,</span>
+<span>      hour <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/round_date.html" class="external-link">floor_date</a></span><span class="op">(</span><span class="va">time</span>, <span class="st">"1 hour"</span><span class="op">)</span>,</span>
+<span>      hour <span class="op">=</span> <span class="fu">hms</span><span class="fu">::</span><span class="fu"><a href="https://hms.tidyverse.org/reference/hms.html" class="external-link">as_hms</a></span><span class="op">(</span><span class="va">hour</span><span class="op">)</span>,</span>
+<span>      minute <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/round_date.html" class="external-link">floor_date</a></span><span class="op">(</span><span class="va">time</span>, <span class="st">"1 minute"</span><span class="op">)</span>,</span>
+<span>      minute <span class="op">=</span> <span class="fu">hms</span><span class="fu">::</span><span class="fu"><a href="https://hms.tidyverse.org/reference/hms.html" class="external-link">as_hms</a></span><span class="op">(</span><span class="va">minute</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>Alternatively, if you group the data by participant, you can create
+an observation <code>day</code> variable that puts data on the same
+per-person time frame (time from start) versus calendar time:</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">create_day</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">data</span> <span class="op">=</span> <span class="va">data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>      day <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/difftime.html" class="external-link">difftime</a></span><span class="op">(</span><span class="va">date</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span>, units <span class="op">=</span> <span class="st">"days"</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>We can plot the counts over time, colored by within home/work (all is
+within that):</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">create_date_hour_minute</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">minute</span>, y <span class="op">=</span> <span class="va">counts</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>colour <span class="op">=</span> <span class="va">is_within_home</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span> <span class="op">~</span> <span class="va">date</span><span class="op">)</span></span></code></pre></div>
+<p><img src="analyze_sensorlog_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
+<p>And we can also color by distance from home, so not much difference
+here:</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">create_date_hour_minute</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">minute</span>, y <span class="op">=</span> <span class="va">counts</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>colour <span class="op">=</span> <span class="va">distance</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span> <span class="op">~</span> <span class="va">date</span><span class="op">)</span></span></code></pre></div>
+<p><img src="analyze_sensorlog_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
+</div>
+<div class="section level4">
+<h4 id="estimating-wear-time">Estimating Wear Time<a class="anchor" aria-label="anchor" href="#estimating-wear-time"></a>
+</h4>
+<p>We can estimate wear time using the <code>wear</code> column from the
+ActiGraph data. Here we will calculate the sum of the wear at each
+date:</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">create_date_hour_minute</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span>    n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    n_wear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">wear</span><span class="op">)</span>,</span>
+<span>    n_nonwear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="va">wear</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
+<span><span class="co">#&gt;   date           n n_wear n_nonwear</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 2025-03-11    12     12         0</span></span></code></pre></div>
+<p>Without regard to SensorLog data, we can calculate the wear time by
+date. This is useful if you want to see how much data was collected on a
+given day:</p>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">counts</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">create_date_hour_minute</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span>    n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    n_wear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">wear</span><span class="op">)</span>,</span>
+<span>    n_nonwear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">!</span><span class="va">wear</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
+<span><span class="co">#&gt;   date           n n_wear n_nonwear</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 2025-03-11   118    118         0</span></span></code></pre></div>
+<p>Once this is calculated, you can exclude dates without insufficient
+wear time (e.g. 95% of the day or 1368 minutes, or 10 hours of wear).
+Different tasks require different criteria for wear time.</p>
 </div>
 </div>
 </div>

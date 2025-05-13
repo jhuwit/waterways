@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">waterways</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,7 +35,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/analyze_sensorlog.html">Analysis of SensorLog Data</a></li>
+<li><a class="dropdown-item" href="articles/analyze_sensorlog.html">Analysis of SensorLog and GT3X Data</a></li>
   </ul>
 </li>
       </ul>
@@ -43,6 +43,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jhuwit/waterways/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -67,13 +68,126 @@
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
-<p>This is a basic example which shows you how to solve a common problem:</p>
+<div class="section level3">
+<h3 id="read-in-gt3x-data">Read in GT3X data:<a class="anchor" aria-label="anchor" href="#read-in-gt3x-data"></a>
+</h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jhuwit.github.io/waterways/">waterways</a></span><span class="op">)</span></span>
-<span><span class="co">## basic example code</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     filter, lag</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">file_gt3x</span> <span class="op">=</span> <span class="fu"><a href="reference/ww_example_data.html">ww_example_gt3x_file</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">file_gt3x</span></span>
+<span><span class="co">#&gt; [1] "/Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/library/waterways/extdata/TAS1H30182789_2025-03-11.gt3x.gz"</span></span>
+<span><span class="va">ag</span> <span class="op">=</span> <span class="fu"><a href="reference/ww_read_gt3x.html">ww_read_gt3x</a></span><span class="op">(</span><span class="va">file_gt3x</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, apply_tz <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ag</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                  time      X     Y     Z</span></span>
+<span><span class="co">#&gt; 1 2025-03-11 13:45:00 -0.270 0.910 0.352</span></span>
+<span><span class="co">#&gt; 2 2025-03-11 13:45:00 -0.266 0.895 0.359</span></span>
+<span><span class="co">#&gt; 3 2025-03-11 13:45:00 -0.270 0.887 0.375</span></span>
+<span><span class="co">#&gt; 4 2025-03-11 13:45:00 -0.281 0.875 0.391</span></span>
+<span><span class="co">#&gt; 5 2025-03-11 13:45:00 -0.289 0.863 0.406</span></span>
+<span><span class="co">#&gt; 6 2025-03-11 13:45:00 -0.285 0.859 0.418</span></span>
+<span><span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/tz.html" class="external-link">tz</a></span><span class="op">(</span><span class="va">ag</span><span class="op">$</span><span class="va">time</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "GMT"</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="reading-in-the-data">Reading in the data<a class="anchor" aria-label="anchor" href="#reading-in-the-data"></a>
+</h3>
+<p>The data is read in using the <code>ww_read_sensorlog</code> function:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">file</span> <span class="op">=</span> <span class="fu"><a href="reference/ww_example_data.html">ww_example_sensorlog_file</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">df</span> <span class="op">=</span> <span class="fu"><a href="reference/ww_read_sensorlog.html">ww_read_sensorlog</a></span><span class="op">(</span><span class="va">file</span>, robust <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">df</span> <span class="op">=</span> <span class="va">df</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">file</span><span class="op">)</span> <span class="co"># we don't need to see which file this came from</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 6 × 13</span></span>
+<span><span class="co">#&gt;   time         index timestamp   lat   lon altitude speed speed_accuracy accel_X</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;          &lt;dbl&gt;   &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 2025-03-11T…     1    1.74e9  39.3 -76.6     46.3    -1             -1  0.411 </span></span>
+<span><span class="co">#&gt; 2 2025-03-11T…     2    1.74e9  39.3 -76.6     46.3    -1             -1  0.0908</span></span>
+<span><span class="co">#&gt; 3 2025-03-11T…     3    1.74e9  39.3 -76.6     46.3    -1             -1  0.125 </span></span>
+<span><span class="co">#&gt; 4 2025-03-11T…     4    1.74e9  39.3 -76.6     46.3    -1             -1  0.0636</span></span>
+<span><span class="co">#&gt; 5 2025-03-11T…     5    1.74e9  39.3 -76.6     46.3    -1             -1  0.0993</span></span>
+<span><span class="co">#&gt; 6 2025-03-11T…     6    1.74e9  39.3 -76.6     46.3    -1             -1  0.0702</span></span>
+<span><span class="co">#&gt; # ℹ 4 more variables: accel_Y &lt;dbl&gt;, accel_Z &lt;dbl&gt;, lat_zero &lt;lgl&gt;,</span></span>
+<span><span class="co">#&gt; #   lon_zero &lt;lgl&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">add_count</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">n</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">lat</span>, <span class="va">lon</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"accel"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 8 × 6</span></span>
+<span><span class="co">#&gt;   time                            lat   lon accel_X accel_Y  accel_Z</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                         &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 2025-03-11T14:44:14.795-04:00  39.3 -76.6 -0.705    0.891  0.427  </span></span>
+<span><span class="co">#&gt; 2 2025-03-11T14:44:14.795-04:00  39.3 -76.6 -1.02     0.667  0.405  </span></span>
+<span><span class="co">#&gt; 3 2025-03-11T14:44:14.795-04:00  39.3 -76.6 -0.641    0.833 -0.0961 </span></span>
+<span><span class="co">#&gt; 4 2025-03-11T14:44:14.796-04:00  39.3 -76.6 -0.989    0.441  0.0263 </span></span>
+<span><span class="co">#&gt; 5 2025-03-11T14:44:14.796-04:00  39.3 -76.6 -0.808    0.591 -0.00647</span></span>
+<span><span class="co">#&gt; 6 2025-03-11T14:44:14.796-04:00  39.3 -76.6 -0.213    0.354 -0.0787 </span></span>
+<span><span class="co">#&gt; 7 2025-03-11T14:44:14.797-04:00  39.3 -76.6 -0.0179   0.432 -0.0820 </span></span>
+<span><span class="co">#&gt; 8 2025-03-11T14:44:14.797-04:00  39.3 -76.6  0.0611   0.418  0.0770</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df</span> <span class="op">=</span> <span class="fu"><a href="reference/ww_process_sensorlog.html">ww_process_sensorlog</a></span><span class="op">(</span><span class="va">df</span>, check_data <span class="op">=</span> <span class="cn">FALSE</span>, apply_tz <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">df</span></span>
+<span><span class="co">#&gt; # A tibble: 11,578 × 18</span></span>
+<span><span class="co">#&gt;    time                index timestamp             lat   lon altitude speed</span></span>
+<span><span class="co">#&gt;    &lt;dttm&gt;              &lt;dbl&gt; &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 2025-03-11 14:44:11     1 2025-03-11 18:44:07  39.3 -76.6     46.3    -1</span></span>
+<span><span class="co">#&gt;  2 2025-03-11 14:44:11     2 2025-03-11 18:44:07  39.3 -76.6     46.3    -1</span></span>
+<span><span class="co">#&gt;  3 2025-03-11 14:44:11     3 2025-03-11 18:44:07  39.3 -76.6     46.3    -1</span></span>
+<span><span class="co">#&gt;  4 2025-03-11 14:44:12     4 2025-03-11 18:44:07  39.3 -76.6     46.3    -1</span></span>
+<span><span class="co">#&gt;  5 2025-03-11 14:44:12     5 2025-03-11 18:44:07  39.3 -76.6     46.3    -1</span></span>
+<span><span class="co">#&gt;  6 2025-03-11 14:44:12     6 2025-03-11 18:44:07  39.3 -76.6     46.3    -1</span></span>
+<span><span class="co">#&gt;  7 2025-03-11 14:44:12     7 2025-03-11 18:44:07  39.3 -76.6     46.3    -1</span></span>
+<span><span class="co">#&gt;  8 2025-03-11 14:44:12     8 2025-03-11 18:44:07  39.3 -76.6     46.3    -1</span></span>
+<span><span class="co">#&gt;  9 2025-03-11 14:44:12     9 2025-03-11 18:44:07  39.3 -76.6     46.3    -1</span></span>
+<span><span class="co">#&gt; 10 2025-03-11 14:44:12    10 2025-03-11 18:44:07  39.3 -76.6     46.3    -1</span></span>
+<span><span class="co">#&gt; # ℹ 11,568 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 11 more variables: speed_accuracy &lt;dbl&gt;, accel_X &lt;dbl&gt;, accel_Y &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   accel_Z &lt;dbl&gt;, lat_zero &lt;lgl&gt;, lon_zero &lt;lgl&gt;, distance &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   is_within_home &lt;lgl&gt;, distance_traveled &lt;dbl&gt;, timezone_estimated &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   char_time &lt;chr&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df_min</span> <span class="op">=</span> <span class="fu"><a href="reference/ww_summarize_sensorlog.html">ww_minute_sensorlog</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
+<span><span class="va">df_min</span></span>
+<span><span class="co">#&gt; # A tibble: 12 × 16</span></span>
+<span><span class="co">#&gt;    time                max_speed   lat   lon speed accel_X accel_Y accel_Z</span></span>
+<span><span class="co">#&gt;    &lt;dttm&gt;                  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 2025-03-11 14:44:00        -1  39.3 -76.6    -1 -0.0178   0.964  0.0182</span></span>
+<span><span class="co">#&gt;  2 2025-03-11 14:45:00        -1  39.3 -76.6    -1 -0.0665   1.01   0.0577</span></span>
+<span><span class="co">#&gt;  3 2025-03-11 14:46:00        -1  39.3 -76.6    -1 -0.0547   1.00   0.0250</span></span>
+<span><span class="co">#&gt;  4 2025-03-11 14:47:00        -1  39.3 -76.6    -1 -0.0843   1.01   0.0450</span></span>
+<span><span class="co">#&gt;  5 2025-03-11 14:48:00        -1  39.3 -76.6    -1 -0.0808   1.01   0.0468</span></span>
+<span><span class="co">#&gt;  6 2025-03-11 14:49:00        -1  39.3 -76.6    -1 -0.0901   1.01   0.0411</span></span>
+<span><span class="co">#&gt;  7 2025-03-11 14:50:00        -1  39.3 -76.6    -1 -0.0842   1.01   0.0512</span></span>
+<span><span class="co">#&gt;  8 2025-03-11 14:51:00        -1  39.3 -76.6    -1 -0.0882   1.01   0.0466</span></span>
+<span><span class="co">#&gt;  9 2025-03-11 14:52:00        -1  39.3 -76.6    -1 -0.0877   1.01   0.0430</span></span>
+<span><span class="co">#&gt; 10 2025-03-11 14:53:00        -1  39.3 -76.6    -1 -0.0876   1.01   0.0494</span></span>
+<span><span class="co">#&gt; 11 2025-03-11 14:54:00        -1  39.3 -76.6    -1 -0.0866   1.01   0.0395</span></span>
+<span><span class="co">#&gt; 12 2025-03-11 14:55:00        -1  39.3 -76.6    -1 -0.0652   0.829 -0.0668</span></span>
+<span><span class="co">#&gt; # ℹ 8 more variables: distance &lt;dbl&gt;, is_within_home &lt;lgl&gt;,</span></span>
+<span><span class="co">#&gt; #   distance_traveled &lt;dbl&gt;, vm &lt;dbl&gt;, enmo &lt;dbl&gt;, lat_zero &lt;lgl&gt;,</span></span>
+<span><span class="co">#&gt; #   lon_zero &lt;lgl&gt;, in_sensorlog &lt;lgl&gt;</span></span></code></pre></div>
 </div>
 </div>
-  </main><aside class="col-md-3"><div class="license">
+</div>
+  </main><aside class="col-md-3"><div class="links">
+<h2 data-toc-skip>Links</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/jhuwit/waterways/" class="external-link">Browse source code</a></li>
+</ul>
+</div>
+
+<div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">waterways</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,10 +18,11 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/analyze_sensorlog.html">Analysis of SensorLog Data</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/analyze_sensorlog.html">Analysis of SensorLog and GT3X Data</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jhuwit/waterways/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -31,7 +32,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Process the Time data from SensorLog and Compare to an Expected Timezone</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/jhuwit/waterways/blob/main/R/ww_process_time.R" class="external-link"><code>R/ww_process_time.R</code></a></small>
       <div class="d-none name"><code>ww_process_time.Rd</code></div>
     </div>
 
@@ -45,6 +46,7 @@
 <span>  <span class="va">data</span>,</span>
 <span>  expected_timezone <span class="op">=</span> <span class="st">"America/New_York"</span>,</span>
 <span>  tz <span class="op">=</span> <span class="st">"GMT"</span>,</span>
+<span>  apply_tz <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  check_data <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -67,8 +69,15 @@ e.g. <code>"America/New_York"</code>).  Set to
 
 
 <dt id="arg-tz">tz<a class="anchor" aria-label="anchor" href="#arg-tz"></a></dt>
-<dd><p>timezone to project the data into.  Keeping as <code>GMT</code> to agree
+<dd><p>timezone to project the data into.  Keeping as <code>GMT</code> and should
+have same value for <code>apply_tz</code> to agree (caution: always check data)
 with ActiGraph, passed to <a href="https://lubridate.tidyverse.org/reference/as_date.html" class="external-link">lubridate::as_datetime</a>.</p></dd>
+
+
+<dt id="arg-apply-tz">apply_tz<a class="anchor" aria-label="anchor" href="#arg-apply-tz"></a></dt>
+<dd><p>Apply the timezone from the timezone shift from the timezone,
+e.g. "2025-03-11T14:44:11-04:00" becomes "2025-03-11T18:44:11" if
+<code>apply_tz = TRUE</code>, but "2025-03-11T14:44:11" if <code>apply_tz = FALSE</code>.</p></dd>
 
 
 <dt id="arg-check-data">check_data<a class="anchor" aria-label="anchor" href="#arg-check-data"></a></dt>
