@@ -42,7 +42,7 @@ Suggests:
 Remotes:
   muschellij2/SummarizedActigraphy,
   dipetkov/actigraph.sleepr,
-  R-ArcGIS/arcgislayers,
+  R-ArcGIS/arcgislayers@v0.4.0,
   chris-prener/censusxy
 VignetteBuilder: knitr
 URL: https://jhuwit.github.io/waterways/, https://github.com/jhuwit/waterways
