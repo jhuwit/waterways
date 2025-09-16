@@ -70,7 +70,8 @@ ww_calculate_wear = function(data,
   choi_nonwear = func(data)
   if (nrow(choi_nonwear) > 0) {
     choi_df = purrr::map2_df(
-      choi_nonwear$period_start, choi_nonwear$period_end,
+      # change for the end - not the last value
+      choi_nonwear$period_start, choi_nonwear$period_end - 60L,
       function(from, to) {
         data.frame(timestamp = seq(from, to, by = 60L),
                    wear = FALSE)
