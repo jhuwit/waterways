@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">waterways</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,8 +62,16 @@
 <span>  <span class="va">data</span>,</span>
 <span>  lfe_select <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"choi"</span>, <span class="st">"troiano"</span><span class="op">)</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span>  use_magnitude <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">ww_apply_cole_kripke</span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">ww_apply_tudor_locke</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">ww_estimate_sleep</span><span class="op">(</span><span class="va">data</span>, data_bed_times <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -103,6 +111,12 @@ otherwise the axis1 value is used.</p></dd>
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>additional arguments to pass to <code>actigraph.sleepr</code> function</p></dd>
 
+
+<dt id="arg-data-bed-times">data_bed_times<a class="anchor" aria-label="anchor" href="#arg-data-bed-times"></a></dt>
+<dd><p>A <code>data.frame</code> containing bed times with columns
+<code>in_bed_time</code>, <code>out_bed_time</code>, and <code>onset</code> or <code>onset_time</code>.  If <code>NULL</code>,
+ww_apply_tudor_locke is used to estimate sleep metrics.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -112,6 +126,8 @@ otherwise the axis1 value is used.</p></dd>
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
     <p>This calls <a href="ww_process_sensorlog.html">ww_check_data</a>, <a href="ww_process_sensorlog.html">ww_calculate_distance</a>, and
 <a href="ww_process_time.html">ww_process_time</a></p>
+<p>For <code>ww_process_gt3x</code>, the <code>...</code> argument are passed to
+<a href="ww_read_gt3x.html">ww_read_gt3x</a></p>
     </div>
 
     <div class="section level2">
@@ -119,6 +135,8 @@ otherwise the axis1 value is used.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">path</span> <span class="op">=</span> <span class="fu"><a href="ww_example_data.html">ww_example_gt3x_file</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ac</span> <span class="op">=</span> <span class="fu"><a href="ww_read_gt3x.html">ww_read_gt3x</a></span><span class="op">(</span><span class="va">path</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">out</span> <span class="op">=</span> <span class="fu">ww_calculate_counts</span><span class="op">(</span><span class="va">ac</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Downloading uv...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Done!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Creating Downsampled Data"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Filtering Data"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Trimming Data"</span>
@@ -135,7 +153,7 @@ otherwise the axis1 value is used.</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

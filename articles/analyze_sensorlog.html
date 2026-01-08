@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">waterways</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -179,7 +179,8 @@ desired, set <code>expected_timezone = NULL</code>:</li>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ww_process_sensorlog.html">ww_process_sensorlog</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
 <span><span class="co">#&gt; No duplicate combinations found of: time, timestamp, lat, lon, altitude, speed, speed_accuracy, accel_X, accel_Y, ... and 3 other variables</span></span>
-<span><span class="co">#&gt; Error in ww_check_data(data, remove_cols = remove_cols): anyDuplicated(data$time) == 0 is not TRUE</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `ww_check_data()`:</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> anyDuplicated(data$time) == 0 is not TRUE</span></span></code></pre></div>
 <p>As the error indicates, there are some duplicate times in this file.
 We can look at those specific duplicate times and see that even to 3
 digits for milliseconds, there are multiple measurements:</p>
@@ -696,7 +697,7 @@ within that):</p>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span> <span class="op">~</span> <span class="va">date</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p><img src="analyze_sensorlog_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
+<p><img src="analyze_sensorlog_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="700"></p>
 <p>And we can also color by distance from home, so not much difference
 here:</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
@@ -709,7 +710,7 @@ here:</p>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span> <span class="op">~</span> <span class="va">date</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p><img src="analyze_sensorlog_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
+<p><img src="analyze_sensorlog_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level4">
 <h4 id="estimating-wear-time">Estimating Wear Time<a class="anchor" aria-label="anchor" href="#estimating-wear-time"></a>
@@ -775,7 +776,7 @@ Exercise</em> 43 (2): 357.
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
