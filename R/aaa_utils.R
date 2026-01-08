@@ -1,3 +1,7 @@
+Round = function (x, n = 0) {
+  return(sign(x) * trunc(abs(x) * 10^n + 0.5)/10^n)
+}
+
 strip_hour_shift = function(x, max_index = 2L) {
   x = sub("[+]", " +", x)
   x = sub("-(\\d\\d:00)$", " -\\1", x)

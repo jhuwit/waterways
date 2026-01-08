@@ -139,6 +139,8 @@ rename_timestamp = function(data) {
 #' @export
 #' @rdname ww_calculate_counts
 ww_apply_cole_kripke = function(data) {
+  timestamp = NULL
+  rm(list = c("timestamp"))
   data = data %>% rename_timestamp()
 
   # https://actigraphcorp.my.site.com/support/s/article/What-does-the-Detect-Sleep-Periods-button-do-and-how-does-it-work
@@ -168,8 +170,8 @@ ww_estimate_sleep = function(
     data_bed_times = NULL,
     verbose = TRUE
 ) {
-  index = onset = timestamp = time = NULL
-  rm(list = c("index", "onset", "timestamp", "time"))
+  in_bed = index = onset = timestamp = time = NULL
+  rm(list = c("index", "onset", "timestamp", "time", "in_bed"))
   if (!"sleep" %in% colnames(data)) {
     if (verbose) {
       cli::cli_alert_info("Running ww_apply_cole_kripke to add sleep column")

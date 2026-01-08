@@ -1,5 +1,7 @@
 
 expand_start_stop = function(df, subtract_value = 60L) {
+  time = index = NULL
+  rm(list = c("time", "index"))
   bed_time = purrr::pmap_dfr(
     # change for the end - not the last value
     list(df$in_bed_time, df$out_bed_time - subtract_value, df$index),
@@ -75,14 +77,16 @@ calculate_sleep_metrics = function(data, do_rounding = TRUE,
   rm(list = c("counts", "axis1", "is_past_onset", "latency",
               "total_counts", "efficiency", "total_minutes_in_bed",
               "total_sleep_time", "waso", "movement_index"))
+  in_bed = duration = time = index = NULL
+  rm(list = c("in_bed", "duration", "time", "index"))
 
   sums = data %>%
     dplyr::summarise(
       total_counts_vm = sum(counts),
       total_counts = sum(axis1),
       latency = sum(!is_past_onset),
-      waso = sum(sleep == "W" & is_past_onset),
-      total_sleep_time = sum(sleep == "S"),
+      waso = sum(.data$sleep == "W" & is_past_onset),
+      total_sleep_time = sum(.data$sleep == "S"),
       total_minutes_in_bed = sum(in_bed),
       efficiency = 100 * total_sleep_time/dplyr::n(),
       movement_index = mean(axis1 > 0) * 100
@@ -108,7 +112,7 @@ calculate_sleep_metrics = function(data, do_rounding = TRUE,
     )
 
   fragmentation_index = result %>%
-    dplyr::filter(sleep == "S") %>%
+    dplyr::filter(.data$sleep == "S") %>%
     dplyr::summarise(fragmentation_index = mean(duration == 1)) %>%
     dplyr::pull(fragmentation_index)
   fragmentation_index = fragmentation_index * 100
@@ -154,13 +158,10 @@ calculate_sleep_metrics = function(data, do_rounding = TRUE,
 
   if (do_rounding) {
     rounder = match.arg(rounder)
-    if (rounder == "Round" & !rlang::is_installed("ncar")) {
-      stop(paste0("ncar package is required for 'Round' rounding method. ",
-                  "Please install it via install.packages('ncar')."))
-    }
     func_round = switch(rounder,
                         round = round,
-                        Round = ncar::Round)
+                        Round = Round
+    )
     sums = sums %>%
       dplyr::mutate(
         avg_awakening_length = func_round(avg_awakening_length, 2),
