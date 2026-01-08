@@ -90,12 +90,19 @@ ww_read_gt3x = function(
     # data$time = lubridate::force_tz(
     #   lubridate::with_tz(data$time, tz_from_offset),
     #   "GMT")
+    if (verbose) {
+      cli::cli_alert_info("Timezone applied to data")
+    }
     data$time = lubridate::with_tz(data$time, tz_from_offset)
     if (!is.null(tz)) {
       data$time = lubridate::force_tz(data$time, tz = tz)
     }
     if (!any_na_time && anyNA(data$time)) {
       stop("Applying timezone from offset created NA times - stopping.")
+    }
+  } else {
+    if (verbose) {
+      cli::cli_alert_info("Timezone not applied to data")
     }
   }
   data = as.data.frame(data)

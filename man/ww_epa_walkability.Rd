@@ -26,7 +26,7 @@ See
 \url{https://geodata.epa.gov/arcgis/rest/services/OA/WalkabilityIndex/MapServer/0}
 }
 \examples{
-\dontshow{if (rlang::is_installed("arcgislayers")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("arcgislayers")) withAutoprint(\{ # examplesIf}
 ww_epa_walkability(c("240054519002", "240054026041", "245102303002"))
 \dontshow{\}) # examplesIf}
 }

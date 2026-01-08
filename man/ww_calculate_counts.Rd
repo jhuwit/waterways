@@ -5,6 +5,9 @@
 \alias{ww_calculate_wear}
 \alias{ww_calculate_nonwear}
 \alias{ww_process_gt3x}
+\alias{ww_apply_cole_kripke}
+\alias{ww_apply_tudor_locke}
+\alias{ww_estimate_sleep}
 \title{Process SensorLog Daa}
 \usage{
 ww_calculate_counts(data, epoch = 60L, lfe_select = FALSE, verbose = TRUE)
@@ -27,8 +30,16 @@ ww_process_gt3x(
   data,
   lfe_select = FALSE,
   method = c("choi", "troiano"),
-  verbose = TRUE
+  use_magnitude = TRUE,
+  verbose = TRUE,
+  ...
 )
+
+ww_apply_cole_kripke(data)
+
+ww_apply_tudor_locke(data, ...)
+
+ww_estimate_sleep(data, data_bed_times = NULL, verbose = TRUE)
 }
 \arguments{
 \item{data}{A \code{data.frame} from \link{ww_read_gt3x}}
@@ -50,6 +61,10 @@ corresponding to \link[actigraph.sleepr:apply_choi]{actigraph.sleepr::apply_choi
 otherwise the axis1 value is used.}
 
 \item{...}{additional arguments to pass to \code{actigraph.sleepr} function}
+
+\item{data_bed_times}{A \code{data.frame} containing bed times with columns
+\code{in_bed_time}, \code{out_bed_time}, and \code{onset} or \code{onset_time}.  If \code{NULL},
+\link{ww_apply_tudor_locke} is used to estimate sleep metrics.}
 }
 \value{
 A \code{data.frame} of transformed data
@@ -60,6 +75,9 @@ Process SensorLog Daa
 \note{
 This calls \link{ww_check_data}, \link{ww_calculate_distance}, and
 \link{ww_process_time}
+
+For \code{ww_process_gt3x}, the \code{...} argument are passed to
+\link{ww_read_gt3x}
 }
 \examples{
 path = ww_example_gt3x_file()

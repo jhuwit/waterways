@@ -96,23 +96,150 @@ ww_calculate_nonwear = ww_calculate_wear
 
 #' @export
 #' @rdname ww_calculate_counts
+#' @note For `ww_process_gt3x`, the `...` argument are passed to
+#' [ww_read_gt3x]
 ww_process_gt3x = function(data,
                            lfe_select = FALSE,
                            method = c("choi", "troiano"),
-                           verbose = TRUE) {
+                           use_magnitude = TRUE,
+                           verbose = TRUE,
+                           ...) {
   if (assertthat::is.string(data) &&
       file.exists(data)) {
-    data = ww_read_gt3x(data)
+    data = ww_read_gt3x(data, ...,
+                        verbose = verbose)
   }
 
-  counts = ww_calculate_counts(data,
-                               lfe_select = lfe_select,
-                               verbose = verbose)
+  counts = ww_calculate_counts(
+    data,
+    lfe_select = lfe_select,
+    verbose = verbose)
 
   # Process the data
-  wear = ww_calculate_nonwear(counts, method = method)
+  wear = ww_calculate_nonwear(
+    counts,
+    method = method,
+    use_magnitude = use_magnitude)
+
   result = dplyr::full_join(counts, wear, by = "time") %>%
     dplyr::mutate(wear = ifelse(is.na(wear), FALSE, wear))
 
   return(result)
+}
+
+rename_timestamp = function(data) {
+  timestamp = time = NULL
+  rm(list = c("timestamp", "time"))
+  if ("time" %in% colnames(data) && !"timestamp" %in% colnames(data)) {
+    data = data %>% dplyr::rename(timestamp = time)
+  }
+  data
+}
+
+#' @export
+#' @rdname ww_calculate_counts
+ww_apply_cole_kripke = function(data) {
+  data = data %>% rename_timestamp()
+
+  # https://actigraphcorp.my.site.com/support/s/article/What-does-the-Detect-Sleep-Periods-button-do-and-how-does-it-work
+  ck = data %>%
+    actigraph.sleepr::apply_cole_kripke()
+  ck = ck %>%
+    dplyr::rename(time = timestamp)
+  ck
+}
+
+#' @export
+#' @rdname ww_calculate_counts
+ww_apply_tudor_locke = function(data, ...) {
+  data = data %>% rename_timestamp()
+  tl = data %>%
+    actigraph.sleepr::apply_tudor_locke(...)
+  tl
+}
+
+#' @param data_bed_times A `data.frame` containing bed times with columns
+#' `in_bed_time`, `out_bed_time`, and `onset` or `onset_time`.  If `NULL`,
+#' [ww_apply_tudor_locke] is used to estimate sleep metrics.
+#' @export
+#' @rdname ww_calculate_counts
+ww_estimate_sleep = function(
+    data,
+    data_bed_times = NULL,
+    verbose = TRUE
+) {
+  index = onset = timestamp = time = NULL
+  rm(list = c("index", "onset", "timestamp", "time"))
+  if (!"sleep" %in% colnames(data)) {
+    if (verbose) {
+      cli::cli_alert_info("Running ww_apply_cole_kripke to add sleep column")
+    }
+    data = data %>%
+      ww_apply_cole_kripke()
+  }
+
+  if (is.null(data_bed_times)) {
+    if (verbose) {
+      cli::cli_alert_info("Running ww_apply_tudor_locke to estimate sleep")
+    }
+    metrics = data %>%
+      ww_apply_tudor_locke()
+  } else {
+    required_cn = c("in_bed_time", "out_bed_time", "onset")
+    assertthat::assert_that(
+      assertthat::has_name(data_bed_times, "in_bed_time"),
+      assertthat::has_name(data_bed_times, "out_bed_time"),
+      assertthat::has_name(data_bed_times, "onset") |  assertthat::has_name(data_bed_times, "onset_time")
+    )
+    if (!assertthat::has_name(data_bed_times, "onset_time") &
+        assertthat::has_name(data_bed_times, "onset")) {
+      data_bed_times = data_bed_times %>%
+        dplyr::rename(onset_time = onset)
+    }
+
+
+    data_bed_times = data_bed_times %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(index = dplyr::row_number())
+
+    data = apply_diary_bed_times(data, data_bed_times, check_times = TRUE)
+
+    # split by the night/sleeping event
+    data_split = data %>%
+      dplyr::filter(in_bed) %>%
+      dplyr::group_split(index)
+    # purrr::map(data_sleep_split, function(x) range(x$time))
+    # diary_i %>% select(in_bed_time, onset_time, out_bed_time)
+
+    # Calculate sleep metrics for each sleeping event
+    metrics = purrr::map_df(data_split, function(data_i) {
+      stopifnot(all(data_i$in_bed))
+      calculate_sleep_metrics(data_i, rounder = "Round")
+    }, .id = "index") %>%
+      dplyr::mutate(index = as.numeric(index))
+
+    # Rename columns to match Diary output
+    # metrics = metrics %>%
+    #   dplyr::select(Latency = latency,
+    #          `Total Counts` = total_counts,
+    #          Efficiency = efficiency,
+    #          `Total Minutes in Bed` = total_minutes_in_bed,
+    #          `Total Sleep Time (TST)` = total_sleep_time,
+    #          `Wake After Sleep Onset (WASO)` = waso,
+    #          `Movement Index` = movement_index,
+    #          `Fragmentation Index` = fragmentation_index,
+    #          `Sleep Fragmentation Index` = sleep_fragmentation_index,
+    #          `Number of Awakenings` = nb_awakenings,
+    #          `Average Awakening Length` = avg_awakening_length,
+    #          everything()) %>%
+    #   mutate(ID = id)
+    metrics = data_bed_times %>%
+      dplyr::right_join(metrics, by = "index") %>%
+      dplyr::select(-index)
+
+  }
+
+
+  metrics
+
 }
