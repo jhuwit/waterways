@@ -30,6 +30,7 @@
   : Process the Time data from SensorLog and Compare to an Expected
   Timezone
 - [`ww_read_gt3x()`](https://jhuwit.github.io/waterways/reference/ww_read_gt3x.md)
+  [`ww_info_gt3x()`](https://jhuwit.github.io/waterways/reference/ww_read_gt3x.md)
   : Read GT3X file
 - [`ww_read_sensorlog()`](https://jhuwit.github.io/waterways/reference/ww_read_sensorlog.md)
   [`ww_sensorlog_csv_spec()`](https://jhuwit.github.io/waterways/reference/ww_read_sensorlog.md)

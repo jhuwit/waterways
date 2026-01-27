@@ -16,6 +16,8 @@ ww_read_gt3x(
   check_attributes = TRUE,
   tz = "GMT"
 )
+
+ww_info_gt3x(path, ...)
 ```
 
 ## Arguments
