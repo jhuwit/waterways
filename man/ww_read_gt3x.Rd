@@ -2,6 +2,7 @@
 % Please edit documentation in R/ww_read_gt3x.R
 \name{ww_read_gt3x}
 \alias{ww_read_gt3x}
+\alias{ww_info_gt3x}
 \title{Read GT3X file}
 \usage{
 ww_read_gt3x(
@@ -15,6 +16,8 @@ ww_read_gt3x(
   check_attributes = TRUE,
   tz = "GMT"
 )
+
+ww_info_gt3x(path, ...)
 }
 \arguments{
 \item{path}{Path to gt3x file}

@@ -115,3 +115,17 @@ ww_read_gt3x = function(
   }
   data
 }
+
+#' @export
+#' @rdname ww_read_gt3x
+ww_info_gt3x = function(
+    path,
+    ...
+) {
+
+  data = read.gt3x::parse_gt3x_info(
+    path = path,
+    ...)
+  data
+}
+
