@@ -1,6 +1,6 @@
 Package: waterways
 Title: Read and Analyze Data from OCEANS and WAVES Studies
-Version: 0.8.0
+Version: 0.8.1
 Authors@R: c(
     person(given = "John", 
            family = "Muschelli",
