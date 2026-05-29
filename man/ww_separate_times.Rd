@@ -7,17 +7,17 @@
 ww_separate_times(data)
 }
 \arguments{
-\item{data}{a \code{data.frame} with a \code{time} column}
+\item{data}{a `data.frame` with a `time` column}
 }
 \value{
-A \code{data.frame} with date, hour, minute, and day columns
+A `data.frame` with date, hour, minute, and day columns
 }
 \description{
 Separate Times into Date, Hour, and Minute
 }
 \examples{
-df = data.frame(
-  time = seq(Sys.time(), Sys.time() + 1000, by = 1)
-)
-ww_separate_times(df)
+acti_separate_time(acti_raw_data)
+acti_create_date(acti_raw_data)
+acti_create_hour(acti_raw_data)
+acti_create_minute(acti_raw_data)
 }

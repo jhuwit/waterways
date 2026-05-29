@@ -2,82 +2,46 @@
 % Please edit documentation in R/ww_calculate_counts.R
 \name{ww_calculate_counts}
 \alias{ww_calculate_counts}
-\alias{ww_calculate_wear}
-\alias{ww_calculate_nonwear}
-\alias{ww_process_gt3x}
-\alias{ww_apply_cole_kripke}
-\alias{ww_apply_tudor_locke}
-\alias{ww_estimate_sleep}
-\title{Process SensorLog Daa}
+\title{Process Count Data}
 \usage{
-ww_calculate_counts(data, epoch = 60L, lfe_select = FALSE, verbose = TRUE)
-
-ww_calculate_wear(
+ww_calculate_counts(
   data,
-  method = c("choi", "troiano"),
-  use_magnitude = TRUE,
-  ...
-)
-
-ww_calculate_nonwear(
-  data,
-  method = c("choi", "troiano"),
-  use_magnitude = TRUE,
-  ...
-)
-
-ww_process_gt3x(
-  data,
+  epoch = 60L,
+  resample = TRUE,
   lfe_select = FALSE,
-  method = c("choi", "troiano"),
-  use_magnitude = TRUE,
-  verbose = TRUE,
-  ...
+  verbose = TRUE
 )
-
-ww_apply_cole_kripke(data)
-
-ww_apply_tudor_locke(data, ...)
-
-ww_estimate_sleep(data, data_bed_times = NULL, verbose = TRUE)
 }
 \arguments{
-\item{data}{A \code{data.frame} from \link{ww_read_gt3x}}
+\item{data}{A `data.frame` from `acti_calculate_counts` that has
+columns `axis1-3` and `counts`}
 
 \item{epoch}{epoch length in seconds.  Default is 60 seconds.
-See \link[agcounts:calculate_counts]{agcounts::calculate_counts}}
+See `agcounts::calculate_counts()`}
+
+\item{resample}{(recommended) resample the data to 30Hz using
+[actibase::resample] vs. using the resampling method from
+[agcounts::calculate_counts].}
 
 \item{lfe_select}{Apply the Actigraph Low Frequency Extension filter.
-See \link[agcounts:calculate_counts]{agcounts::calculate_counts}
+See `agcounts::calculate_counts()`
 higher values are higher levels of verbosity.}
 
 \item{verbose}{print diagnostic messages.  Either logical or integer, where}
-
-\item{method}{Method for detecting non-wear, either "choi" or "troiano",
-corresponding to \link[actigraph.sleepr:apply_choi]{actigraph.sleepr::apply_choi} or \link[actigraph.sleepr:apply_troiano]{actigraph.sleepr::apply_troiano}}
-
-\item{use_magnitude}{If \code{TRUE}, the magnitude of the vector
-(axis1, axis2, axis3) is used to measure activity;
-otherwise the axis1 value is used.}
-
-\item{...}{additional arguments to pass to \code{actigraph.sleepr} function}
-
-\item{data_bed_times}{A \code{data.frame} containing bed times with columns
-\code{in_bed_time}, \code{out_bed_time}, and \code{onset} or \code{onset_time}.  If \code{NULL},
-\link{ww_apply_tudor_locke} is used to estimate sleep metrics.}
 }
 \value{
-A \code{data.frame} of transformed data
+A `data.frame` of transformed data
+
+A `data.frame` of transformed data
 }
 \description{
-Process SensorLog Daa
+Process Count Data
+
+Process Count Data
 }
 \note{
-This calls \link{ww_check_data}, \link{ww_calculate_distance}, and
-\link{ww_process_time}
-
-For \code{ww_process_gt3x}, the \code{...} argument are passed to
-\link{ww_read_gt3x}
+This calls the downstream wear-processing helpers used by
+`actigraph.sleepr`
 }
 \examples{
 path = ww_example_gt3x_file()

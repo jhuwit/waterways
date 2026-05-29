@@ -1,5 +1,7 @@
 test_that("ww_fips15 works", {
-  res = ww_fips15(24, 510, 60400)
+  testthat::expect_warning({
+    res = ww_fips15(24, 510, 60400)
+  })
   testthat::expect_equal(
     res,
     "24510060400"

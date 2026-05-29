@@ -2,7 +2,6 @@
 % Please edit documentation in R/ww_read_gt3x.R
 \name{ww_read_gt3x}
 \alias{ww_read_gt3x}
-\alias{ww_info_gt3x}
 \title{Read GT3X file}
 \usage{
 ww_read_gt3x(
@@ -16,39 +15,38 @@ ww_read_gt3x(
   check_attributes = TRUE,
   tz = "GMT"
 )
-
-ww_info_gt3x(path, ...)
 }
 \arguments{
 \item{path}{Path to gt3x file}
 
-\item{asDataFrame}{convert to an \code{activity_df}, see
+\item{asDataFrame}{convert to an `activity_df`, see
 \code{as.data.frame.activity}}
 
 \item{imputeZeroes}{Impute zeros in case there are missingness?
-Default is \code{FALSE}, in which case
+Default is `FALSE`, in which case
 the time series will be incomplete in case there is missingness.}
 
 \item{verbose}{print diagnostic messages, higher values = more verbosity.}
 
-\item{...}{additional arguments to pass to \code{\link[read.gt3x:read.gt3x]{read.gt3x::read.gt3x()}}}
+\item{...}{additional arguments to pass to [read.gt3x::read.gt3x()]}
 
 \item{fill_zeroes}{Rows with all zeros will be filled in with the last
 observation carried forward as is done with ActiLife.  Recommended}
 
-\item{apply_tz}{Apply the timezone from the header \code{TimeZone} attribute}
+\item{apply_tz}{Apply the timezone from the header `TimeZone` attribute,
+if available}
 
 \item{check_attributes}{Check that the attributes are included This is a sanity check,
-including checking that \code{sample_rate} is in the attributes.}
+including checking that `sample_rate` is in the attributes.}
 
 \item{tz}{timezone to project the data into.  The data read in via
-\code{\link[read.gt3x:read.gt3x]{read.gt3x::read.gt3x()}} says the timezone is GMT, but the time values is in the
+[read.gt3x::read.gt3x()] says the timezone is GMT, but the time values is in the
 native timezone.  So this data is projected into the correct time zone and then
-forced into the timezone given by \code{tz}.  Set to \code{NULL} to not apply this
+forced into the timezone given by `tz`.  Set to `NULL` to not apply this
 forcing.}
 }
 \value{
-A \code{data.frame}
+A `data.frame`
 }
 \description{
 Read GT3X file

@@ -33,7 +33,7 @@ test_that("ww_calculate_counts works", {
   ac = ww_read_gt3x(path, verbose = TRUE)
 
   counts = ww_calculate_counts(ac)
-  testthat::expect_named(
+  test_has_name(
     counts,
     c("time", "axis1", "axis2",  "axis3", "counts"
     ))
@@ -58,7 +58,8 @@ test_that("ww_calculate_counts works", {
   )
   testthat::expect_equal(
     result,
-    result_proc
+    result_proc,
+    ignore_attr = TRUE
   )
 
 

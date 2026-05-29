@@ -15,8 +15,6 @@ knitr::opts_chunk$set(
 )
 library(dplyr)
 library(waterways)
-library(SummarizedActigraphy)
-library(read.gt3x)
 library(lubridate)
 library(tidyr)
 ```
