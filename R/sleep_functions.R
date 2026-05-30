@@ -69,6 +69,7 @@ apply_diary_bed_times = function(data, diary, check_times = TRUE) {
 
 calculate_sleep_metrics = function(data, do_rounding = TRUE,
                                    rounder = c("round", "Round")) {
+  .data = rlang::.data
   index = onset = timestamp = time = avg_awakening_length = nb_awakenings = NULL
   rm(list = c("index", "onset", "timestamp", "time",
               "avg_awakening_length", "nb_awakenings"))

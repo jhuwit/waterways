@@ -16,7 +16,8 @@ ww_minute_sensorlog(data, seconds = 60L)
 ww_summarize_distance_sensorlog(data)
 }
 \arguments{
-\item{data}{\code{data.frame} of the data, output from \code{ww_process_sensorlog}}
+\item{data}{A SensorLog-style `data.frame`, usually output from
+[acti_process_sensorlog]}
 
 \item{seconds}{integer of the number of seconds to summarize the data
 for the "minute" level. Usually 1 minute/60 seconds.  For
@@ -24,7 +25,7 @@ for the "minute" level. Usually 1 minute/60 seconds.  For
 data is grouped.}
 }
 \value{
-The \code{data.frame} with the summarized data for each date
+The `data.frame` with the summarized data for each date
 }
 \description{
 Summarize SensorLog Data

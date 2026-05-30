@@ -4,7 +4,7 @@
 \alias{ww_process_sensorlog}
 \alias{ww_check_data}
 \alias{ww_calculate_distance}
-\title{Process SensorLog Daa}
+\title{Process SensorLog Data}
 \usage{
 ww_process_sensorlog(
   data,
@@ -30,42 +30,51 @@ ww_calculate_distance(
 )
 }
 \arguments{
-\item{data}{A \code{data.frame} from \link{ww_read_sensorlog}}
+\item{data}{A SensorLog-style `data.frame`}
 
 \item{lat}{Latitude of central point (e.g. home) to calculate distance.
-Set to \code{NULL} if distnace not to be run.}
+Set to `NULL` if distance should not be calculated.}
 
 \item{lon}{Longitude of central point (e.g. home) to calculate distance
-Set to \code{NULL} if distnace not to be run.}
+Set to `NULL` if distance should not be calculated.}
 
-\item{dist_fun}{Distance function to pass to \link[geosphere:distm]{geosphere::distm}}
+\item{dist_fun}{Distance function to pass to [geosphere::distm]}
 
 \item{expected_timezone}{Expected Timezone based on the latitude/longitude
 of the data based on the lat/lon values from SensorLog (
-e.g. \code{"America/New_York"}).  Set to
-\code{NULL} if not to be checked.}
+e.g. `"America/New_York"`).  Set to
+`NULL` if not to be checked.}
 
-\item{check_data}{should \link{ww_check_data} be run?}
+\item{check_data}{should [acti_check_duplicate_times] be run?}
 
 \item{remove_cols}{columns to remove from duplicate checking in
-\link{ww_check_data}.  Default is \code{c("file", "index")}}
+[acti_check_duplicate_times].  Default is `c("file", "index")`}
 
 \item{verbose}{print diagnostic messages.  Either logical or integer, where
 higher values are higher levels of verbosity.}
 
-\item{...}{additional arguments to pass to \link{ww_process_time},
-including \code{apply_tz} and \code{tz}}
+\item{...}{additional arguments to pass to [acti_sensorlog_process_time],
+including `apply_tz` and `tz`}
 
 \item{distance_cutoff}{Distance in meters to consider within home,
 in meters}
 }
 \value{
-A \code{data.frame} of transformed data
+A `data.frame` of transformed data
 }
 \description{
-Process SensorLog Daa
+Process SensorLog Data
 }
 \note{
-This calls \link{ww_check_data}, \link{ww_calculate_distance}, and
-\link{ww_process_time}
+This calls [acti_check_duplicate_times], [acti_calculate_distance], and
+[acti_sensorlog_process_time]
+}
+\examples{
+file = ww_example_sensorlog_file()
+df = ww_read_sensorlog(file)
+head(df)
+result = ww_process_sensorlog(df, check_data = FALSE, tz = "GMT")
+out = ww_minute_sensorlog(result)
+out = ww_summarize_sensorlog(result)
+
 }

@@ -19,20 +19,18 @@ the file}
 \item{verbose}{print diagnostic messages.  Either logical or integer, where
 higher values are higher levels of verbosity.}
 
-\item{robust}{if \code{TRUE} then \link{rewrite_sensorlog_csv} is run on the data
+\item{robust}{if `TRUE` then [rewrite_sensorlog_csv] is run on the data
 to try to fix any shifts with the data.}
 }
 \value{
-A \code{data.frame} of data
+A `data.frame` of data
 }
 \description{
 Read SensorLog Data
 }
 \examples{
-file = ww_example_sensorlog_file()
-df = ww_read_sensorlog(file)
+library(actiread)
+file = acti_example_sensorlog_file()
+df = acti_read_sensorlog(file)
 head(df)
-result = ww_process_sensorlog(df, check_data = FALSE, tz = "GMT")
-out = ww_minute_sensorlog(result)
-out = ww_summarize_sensorlog(result)
 }

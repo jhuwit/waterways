@@ -18,6 +18,7 @@ A `data.frame`
 Read GT3X file
 }
 \examples{
+library(actiread)
 data = acti_read_gt3x(acti_example_gt3x())
 data = acti_read_gt3x(
   acti_example_gt3x(),

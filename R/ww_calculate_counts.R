@@ -20,28 +20,7 @@ ww_calculate_nonwear = ww_calculate_wear
 #' @inherit actimetrics::acti_process
 #' @name ww_process_gt3x
 #' @export
-ww_process_gt3x = function(
-  data,
-  lfe_select = FALSE,
-  method = c("choi", "troiano"),
-  use_magnitude = TRUE,
-  verbose = TRUE,
-  ...
-) {
-  arg_list = list(
-    data = data,
-    lfe_select = FALSE,
-    method = c("choi", "troiano"),
-    use_magnitude = TRUE,
-    verbose = TRUE,
-    ...
-  )
-  # different default similar to ww_read_gt3x
-  if (is.null(arg_list$apply_tz)) {
-    arg_list$apply_tz = TRUE
-  }
-  do.call(actimetrics::acti_process, args = arg_list)
-}
+ww_process_gt3x = actimetrics::acti_process
 
 
 rename_timestamp = function(data) {

@@ -1,22 +1,8 @@
-
+#' @inherit actiread::acti_sensorlogger_location_colnames_mapping
+#' @rdname ww_sensorlogger
 #' @export
-#' @rdname ww_read_sensorlogger
 ww_sensorlogger_location_colnames_mapping = function() {
-  # cn =  c(
-  #   time = "time",
-  #   seconds_elapsed = "seconds_elapsed",
-  #   altitude = "altitude",
-  #   speedAccuracy = "speed_accuracy",
-  #   bearingAccuracy = "bearing_accuracy",
-  #   latitude = "lat",
-  #   altitudeAboveMeanSeaLevel = "altitude_above_mean_sea_level",
-  #   bearing = "bearing",
-  #   horizontalAccuracy = "horizontal_accuracy",
-  #   verticalAccuracy = "vertical_accuracy",
-  #   longitude = "lon",
-  #   speed = "speed"
-  # )
-  cn = c(
+  c(
     time = "time",
     seconds_elapsed = "seconds_elapsed",
     altitude = "altitude",
@@ -30,13 +16,12 @@ ww_sensorlogger_location_colnames_mapping = function() {
     lon = "longitude",
     speed = "speed"
   )
-  cn
 }
 
+#' @rdname ww_sensorlogger
 #' @export
-#' @rdname ww_read_sensorlogger
 ww_sensorlogger_location_spec = function() {
-  spec = readr::cols(
+  readr::cols(
     time = readr::col_double(),
     seconds_elapsed = readr::col_double(),
     altitude = readr::col_double(),
@@ -50,15 +35,12 @@ ww_sensorlogger_location_spec = function() {
     longitude = readr::col_double(),
     speed = readr::col_double()
   )
-  spec
 }
 
-
-create_lat_lon_zero = function(df) {
+ww_create_lat_lon_zero = function(df) {
   lon_zero = lat_zero = lat = lon = NULL
   rm(list = c("lat", "lon", "lat_zero", "lon_zero"))
 
-  # should add lat_zero in there
   df = df %>%
     dplyr::mutate(
       lat_zero = abs(lat) < 0.00001,
@@ -72,24 +54,25 @@ create_lat_lon_zero = function(df) {
   df
 }
 
+#' @rdname ww_sensorlogger
 #' @export
-#' @rdname ww_read_sensorlogger
 ww_read_sensorlogger_location = function(file, ...) {
-  df = read_csv_safe(file, ...)
+  args = list(...)
+  if (!"col_types" %in% names(args)) {
+    args$col_types = ww_sensorlogger_location_spec()
+  }
+  args$file = file
+  df = do.call(read_csv_safe, args)
   if (nrow(df) == 0) {
     return(NULL)
   }
   cn = ww_sensorlogger_location_colnames_mapping()
-  spec = ww_sensorlogger_location_spec()
 
-  icn = intersect(cn, colnames(df))
   df = df[, cn]
   colnames(df) = names(cn)
   df$time = ww_convert_sensorlogger_time(df$time)
-  df = create_lat_lon_zero(df)
+  df = ww_create_lat_lon_zero(df)
   df$file = file
-  stub = ww_sensorlogger_stub(file)
-  df$cat_type_sensor = stub
+  df$cat_type_sensor = ww_sensorlogger_stub(file)
   df
 }
-

@@ -16,6 +16,7 @@ Imports:
     actigraph.sleepr,
     actimetrics,
     actiread,
+    actisensorlog,
     agcounts,
     assertthat,
     cli,
@@ -44,6 +45,7 @@ Remotes:
   jhuwit/actibase,
   jhuwit/actimetrics,
   jhuwit/actiredad,
+  jhuwit/actisensorlog,
   R-ArcGIS/arcgislayers@v0.4.0,
   chris-prener/censusxy
 VignetteBuilder: knitr
