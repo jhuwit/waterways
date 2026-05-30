@@ -1,3 +1,7 @@
 #' @importFrom dplyr mutate filter select rename arrange
 #' @importFrom magrittr %>%
+#' @importFrom actibase acti_separate_time
+#' @importFrom actimetrics acti_calculate_counts acti_calculate_wear acti_process acti_apply_cole_kripke acti_apply_tudor_locke
+#' @importFrom actiread acti_read_sensorlog acti_sensorlog_csv_spec acti_sensorlog_csv_colnames_mapping acti_read_gt3x acti_info_gt3x acti_example_sensorlog_file acti_sensorlogger_location_colnames_mapping acti_rewrite_sensorlog_csv acti_read_sensorlogger_general
+#' @importFrom actisensorlog acti_sensorlog_process_time acti_process_sensorlog acti_check_duplicate_times acti_calculate_distance acti_summarize_sensorlog acti_minute_sensorlog acti_summarize_distance_sensorlog
 NULL
