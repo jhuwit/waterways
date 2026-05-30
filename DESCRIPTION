@@ -44,8 +44,9 @@ Suggests:
 Remotes:
   jhuwit/actibase,
   jhuwit/actimetrics,
-  jhuwit/actiredad,
+  jhuwit/actiread,
   jhuwit/actisensorlog,
+  dipetkov/actigraph.sleepr,
   R-ArcGIS/arcgislayers@v0.4.0,
   chris-prener/censusxy
 VignetteBuilder: knitr
