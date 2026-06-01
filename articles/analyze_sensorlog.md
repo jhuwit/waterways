@@ -23,6 +23,7 @@ can get the path of the file on each user’s machines using `system.file`
 and the package name:
 
 ``` r
+
 library(waterways)
 file = system.file(
   "extdata", "SensorLogFiles_my_iOS_device_250311_14-55-58.zip",
@@ -34,6 +35,7 @@ file
 This can also be done using the wrapper from `waterways`:
 
 ``` r
+
 ww_example_sensorlog_file()
 #> [1] "/home/runner/work/_temp/Library/waterways/extdata/SensorLogFiles_my_iOS_device_250311_14-55-58.zip"
 ```
@@ -43,6 +45,7 @@ ww_example_sensorlog_file()
 The data is read in using the `ww_read_sensorlog` function:
 
 ``` r
+
 library(dplyr)
 df = ww_read_sensorlog(file, robust = FALSE)
 df = df %>% select(-file) # we don't need to see which file this came from
@@ -66,7 +69,7 @@ which have been seen due to a bug in the iOS app. The option default is
 `FALSE` because this can take a much longer time to read in the data due
 to reading and writing the data back out to a temporary file. This
 function will also flag any values of latitude and longitude that are 0
-(absolute value $< 0.00001$). This flag is created because the iOS app
+(absolute value $`< 0.00001`$). This flag is created because the iOS app
 will sometimes record 0 for latitude and longitude when the GPS signal
 is lost.
 
@@ -74,6 +77,7 @@ We see that the data has the following columns, which are renamed from
 the original data.
 
 ``` r
+
 colnames(df)
 #>  [1] "time"           "index"          "timestamp"      "lat"           
 #>  [5] "lon"            "altitude"       "speed"          "speed_accuracy"
@@ -85,6 +89,7 @@ The mapping from the new column names from the original column names can
 be seen using `ww_sensorlog_csv_colnames_mapping`:
 
 ``` r
+
 ww_sensorlog_csv_colnames_mapping()
 #>                             time                            index 
 #>               "loggingTime(txt)"               "loggingSample(N)" 
@@ -118,6 +123,7 @@ This function (currently) will:
     `expected_timezone = NULL`:
 
 ``` r
+
 ww_process_sensorlog(df)
 #> No duplicate combinations found of: time, timestamp, lat, lon, altitude, speed, speed_accuracy, accel_X, accel_Y, ... and 3 other variables
 #> Error in `ww_check_data()`:
@@ -129,6 +135,7 @@ can look at those specific duplicate times and see that even to 3 digits
 for milliseconds, there are multiple measurements:
 
 ``` r
+
 df %>% 
   add_count(time) %>% 
   filter(n > 1) %>% 
@@ -150,6 +157,7 @@ Thus, we do not want to ensure no duplicated times, so we will set
 `check_data` to be `FALSE`:
 
 ``` r
+
 df_proc = ww_process_sensorlog(df, check_data = FALSE, apply_tz = TRUE)
 df_proc
 #> # A tibble: 11,578 × 18
@@ -182,6 +190,7 @@ different dates. The data is likely/sleep rest, but this can skew
 numbers. For analysis, we will not apply the timezone:
 
 ``` r
+
 df = ww_process_sensorlog(df, check_data = FALSE, apply_tz = FALSE)
 df
 #> # A tibble: 11,578 × 18
@@ -225,6 +234,7 @@ conversions, as they can lead to issues with merging data, determining
 windows (e.g. wake), or other time-based analyses.
 
 ``` r
+
 df %>% 
   select(time, char_time, timestamp) %>% 
   head()
@@ -252,6 +262,7 @@ Public Health where this data was collected, using the [Census
 Geocoder](https://geocoding.geo.census.gov/geocoder/) for free:
 
 ``` r
+
 geo = tidygeocoder::geo("615 N Wolfe St, Baltimore MD", method = "census")
 print(geo)
 lat = geo$lat
@@ -266,6 +277,7 @@ lon = geo$long
 We can also get Census-level information using:
 
 ``` r
+
 if (rlang::is_installed("censusxy")) {
   df_census = data.frame(street = "615 N Wolfe St", 
                          city = "Baltimore", state = "MD",
@@ -295,6 +307,7 @@ From this, we can construct a 12-digits FIPS code or `GEOID10` which is
 the census tract required for geocoding the EPA walkability index:
 
 ``` r
+
 if (rlang::is_installed("arcgislayers") && rlang::is_installed("censusxy")) {
   df_census = df_census %>% 
     mutate(GEOID10 = ww_fips12(cxy_state_id, cxy_county_id, cxy_tract_id, cxy_block_id))
@@ -370,6 +383,7 @@ We can simply focus on the EPA walkability index, which is the
 breaks from the `cat_walk_index`:
 
 ``` r
+
 if (rlang::is_installed("arcgislayers") && rlang::is_installed("censusxy")) {
   print(epa_walkability %>% 
           as.data.frame() %>% 
@@ -383,6 +397,7 @@ We can then calculate the distance from this fixed point using the
 `ww_calculate_distance` function:
 
 ``` r
+
 df = ww_calculate_distance(df,
                            lat = lat,
                            lon = lon)
@@ -394,6 +409,7 @@ function to calculate the distance in meters from the fixed point. We
 can see the new columns that were added to the data.
 
 ``` r
+
 df %>% 
   select(time, char_time, lat_zero, lon_zero, distance)
 #> # A tibble: 11,578 × 5
@@ -421,6 +437,7 @@ second-level. We can summarize the data at a daily level using the
 a period of seconds, usually 60:
 
 ``` r
+
 df_min = ww_minute_sensorlog(df)
 head(df_min)
 #> # A tibble: 6 × 16
@@ -441,6 +458,7 @@ We can also summarize the data at a daily level using the
 `ww_summarize_sensorlog` function:
 
 ``` r
+
 df_sum = ww_summarize_sensorlog(df)
 df_sum
 #> # A tibble: 1 × 11
@@ -466,6 +484,7 @@ an ActiGraph (Pensacola FL) GT9X device. The data is stored in the
 the path via `ww_example_gt3x_file`:
 
 ``` r
+
 file_gt3x = ww_example_gt3x_file()
 file_gt3x
 #> [1] "/home/runner/work/_temp/Library/waterways/extdata/TAS1H30182789_2025-03-11.gt3x.gz"
@@ -475,6 +494,7 @@ We can read in the data using the `read.gt3x` package, but waterways
 wraps this using `ww_read_gt3x`.
 
 ``` r
+
 ag_tz_applied = ww_read_gt3x(file_gt3x, verbose = FALSE, apply_tz = TRUE)
 head(ag_tz_applied)
 #>                  time      X     Y     Z
@@ -491,6 +511,7 @@ We can check the timezone of the data using the
 function:
 
 ``` r
+
 lubridate::tz(ag_tz_applied$time)
 #> [1] "GMT"
 ```
@@ -505,6 +526,7 @@ seen using the header attribute:
 We can confirm this via the header:
 
 ``` r
+
 header = attributes(ag_tz_applied)$header
 header
 #> GT3X information
@@ -552,6 +574,7 @@ applying the timezone, giving “incorrect” data but that can be merged
 with SensorLog and does not shift times to different dates:
 
 ``` r
+
 ag = ww_read_gt3x(file_gt3x, verbose = FALSE, apply_tz = FALSE)
 head(ag)
 #>                  time      X     Y     Z
@@ -580,6 +603,7 @@ et al. 2011) algorithm, which we use from the `actigraph.sleepr`
 package. The `ww_process_gt3x` will perform these operations together:
 
 ``` r
+
 counts = ww_process_gt3x(ag, verbose = FALSE)
 counts %>% 
   head()
@@ -602,6 +626,7 @@ and multiple recordings were done. We can see the overlap by using the
 `time` column is used to find the overlap.
 
 ``` r
+
 data = counts %>% 
   mutate(in_counts = TRUE) %>% 
   full_join(df_min %>% 
@@ -634,6 +659,7 @@ data
 Here we see for this data that there is complete wear:
 
 ``` r
+
 all(data$wear)
 #> [1] TRUE
 ```
@@ -643,6 +669,7 @@ Here we can look at the counts within “home”/work from those without
 time:
 
 ``` r
+
 data %>% 
   group_by(is_within_home) %>% 
   summarise(
@@ -666,6 +693,7 @@ the hour and minute columns. since you many times want to plot the data
 by hour/minute and facet by day:
 
 ``` r
+
 create_date_hour_minute = function(data) {
   data = data %>%
     mutate(
@@ -684,6 +712,7 @@ observation `day` variable that puts data on the same per-person time
 frame (time from start) versus calendar time:
 
 ``` r
+
 create_day = function(data) {
   data = data %>%
     dplyr::mutate(
@@ -696,6 +725,7 @@ We can plot the counts over time, colored by within home/work (all is
 within that):
 
 ``` r
+
 if (rlang::is_installed("ggplot2")) {
   library(ggplot2)
   data %>% 
@@ -713,6 +743,7 @@ And we can also color by distance from home, so not much difference
 here:
 
 ``` r
+
 if (rlang::is_installed("ggplot2")) {
   library(ggplot2)
   data %>% 
@@ -732,6 +763,7 @@ We can estimate wear time using the `wear` column from the ActiGraph
 data. Here we will calculate the sum of the wear at each date:
 
 ``` r
+
 data %>% 
   create_date_hour_minute() %>% 
   group_by(date) %>% 
@@ -751,6 +783,7 @@ date. This is useful if you want to see how much data was collected on a
 given day:
 
 ``` r
+
 counts %>% 
   create_date_hour_minute() %>% 
   group_by(date) %>% 

@@ -9,6 +9,7 @@ You can install the development version of waterways from
 [GitHub](https://github.com/) with:
 
 ``` r
+
 # install.packages("devtools")
 devtools::install_github("jhuwit/waterways")
 ```
@@ -18,6 +19,7 @@ devtools::install_github("jhuwit/waterways")
 ### Read in GT3X data:
 
 ``` r
+
 library(waterways)
 library(dplyr)
 #> 
@@ -31,6 +33,7 @@ library(dplyr)
 ```
 
 ``` r
+
 
 file_gt3x = ww_example_gt3x_file()
 file_gt3x
@@ -53,6 +56,7 @@ lubridate::tz(ag$time)
 The data is read in using the `ww_read_sensorlog` function:
 
 ``` r
+
 file = ww_example_sensorlog_file()
 df = ww_read_sensorlog(file, robust = FALSE)
 df = df %>% select(-file) # we don't need to see which file this came from
@@ -71,6 +75,7 @@ head(df)
 ```
 
 ``` r
+
 df %>% 
   add_count(time) %>% 
   filter(n > 1) %>% 
@@ -89,6 +94,7 @@ df %>%
 ```
 
 ``` r
+
 df = ww_process_sensorlog(df, check_data = FALSE, apply_tz = FALSE)
 df
 #> # A tibble: 11,578 × 18
@@ -112,6 +118,7 @@ df
 ```
 
 ``` r
+
 df_min = ww_minute_sensorlog(df)
 df_min
 #> # A tibble: 12 × 16
