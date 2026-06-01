@@ -3,3 +3,4 @@ inst/doc
 docs
 vignettes/analyze_sensorlog_cache/
 .positai
+vignettes/analyze_sensorlog_files/
