@@ -50,7 +50,7 @@ ww_read_sensorlogger_pedometer(file, ..., verbose = FALSE)
 \item{file}{A character vector of SensorLogger files, usually from unzipping
 the file, or a zip file of SensorLogger files}
 
-\item{...}{additional arguments to pass to \code{\link[readr:read_delim]{readr::read_csv()}}.
+\item{...}{additional arguments to pass to \code{\link[readr:read_csv]{readr::read_csv()}}.
 If \code{verbose = FALSE}, then \code{progress = FALSE} and \code{show_col_types = FALSE},
 unless otherwise overridden}
 

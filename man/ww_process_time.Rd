@@ -24,7 +24,7 @@ e.g. \code{"America/New_York"}).  Set to
 
 \item{tz}{timezone to project the data into.  Keeping as \code{GMT} and should
 have same value for \code{apply_tz} to agree (caution: always check data)
-with ActiGraph, passed to \link[lubridate:as_date]{lubridate::as_datetime}.}
+with ActiGraph, passed to \link[lubridate:as_datetime]{lubridate::as_datetime}.}
 
 \item{apply_tz}{Apply the timezone from the timezone shift from the timezone,
 e.g. "2025-03-11T14:44:11-04:00" becomes "2025-03-11T18:44:11" if

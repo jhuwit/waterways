@@ -10,3 +10,5 @@
 ^R/ww_read_sensorlogger\.R$
 ^vignettes/analyze_sensorlog_cache$
 ^codecov\.yml$
+^\.positai$
+^\.claude$
