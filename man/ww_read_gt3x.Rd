@@ -11,7 +11,7 @@ ww_read_gt3x(
   verbose = TRUE,
   ...,
   fill_zeroes = TRUE,
-  apply_tz = FALSE,
+  apply_tz = TRUE,
   check_attributes = TRUE,
   tz = "GMT"
 )
