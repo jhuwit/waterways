@@ -31,7 +31,8 @@ Imports:
     read.gt3x,
     readr,
     rlang,
-    tidyr
+    tidyr,
+    vctrs
 Suggests: 
     arcgislayers,
     censusxy,

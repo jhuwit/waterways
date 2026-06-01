@@ -39,22 +39,26 @@ ww_read_gt3x_orig = function(
     tz = "GMT"
 ) {
 
-  ww_fill_zeros = function(x) {
-    x$all_zero = x$X == 0 & x$Y == 0 & x$Z == 0
-    x$X = ifelse(x$all_zero, NA_real_, x$X)
-    x$Y = ifelse(x$all_zero, NA_real_, x$Y)
-    x$Z = ifelse(x$all_zero, NA_real_, x$Z)
-    x$all_zero = NULL
+  if (requireNamespace("vctrs", quietly = TRUE)) {
+    ww_fill_zeros = function(x) {
+      x$all_zero = x$X == 0 & x$Y == 0 & x$Z == 0
+      x$X = ifelse(x$all_zero, NA_real_, x$X)
+      x$Y = ifelse(x$all_zero, NA_real_, x$Y)
+      x$Z = ifelse(x$all_zero, NA_real_, x$Z)
+      x$all_zero = NULL
 
-    x$X = vctrs::vec_fill_missing(x$X, direction = "down")
-    x$Y = vctrs::vec_fill_missing(x$Y, direction = "down")
-    x$Z = vctrs::vec_fill_missing(x$Z, direction = "down")
+      x$X = vctrs::vec_fill_missing(x$X, direction = "down")
+      x$Y = vctrs::vec_fill_missing(x$Y, direction = "down")
+      x$Z = vctrs::vec_fill_missing(x$Z, direction = "down")
 
-    x$X[is.na(x$X)] = 0
-    x$Y[is.na(x$Y)] = 0
-    x$Z[is.na(x$Z)] = 0
+      x$X[is.na(x$X)] = 0
+      x$Y[is.na(x$Y)] = 0
+      x$Z[is.na(x$Z)] = 0
 
-    x
+      x
+    }
+  } else {
+    ww_fill_zeros = actibase::acti_fill_zeros
   }
 
   data = read.gt3x::read.gt3x(

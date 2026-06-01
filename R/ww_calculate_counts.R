@@ -18,9 +18,26 @@ ww_calculate_wear = actimetrics::acti_calculate_wear
 ww_calculate_nonwear = ww_calculate_wear
 
 #' @inherit actimetrics::acti_process
+#' @param apply_tz apply timezone to [actiread::acti_read_gt3x].
 #' @name ww_process_gt3x
 #' @export
-ww_process_gt3x = actimetrics::acti_process
+ww_process_gt3x = function(data,
+                           lfe_select = FALSE,
+                           method = c("choi", "troiano"),
+                           use_magnitude = TRUE,
+                           verbose = TRUE,
+                           ...,
+                           apply_tz = TRUE) {
+  actimetrics::acti_process(
+    data,
+    lfe_select = lfe_select,
+    method = method,
+    use_magnitude = use_magnitude,
+    verbose = verbose,
+    ...,
+    apply_tz = apply_tz
+  )
+}
 
 
 rename_timestamp = function(data) {

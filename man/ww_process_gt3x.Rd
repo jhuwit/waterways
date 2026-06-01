@@ -10,7 +10,8 @@ ww_process_gt3x(
   method = c("choi", "troiano"),
   use_magnitude = TRUE,
   verbose = TRUE,
-  ...
+  ...,
+  apply_tz = TRUE
 )
 }
 \arguments{
@@ -32,6 +33,8 @@ otherwise the axis1 value is used.}
 \item{verbose}{print diagnostic messages.  Either logical or integer, where}
 
 \item{...}{additional arguments to pass to `actigraph.sleepr` function}
+
+\item{apply_tz}{apply timezone to \link[actiread:acti_read_gt3x]{actiread::acti_read_gt3x}.}
 }
 \description{
 Process Count Data

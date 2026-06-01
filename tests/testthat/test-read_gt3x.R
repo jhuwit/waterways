@@ -1,7 +1,7 @@
 path = actiread::acti_example_gt3x()
 test_that("ww_read_gt3x works", {
   testthat::expect_true(assertthat::is.readable(path))
-  ac = ww_read_gt3x(path, verbose = FALSE)
+  ac = ww_read_gt3x(path)
   testthat::expect_named(
     ac,
     c("time", "X", "Y", "Z")
@@ -23,7 +23,7 @@ test_that("ww_read_gt3x works", {
   )
   testthat::expect_equal(
     range(ac$time),
-    structure(c(1568745600, 1568748004.99), class = c("POSIXct",
+    structure(c(1568760000, 1568762404.99), class = c("POSIXct",
                                                         "POSIXt"), tzone = "GMT")
   )
 })
@@ -53,11 +53,12 @@ test_that("ww_read_gt3x works", {
   )
   testthat::expect_equal(
     range(ac$time),
-    structure(c(1741700700, 1741707794.9875), class = c("POSIXct",
+    structure(c(1741715100, 1741722194.9875), class = c("POSIXct",
                                                         "POSIXt"), tzone = "GMT")
   )
 })
 
+path = actiread::acti_example_gt3x()
 test_that("ww_calculate_counts works", {
 
   ac = ww_read_gt3x(path, verbose = TRUE)
@@ -91,6 +92,5 @@ test_that("ww_calculate_counts works", {
     result_proc,
     ignore_attr = TRUE
   )
-
 
 })
