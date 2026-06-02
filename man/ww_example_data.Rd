@@ -5,7 +5,7 @@
 \alias{ww_example_gt3x_file}
 \alias{ww_example_sensorlogger_file}
 \alias{ww_example_sensorlogger_location_file}
-\title{Paths to Example data}
+\title{Activity/Actigraphy Example Data}
 \usage{
 ww_example_sensorlog_file()
 
@@ -16,14 +16,14 @@ ww_example_sensorlogger_file()
 ww_example_sensorlogger_location_file()
 }
 \value{
-A character file name
+A file path
 }
 \description{
-Simple wrapper of \code{\link[base:system.file]{base::system.file()}} to get the files included in
-the package
+Activity/Actigraphy Example Data
 }
 \examples{
-ww_example_sensorlog_file()
-ww_example_gt3x_file()
-ww_example_sensorlogger_file()
+library(actiread)
+acti_example_gt3x()
+acti_example_cwa()
+acti_example_sensorlogger_file()
 }

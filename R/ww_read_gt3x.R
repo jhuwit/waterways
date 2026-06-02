@@ -1,47 +1,5 @@
-ww_fill_zeros = function(x) {
-  x$all_zero = x$X == 0 & x$Y == 0 & x$Z == 0
-  x$X = ifelse(x$all_zero, NA_real_, x$X)
-  x$Y = ifelse(x$all_zero, NA_real_, x$Y)
-  x$Z = ifelse(x$all_zero, NA_real_, x$Z)
-  x$all_zero = NULL
-
-  x$X = vctrs::vec_fill_missing(x$X, direction = "down")
-  x$Y = vctrs::vec_fill_missing(x$Y, direction = "down")
-  x$Z = vctrs::vec_fill_missing(x$Z, direction = "down")
-
-  x$X[is.na(x$X)] = 0
-  x$Y[is.na(x$Y)] = 0
-  x$Z[is.na(x$Z)] = 0
-
-  x
-}
-
-
-
-
-#' Read GT3X file
-#'
-#' @param path Path to gt3x file
-#' @param asDataFrame convert to an `activity_df`, see
-#' \code{as.data.frame.activity}
-#' @param imputeZeroes Impute zeros in case there are missingness?
-#' Default is `FALSE`, in which case
-#' the time series will be incomplete in case there is missingness.
-#' @param ... additional arguments to pass to [read.gt3x::read.gt3x()]
-#' @param verbose print diagnostic messages, higher values = more verbosity.
-#' @param apply_tz Apply the timezone from the header `TimeZone` attribute
-#' @param check_attributes Check that the attributes are included This is a sanity check,
-#' including checking that `sample_rate` is in the attributes.
-#' @param tz timezone to project the data into.  The data read in via
-#' [read.gt3x::read.gt3x()] says the timezone is GMT, but the time values is in the
-#' native timezone.  So this data is projected into the correct time zone and then
-#' forced into the timezone given by `tz`.  Set to `NULL` to not apply this
-#' forcing.
-#' @param fill_zeroes Rows with all zeros will be filled in with the last
-#' observation carried forward as is done with ActiLife.  Recommended
-#' @returns A `data.frame`
+#' @inherit actiread::acti_read_gt3x
 #' @export
-#'
 #' @examples
 #' path = ww_example_gt3x_file()
 #' ac = ww_read_gt3x(path, verbose = FALSE)
@@ -56,6 +14,52 @@ ww_read_gt3x = function(
     check_attributes = TRUE,
     tz = "GMT"
 ) {
+  actiread::acti_read_gt3x(
+    path = path,
+    asDataFrame = asDataFrame,
+    imputeZeroes = imputeZeroes,
+    verbose = verbose,
+    ...,
+    fill_zeroes = fill_zeroes,
+    apply_tz = apply_tz,
+    check_attributes = check_attributes,
+    tz = tz
+  )
+}
+
+ww_read_gt3x_orig = function(
+    path,
+    asDataFrame = TRUE,
+    imputeZeroes = TRUE,
+    verbose = TRUE,
+    ...,
+    fill_zeroes = TRUE,
+    apply_tz = TRUE,
+    check_attributes = TRUE,
+    tz = "GMT"
+) {
+
+  if (requireNamespace("vctrs", quietly = TRUE)) {
+    ww_fill_zeros = function(x) {
+      x$all_zero = x$X == 0 & x$Y == 0 & x$Z == 0
+      x$X = ifelse(x$all_zero, NA_real_, x$X)
+      x$Y = ifelse(x$all_zero, NA_real_, x$Y)
+      x$Z = ifelse(x$all_zero, NA_real_, x$Z)
+      x$all_zero = NULL
+
+      x$X = vctrs::vec_fill_missing(x$X, direction = "down")
+      x$Y = vctrs::vec_fill_missing(x$Y, direction = "down")
+      x$Z = vctrs::vec_fill_missing(x$Z, direction = "down")
+
+      x$X[is.na(x$X)] = 0
+      x$Y[is.na(x$Y)] = 0
+      x$Z[is.na(x$Z)] = 0
+
+      x
+    }
+  } else {
+    ww_fill_zeros = actibase::acti_fill_zeros
+  }
 
   data = read.gt3x::read.gt3x(
     path = path,
@@ -116,16 +120,7 @@ ww_read_gt3x = function(
   data
 }
 
+
+#' @inherit actiread::acti_info_gt3x
 #' @export
-#' @rdname ww_read_gt3x
-ww_info_gt3x = function(
-    path,
-    ...
-) {
-
-  data = read.gt3x::parse_gt3x_info(
-    path = path,
-    ...)
-  data
-}
-
+ww_info_gt3x = actiread::acti_info_gt3x

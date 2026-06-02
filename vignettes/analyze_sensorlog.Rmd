@@ -15,21 +15,19 @@ knitr::opts_chunk$set(
 )
 library(dplyr)
 library(waterways)
-library(SummarizedActigraphy)
-library(read.gt3x)
 library(lubridate)
 library(tidyr)
 ```
 
 
 # Introduction
-In this vignette, we will go through the steps on how to analyze SensorLog data.  We will go through the steps of reading in the data, checking for potential duplicates of timestamps, calculating distance metrics from a fixed point (commonly participant home), and creating daily summaries.  
+In this vignette, we will go through the steps for analyzing SensorLog data. We will cover reading in the data, checking for potential duplicate timestamps, calculating distance metrics from a fixed point (commonly a participant's home), and creating daily summaries.
 
 We will also integrate ActiGraph data to show activity at different distances.
 
 # Methods
 ## Data
-The data used is example data embedded in the waterways package. It is a single participant for approximately two hours worth of GPS and activity data. The SensorLog data is stored in a zip file and contains a single CSV file. The data is stored in the `extdata` folder of the package.  We can get the path of the file on each user's machines using `system.file` and the package name:
+The data used is example data embedded in the waterways package. It is a single participant for approximately two hours' worth of GPS and activity data. The SensorLog data is stored in a zip file and contains a single CSV file. The data is stored in the `extdata` folder of the package. We can get the path of the file on each user's machine using `system.file` and the package name:
 
 ```{r sensorlog_file}
 library(waterways)
@@ -54,13 +52,13 @@ df = df %>% select(-file) # we don't need to see which file this came from
 head(df)
 ```
 
-The option `robust` will run `rewrite_sensorlog_csv` is run on the data.  The `rewrite_sensorlog_csv` attempts to fix any shifts with the data, which have been seen due to a bug in the iOS app.  The option default is `FALSE` because this can take a much longer time to read in the data due to reading and writing the data back out to a temporary file. This function will also flag any values of latitude and longitude that are 0 (absolute value $< 0.00001$).  This flag is created because the iOS app will sometimes record 0 for latitude and longitude when the GPS signal is lost. 
+The `robust` option will run `rewrite_sensorlog_csv` on the data. The `rewrite_sensorlog_csv` function attempts to fix shifts in the data, which have been seen due to a bug in the iOS app. The default for this option is `FALSE` because reading and writing to a temporary file can take much longer. This function will also flag any values of latitude and longitude that are 0 (absolute value $< 0.00001$). This flag is created because the iOS app will sometimes record 0 for latitude and longitude when the GPS signal is lost.
 
-We see that the data has the following columns, which are renamed from the original data.  
+We see that the data has the following columns, which are renamed from the original data.
 ```{r}
 colnames(df)
 ```
-The mapping from the new column names from the original column names can be seen using `ww_sensorlog_csv_colnames_mapping`:
+The mapping from the original column names to the new column names can be seen using `ww_sensorlog_csv_colnames_mapping`:
 ```{r}
 ww_sensorlog_csv_colnames_mapping()
 ```
@@ -71,7 +69,7 @@ The data is then processed using the `ww_process_sensorlog` function. This funct
 
 1. Check the data for duplicated data using `ww_check_data`.
 2. Calculate distance from a central point if provided using `ww_calculate_distance`
-3. Process the timing data using `ww_process_time`, including checking for duplicate times.  This function will also determine if the data is in the correct timezone by estimating the timezone expected (in the `expected_timezone` field, set to `America/New_York`) based the GPS coordinates, using the `lutz::tz_lookup_coords` function.  If this check is not desired, set `expected_timezone = NULL`:
+3. Process the timing data using `ww_process_time`, including checking for duplicate times. This function will also determine whether the data is in the correct timezone by estimating the expected timezone (in the `expected_timezone` field, set to `America/New_York`) based on the GPS coordinates, using the `lutz::tz_lookup_coords` function. If this check is not desired, set `expected_timezone = NULL`:
 
 ```{r process_sensorlog_fail, error=TRUE}
 ww_process_sensorlog(df)
@@ -86,14 +84,14 @@ df %>%
   select(time, lat, lon, starts_with("accel"))
 ```
 
-Thus, we do not want to ensure no duplicated times, so we will set `check_data` to be `FALSE`:
+Thus, we do not want to enforce unique times, so we will set `check_data = FALSE`:
 
 ```{r process_sensorlog}
 df_proc = ww_process_sensorlog(df, check_data = FALSE, apply_tz = TRUE)
 df_proc
 ```
 
-Note, the argument `apply_tz` will apply the time zone of the data.  This is helpful as it will set the correct time zone of the data in absolute terms.  Unfortunately, this makes it so researchers have to make sure they time shift things like hours.  For example, if you want to find what data is between 10AM and 6PM in EST time zone, you need to shift those to GMT/UTC.  Also, this will cause issues as it shifts data into different dates. The data is likely/sleep rest, but this can skew numbers.  For analysis, we will not apply the timezone:
+Note that the `apply_tz` argument will apply the time zone of the data. This is helpful because it sets the correct time zone of the data in absolute terms. Unfortunately, this means researchers have to manually shift time-based filters such as hours. For example, if you want to find data between 10 AM and 6 PM in the EST time zone, you need to shift those values to GMT/UTC. This also can shift records into different dates. The data is likely sleep or rest data, but this can skew summary numbers. For analysis, we will not apply the timezone:
 
 ```{r process_sensorlog_for_real}
 df = ww_process_sensorlog(df, check_data = FALSE, apply_tz = FALSE)
@@ -102,9 +100,9 @@ df
 
 
 
-The data times will be projected into the `GMT` timezone to agree with the output from ActiGraph and `read.gt3x::read.gt3x`. **NOTE:** this shifts times from the original timezone.  For example, if the data was at "2025-03-25 14:14:00" with a timezone of `-04:00` then the data will be in the `GMT` timezone, but the printed time will be "2025-03-25 18:14:00 GMT".  You can set the timezone to the correct timezone using `lubridate::with_tz` or `lubridate::force_tz` (they have different behavior).
+The data times will be projected into the `GMT` timezone to agree with the output from ActiGraph and `read.gt3x::read.gt3x`. **NOTE:** this shifts times from the original timezone. For example, if the data was at "2025-03-25 14:14:00" with a timezone of `-04:00`, then the data will be in the `GMT` timezone, but the printed time will be "2025-03-25 18:14:00 GMT". You can set the timezone to the correct timezone using `lubridate::with_tz` or `lubridate::force_tz` (they have different behavior).
 
-You can also pass in the `tz = "EST"` argument to `ww_process_sensorlog`, which is passed to `ww_process_time`.  An additional column of `char_time` is added so that the original character values fo the time are retained so that users can check any timezone conversions, as they can lead to issues with merging data, determining windows (e.g. wake), or other time-based analyses.
+You can also pass in the `tz = "EST"` argument to `ww_process_sensorlog`, which is passed to `ww_process_time`. An additional `char_time` column is added so that the original character values of the time are retained. This lets users check timezone conversions, which can lead to issues with merging data, determining windows (e.g. wake), or other time-based analyses.
 
 ```{r}
 df %>% 
@@ -115,14 +113,7 @@ df %>%
 
 
 ### Calculating distance
-We did not pass in the latitude and longitude of a fixed point to calculate distance for the processing function, but we could have. We can also calculate the distance separately using the function `ww_calculate_distance`.  First, we need to get the latitude and longitude of the fixed point.  We can use the `tidygeocoder` package to get the latitude and longitude of a fixed point.  We will use the address `615 N Wolfe St, Baltimore MD` for the Johns Hopkins Bloomberg School of Public Health where this data was collected, using the [Census Geocoder](https://geocoding.geo.census.gov/geocoder/) for free:
-
-```{r geo_show, eval = FALSE}
-geo = tidygeocoder::geo("615 N Wolfe St, Baltimore MD", method = "census")
-print(geo)
-lat = geo$lat
-lon = geo$long
-```
+We did not pass in the latitude and longitude of a fixed point when calling the processing function, but we could have. We can also calculate the distance separately using `ww_calculate_distance`. First, we need the latitude and longitude of the fixed point. We can use the `tidygeocoder` package to get the coordinates for the Johns Hopkins Bloomberg School of Public Health, where this data was collected. We will use the address `615 N Wolfe St, Baltimore MD`, using the [Census Geocoder](https://geocoding.geo.census.gov/geocoder/) for free:
 
 ```{r geo_run, echo = FALSE}
 geo = structure(list(
@@ -134,44 +125,43 @@ lat = geo$lat
 lon = geo$long
 ```
 
-We can also get Census-level information using:
-```{r, cache = TRUE}
-if (rlang::is_installed("censusxy")) {
-  df_census = data.frame(street = "615 N Wolfe St", 
-                         city = "Baltimore", state = "MD",
-                         zip = "21205") %>% 
-    censusxy::cxy_geocode(
-      street = "street",
-      city = "city", 
-      state = "state",
-      zip = "zip",
-      output = "full",
-      return = "geographies",
-      benchmark = "Public_AR_Current",
-      vintage = "Census2010_Current")
-  df_census
-}
+The code below shows how to geocode the address live, but the vignette uses
+the precomputed object above so it builds without network access.
+
+```{r geo_show, eval = FALSE}
+geo = tidygeocoder::geo("615 N Wolfe St, Baltimore MD", method = "census")
+print(geo)
+lat = geo$lat
+lon = geo$long
 ```
 
-From this, we can construct a 12-digits FIPS code or `GEOID10` which is the census tract required for geocoding the EPA walkability index:
+The next section shows how to geocode and query the EPA walkability index
+interactively. The vignette does not run these network calls so that it can
+build in isolated environments.
 
-```{r get_epa}
-if (rlang::is_installed("arcgislayers") && rlang::is_installed("censusxy")) {
-  df_census = df_census %>% 
-    mutate(GEOID10 = ww_fips12(cxy_state_id, cxy_county_id, cxy_tract_id, cxy_block_id))
-  epa_walkability = ww_epa_walkability(geoid = df_census$GEOID10)
-  print(epa_walkability)
-}
+```{r census_geocode, eval = FALSE}
+df_census = data.frame(street = "615 N Wolfe St",
+                       city = "Baltimore", state = "MD",
+                       zip = "21205") %>%
+  censusxy::cxy_geocode(
+    street = "street",
+    city = "city",
+    state = "state",
+    zip = "zip",
+    output = "full",
+    return = "geographies",
+    benchmark = "Public_AR_Current",
+    vintage = "Census2010_Current")
+df_census = df_census %>%
+  mutate(GEOID10 = ww_fips12(cxy_state_id, cxy_county_id, cxy_tract_id, cxy_block_id))
+epa_walkability = ww_epa_walkability(geoid = df_census$GEOID10)
+print(epa_walkability)
 ```
 
-We can simply focus on the EPA walkability index, which is the `NatWalkInd` column.  We can also get the EPA walkability index category breaks from the `cat_walk_index`:
-
-```{r get_epa_cat}
-if (rlang::is_installed("arcgislayers") && rlang::is_installed("censusxy")) {
-  print(epa_walkability %>% 
-          as.data.frame() %>% 
-          select(NatWalkInd, cat_walk_index))
-}
+```{r get_epa_cat, eval = FALSE}
+print(epa_walkability %>%
+        as.data.frame() %>%
+        select(NatWalkInd, cat_walk_index))
 ```
 
 
@@ -184,7 +174,7 @@ df = ww_calculate_distance(df,
                            lon = lon)
 ```
 
-This function uses the `geosphere::distm` function to calculate the distance in meters from the fixed point.  We can see the new columns that were added to the data.  
+This function uses `geosphere::distm` to calculate the distance in meters from the fixed point. We can see the new columns that were added to the data.
 
 
 
@@ -194,7 +184,7 @@ df %>%
 ```
 
 ## Summarizing the Data
-Now that we have the distance for each point in time, we can summarize the data.  In many cases, we do not need the data at a sub-second or second-level.  We can summarize the data at a daily level using the `ww_summarize_sensorlog` function.  This function will take the mean over a period of seconds, usually 60:
+Now that we have the distance for each point in time, we can summarize the data. In many cases, we do not need the data at a sub-second or second level. We can summarize the data at a minute level using the `ww_minute_sensorlog` function. This function will take the mean over a period of seconds, usually 60:
 
 ```{r summarize_sensorlog_minute}
 df_min = ww_minute_sensorlog(df)
@@ -208,11 +198,11 @@ df_sum = ww_summarize_sensorlog(df)
 df_sum
 ```
 
-One of the main issues with the daily level if you typically want to cross-referene GPS with activity, so we will keep the data at a minute level for now.
+One of the main issues with daily summaries is that you often want to cross-reference GPS with activity. For that reason, we will keep the data at a minute level for now.
 
 
 ## Reading in the GT3X data
-To summarize the activity profile for different levels of proximity to a fixed point we will read in the GT3X data. This data was captured using an ActiGraph (Pensacola FL) GT9X device. The data is stored in the `extdata` folder of the package, similar to the SensorLog data. We get the path via `ww_example_gt3x_file`:
+To summarize the activity profile for different levels of proximity to a fixed point, we will read in the GT3X data. This data was captured using an ActiGraph GT9X device in Pensacola, FL. The data is stored in the `extdata` folder of the package, similar to the SensorLog data. We get the path via `ww_example_gt3x_file`:
 
 ```{r ag_file}
 file_gt3x = ww_example_gt3x_file()
@@ -233,7 +223,7 @@ We can check the timezone of the data using the `lubridate::tz` function:
 lubridate::tz(ag_tz_applied$time)
 ```
 
-The `apply_tz` argument in `ww_read_gt3x` (by default) will find the timezone in the header of the file, and apply it to the data.  This is done using the `lubridate::with_tz` function.  The timezone is stored in the header of the file, which can be seen using the header attribute:
+The `apply_tz` argument in `ww_read_gt3x` will, by default, find the timezone in the header of the file and apply it to the data. This is done using the `lubridate::with_tz` function. The timezone is stored in the file header, which can be seen using the `header` attribute:
 
 We can confirm this via the header:
 ```{r}
@@ -242,9 +232,9 @@ header
 header$TimeZone
 ```
 
-The timezone is stored in the `TimeZone` field. So the data is in GMT, but it is "correct" since this is the local time **projected** into GMT.  For example, if you measured data in a timezone of `-04:00` and `read.gt3x` gave you a value of `2025-03-25 14:14:00`, then the *true* time in GMT would be `2025-03-25 18:14:00`.  Using `read.gt3x`, the time incorrectly would be `2025-03-25 14:14:00 GMT`, but with `ww_read_gt3x` it would be `2025-03-25 18:14:00 GMT`.  This means that if you want convert timezones, you will need to use `lubridate::with_tz` or `lubridate::force_tz`.
+The timezone is stored in the `TimeZone` field. So the data is in GMT, but it is "correct" because this is the local time projected into GMT. For example, if you measured data in a timezone of `-04:00` and `read.gt3x` gave you a value of `2025-03-25 14:14:00`, then the true time in GMT would be `2025-03-25 18:14:00`. Using `read.gt3x`, the time would incorrectly be `2025-03-25 14:14:00 GMT`, but with `ww_read_gt3x` it would be `2025-03-25 18:14:00 GMT`. This means that if you want to convert timezones, you will need to use `lubridate::with_tz` or `lubridate::force_tz`.
 
-We will not apply the timezone information similarly as the SensorLog for the same reasons we discussed above.  We can read in the data without applying the timezone, giving "incorrect" data but that can be merged with SensorLog and does not shift times to different dates:
+We will not apply the timezone information here for the same reasons discussed above for SensorLog. We can read in the data without applying the timezone, giving "incorrect" data, but that can be merged with SensorLog and does not shift times to different dates:
 
 ```{r ag_read2}
 ag = ww_read_gt3x(file_gt3x, verbose = FALSE, apply_tz = FALSE)
@@ -253,11 +243,11 @@ lubridate::tz(ag$time)
 ```
 
 
-In ActiLife, the ActiGraph software, values of zero for all axes are set to the last observation carried forward (LOCF).  The `fill_zeroes` argument will (by default) apply this.  Also, when the data is read in using `read.gt3x`:
+In ActiLife, the ActiGraph software, values of zero for all axes are set to the last observation carried forward (LOCF). The `fill_zeroes` argument will apply this by default. Also, when the data is read in using `read.gt3x`:
 >  DateTimes are therefore represented as POSIXct format with the 'GMT' timezone attribute, which is false; the datetime actually represents local time.
 
 
-We can calculate a number of summary measures from the acceleration.  We will calculate ActiGraph Activity Counts using the `agcounts` package.  We will use the `epoch = 60` to calculate the counts in 60-second epochs. From these counts, we can estimate non-wear using the Choi [@choi2011validation] algorithm, which we use from the `actigraph.sleepr` package.  The `ww_process_gt3x` will perform these operations together:
+We can calculate a number of summary measures from the acceleration data. We will calculate ActiGraph Activity Counts using the `agcounts` package. We will use `epoch = 60` to calculate the counts in 60-second epochs. From these counts, we can estimate non-wear using the Choi [@choi2011validation] algorithm, which we use from the `actigraph.sleepr` package. The `ww_process_gt3x` function performs these operations together:
 
 
 ```{r calculate_counts}
@@ -268,7 +258,7 @@ counts = counts %>% select(time, counts, wear)
 ```
 
 ### Overlap with SensorLog data
-The SensorLog data used was a subset of the data from the ActiGraph data and multiple recordings were done.  We can see the overlap by using the `time` column is used to find the overlap.  
+The SensorLog data used here was a subset of the ActiGraph data, and the participant was recorded multiple times. We can see the overlap by using the `time` column.
 
 ```{r}
 data = counts %>% 
@@ -282,14 +272,14 @@ data = data %>%
 data
 ```
 
-Here we see for this data that there is complete wear:
+Here we see that, for this data, there is complete wear:
 
 ```{r}
 all(data$wear)
 ```
 
 
-Here we can look at the counts within "home"/work from those without (there are none) coupled with the variant that takes into account wear time:
+Here we can look at the counts within "home"/work and compare them with those outside that area (there are none), as well as a variant that takes wear time into account:
 ```{r}
 data %>% 
   group_by(is_within_home) %>% 
@@ -302,7 +292,7 @@ data %>%
 ```
 
 ### Getting Times
-You can easily manipulate the time variables to get the date, hour, and minute level data.  Here is an example function `create_date_hour_minute`.  We recommend using the `hms` data type for the hour and minute columns.  since you many times want to plot the data by hour/minute and facet by day:
+You can easily manipulate the time variables to get date-, hour-, and minute-level data, since you often want to plot the data by hour or minute and facet by day. Here is an example function, `create_date_hour_minute`:
 
 ```{r}
 create_date_hour_minute = function(data) {
@@ -329,9 +319,11 @@ create_day = function(data) {
 }
 ```
 
+The `actibase::acti_separate_times` function performs these steps if the `actibase` package is available.
 
-We can plot the counts over time, colored by within home/work (all is within that):
-```{r}
+
+We can plot the counts over time, colored by whether a point is within home/work (all points are within that region here):
+```{r, fig.width = 10, out.width = "100%", fig.asp = 0.618}
 if (rlang::is_installed("ggplot2")) {
   library(ggplot2)
   data %>% 
@@ -343,8 +335,8 @@ if (rlang::is_installed("ggplot2")) {
 }
 ```
 
-And we can also color by distance from home, so not much difference here:
-```{r}
+And we can also color by distance from home, so there is not much difference here:
+```{r, fig.width = 10, out.width = "100%", fig.asp = 0.618}
 if (rlang::is_installed("ggplot2")) {
   library(ggplot2)
   data %>% 
@@ -359,7 +351,7 @@ if (rlang::is_installed("ggplot2")) {
 
 ### Estimating Wear Time
 
-We can estimate wear time using the `wear` column from the ActiGraph data.  Here we will calculate the sum of the wear at each date:
+We can estimate wear time using the `wear` column from the ActiGraph data. Here we will calculate the sum of wear at each date:
 
 ```{r}
 data %>% 
@@ -373,7 +365,7 @@ data %>%
 ```
 
 
-Without regard to SensorLog data, we can calculate the wear time by date.  This is useful if you want to see how much data was collected on a given day:
+Without regard to SensorLog data, we can calculate wear time by date. This is useful if you want to see how much data was collected on a given day:
 
 ```{r}
 counts %>% 
@@ -386,7 +378,7 @@ counts %>%
   )
 ```
 
-Once this is calculated, you can exclude dates without insufficient wear time (e.g. 95% of the day or 1368 minutes, or 10 hours of wear).  Different tasks require different criteria for wear time.
+Once this is calculated, you can exclude dates with insufficient wear time (e.g. less than 95% of the day, or 1368 minutes, or 10 hours of wear). Different tasks require different criteria for wear time.
 
 
 

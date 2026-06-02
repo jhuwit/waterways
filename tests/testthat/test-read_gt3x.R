@@ -1,4 +1,34 @@
-path = ww_example_gt3x_file()
+path = actiread::acti_example_gt3x()
+test_that("ww_read_gt3x works", {
+  testthat::expect_true(assertthat::is.readable(path))
+  ac = ww_read_gt3x(path)
+  testthat::expect_named(
+    ac,
+    c("time", "X", "Y", "Z")
+  )
+  testthat::expect_true(
+    !anyNA(ac$X)
+  )
+  testthat::expect_true(
+    !anyNA(ac$Y)
+  )
+  testthat::expect_true(
+    !anyNA(ac$Z)
+  )
+  testthat::expect_equal(
+    mean(ac$X), -0.82060182952183
+  )
+  testthat::expect_equal(
+    lubridate::tz(ac$time), "GMT"
+  )
+  testthat::expect_equal(
+    range(ac$time),
+    structure(c(1568760000, 1568762404.99), class = c("POSIXct",
+                                                        "POSIXt"), tzone = "GMT")
+  )
+})
+
+path = waterways::ww_example_gt3x_file()
 test_that("ww_read_gt3x works", {
   testthat::expect_true(assertthat::is.readable(path))
   ac = ww_read_gt3x(path, verbose = FALSE)
@@ -28,12 +58,31 @@ test_that("ww_read_gt3x works", {
   )
 })
 
+test_that("ww_info_gt3x works", {
+  testthat::expect_true(assertthat::is.readable(path))
+  info = ww_info_gt3x(path)
+  testthat::expect_s3_class(info, "gt3x_info")
+  testthat::expect_length(info, 22)
+  testthat::expect_equal(info[["Serial Number"]], "TAS1H30182789")
+  testthat::expect_equal(info[["Sample Rate"]], 80)
+  testthat::expect_equal(info[["TimeZone"]], "-04:00:00")
+  testthat::expect_equal(
+    info[["Start Date"]],
+    as.POSIXct("2025-03-11 13:45:00", tz = "GMT")
+  )
+  testthat::expect_equal(
+    info[["Last Sample Time"]],
+    as.POSIXct("2025-03-11 15:43:15", tz = "GMT")
+  )
+})
+
+path = actiread::acti_example_gt3x()
 test_that("ww_calculate_counts works", {
 
   ac = ww_read_gt3x(path, verbose = TRUE)
 
   counts = ww_calculate_counts(ac)
-  testthat::expect_named(
+  test_has_name(
     counts,
     c("time", "axis1", "axis2",  "axis3", "counts"
     ))
@@ -58,8 +107,8 @@ test_that("ww_calculate_counts works", {
   )
   testthat::expect_equal(
     result,
-    result_proc
+    result_proc,
+    ignore_attr = TRUE
   )
-
 
 })

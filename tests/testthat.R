@@ -10,13 +10,5 @@ library(testthat)
 library(waterways)
 library(assertthat)
 
-test_has_name = function(x, which) {
-  testthat::expect_true(
-    assertthat::has_name(
-      x,
-      which
-    )
-  )
-}
 
 test_check("waterways")
