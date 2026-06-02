@@ -198,7 +198,7 @@ df_sum = ww_summarize_sensorlog(df)
 df_sum
 ```
 
-One of the main issues with the daily level if you typically want to cross-referene GPS with activity, so we will keep the data at a minute level for now.
+One of the main issues with the daily level if you typically want to cross-reference GPS with activity, so we will keep the data at a minute level for now.
 
 
 ## Reading in the GT3X data
