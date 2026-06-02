@@ -292,7 +292,7 @@ data %>%
 ```
 
 ### Getting Times
-You can easily manipulate the time variables to get the date, hour, and minute level data.  Here is an example function `create_date_hour_minute`.  We recommend using the `hms` data type for the hour and minute columns.  since you many times want to plot the data by hour/minute and facet by day:
+You can easily manipulate the time variables to get the date, hour, and minute level data, since you many times want to plot the data by hour/minute and facet by day.  Here is an example function `create_date_hour_minute`:  
 
 ```{r}
 create_date_hour_minute = function(data) {
@@ -319,9 +319,11 @@ create_day = function(data) {
 }
 ```
 
+The `actibase::acti_separate_times` function performs these if the `actibase` package is available.
+
 
 We can plot the counts over time, colored by within home/work (all is within that):
-```{r}
+```{r, fig.width = 10, out.width = "100%", fig.asp = 0.618}
 if (rlang::is_installed("ggplot2")) {
   library(ggplot2)
   data %>% 
@@ -334,7 +336,7 @@ if (rlang::is_installed("ggplot2")) {
 ```
 
 And we can also color by distance from home, so not much difference here:
-```{r}
+```{r, fig.width = 10, out.width = "100%", fig.asp = 0.618}
 if (rlang::is_installed("ggplot2")) {
   library(ggplot2)
   data %>% 
